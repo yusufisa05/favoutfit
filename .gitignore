@@ -1,0 +1,10 @@
+# Sanal Ortam
+.venv/
+venv/
+
+# Python Önbellek Dosyaları (Çakışmaları önler)
+__pycache__/
+
+# Veritabanı (İkiniz aynı veritabanını github'a atmamalısınız)
+db.sqlite3
+
