@@ -1,0 +1,10 @@
+<!-- BACKEND TEST SAYFASI: Tasarım Yok, Sadece Veri Var -->
+<h1>{{ product.title }}</h1>
+<p>Kategori: {{ product.category }}</p>
+<p>Fiyat: {{ product.price }} TL</p>
+<p>Açıklama: {{ product.description }}</p>
+<p>Eklenme: {{ product.created_at }}</p>
+
+{% if product.image %}
+    <img src="{{ product.image.url }}" width="300">
+{% endif %}

@@ -1,0 +1,9 @@
+<h2>Giriş Yap</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Giriş</button>
+</form>
+
+<p>Hesabın yok mu? <a href="{% url 'register' %}">Kayıt Ol</a></p>

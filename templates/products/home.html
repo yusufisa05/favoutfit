@@ -1,0 +1,65 @@
+<!-- BACKEND TEST: Kategori Yan Menüsü İskeleti -->
+<!-- KULLANICI GİRİŞ KONTROLÜ -->
+<div style="background-color: #eee; padding: 10px; margin-bottom: 20px;">
+    {% if user.is_authenticated %}
+        <!-- Eğer müşteri giriş yaptıysa bu kısım görünür -->
+        <strong>Hoş geldin, {{ user.username }}!</strong> 
+        
+        <!-- DİKKAT: Django'nun yeni sürümlerinde çıkış işlemi güvenlik için POST metoduyla (butonla) yapılmalıdır -->
+        <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Çıkış Yap</button>
+        </form>
+
+    {% else %}
+        <!-- Eğer müşteri giriş YAPMADIYSA bu kısım görünür -->
+        <span>Ziyaretçi olarak geziyorsunuz.</span>
+        <a href="{% url 'login' %}">Giriş Yap</a> | 
+        <a href="{% url 'register' %}">Kayıt Ol</a>
+    {% endif %}
+</div>
+<hr>
+
+<!-- Aşağısı senin önceki Kategori ve Ürün kodların... -->
+
+<h3>Kategoriler</h3>
+<ul>
+    <!-- Tüm Ürünleri Göster Linki -->
+    <li><a href="{% url 'home' %}">Tüm Ürünler</a></li>
+    
+    <!-- Döngü ile veritabanındaki kategorileri listele -->
+    {% for kategori in categories %}
+    
+    <!-- EĞER kategorinin slug'ı varsa link yap -->
+    {% if kategori.slug %}
+        <li><a href="{% url 'category_filter' kategori.slug %}">{{ kategori.name }}</a></li>
+    
+    <!-- EĞER slug boşsa (eski eklendiyse) hata verme, sadece uyar -->
+    {% else %}
+        <li>{{ kategori.name }} <small>(Bunun slug'ı eksik, Admin panelden doldur!)</small></li>
+    {% endif %}
+
+{% endfor %}
+</ul>
+
+<hr>
+
+<!-- Başlık Dinamik Oldu: Hangi kategorideysek onun adını yazacak -->
+<h2>
+    {% if secilen_kategori %}
+        {{ secilen_kategori.name }} Reyonu
+    {% else %}
+        Tüm Ürünler
+    {% endif %}
+</h2>
+
+<!-- Aşağısı senin önceden yazdığın mevcut ürün döngüsü (Değişmeyecek) -->
+{% for urun in products %}
+    <div>
+        <h3>{{ urun.title }}</h3>
+        <p>Kategori: {{ urun.category.name }}</p>
+        <p>Fiyat: {{ urun.price }} TL</p>
+        <a href="{% url 'product_detail' urun.id %}">Detaya Git</a>
+    </div>
+    <br>
+{% endfor %}
