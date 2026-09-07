@@ -1,0 +1,198 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+
+    <!-- KAMPANYA BANNER -->
+    <section class="kampanya-banner">
+
+        <div class="banner-sol">
+            <img src="{% static 'media/banner1.jpeg' %}" alt="Fav Outfit">
+        </div>
+
+        <div class="banner-orta">
+            <img src="{% static 'media/banner2.jpeg' %}" alt="Fav Outfit">
+        </div>
+
+        <div class="banner-yazi">
+
+            <h1>fav picks</h1>
+
+            <p>
+                WE BELIEVE STYLE IS PERSONAL.
+                CURATE YOUR OWN LOOK
+                WITH OUR FAVORITE PIECES OF THE SEASON.
+            </p>
+
+            <a href="#" class="banner-buton">
+    EXPLORE ACCESSORIES
+</a>
+
+        </div>
+
+    </section>
+
+
+    <!-- KAMPANYA YAZILARI -->
+    <section class="kampanya-yazi">
+
+        <div>
+            İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM ✦
+        </div>
+
+        <div>
+            KENDİ STİLİNİ KEŞFET ✦
+        </div>
+
+        <div>
+            FAV OUTFIT ✦
+        </div>
+
+        <div>
+            YENİ KOLEKSİYON ✦
+        </div>
+
+    </section>
+
+
+    <!-- KATEGORİLER -->
+    <section class="kategori-kaydirici">
+
+
+        <!-- BASIC -->
+        <a href="#" class="kategori-kart">
+
+            <div class="kart-icerik">
+
+                <img
+                    src="{% static 'image/basic.jpeg' %}"
+                    alt="Basic"
+                >
+
+                <div class="kategori-baslik">
+                    BASIC
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- TOPS -->
+        <a href="#" class="kategori-kart">
+
+            <div class="kart-icerik">
+
+                <img
+                    src="{% static 'image/top.jpeg' %}"
+                    alt="Tops"
+                >
+
+                <div class="kategori-baslik">
+                    TOPS
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- BOTTOMS -->
+        <a href="#" class="kategori-kart">
+
+            <div class="kart-icerik">
+
+                <img
+                    src="{% static 'image/bottom.jpeg' %}"
+                    alt="Bottoms"
+                >
+
+                <div class="kategori-baslik">
+                    BOTTOMS
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- ACCESSORIES -->
+        <a href="#" class="kategori-kart">
+
+            <div class="kart-icerik">
+
+                <img
+                    src="{% static 'image/accesories.jpeg' %}"
+                    alt="Accessories"
+                >
+
+                <div class="kategori-baslik">
+                    ACCESSORIES
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- OUTERWEAR -->
+        <a href="#" class="kategori-kart">
+
+            <div class="kart-icerik">
+
+                <img
+                    src="{% static 'image/outwear.jpeg' %}"
+                    alt="Outerwear"
+                >
+
+                <div class="kategori-baslik">
+                    OUTWEAR
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- DRESS -->
+        <a href="#" class="kategori-kart">
+
+            <div class="kart-icerik">
+
+                <img
+                    src="{% static 'image/dress.jpeg' %}"
+                    alt="Dress"
+                >
+
+                <div class="kategori-baslik">
+                    DRESS
+                </div>
+
+            </div>
+
+        </a>
+
+
+    </section>
+
+
+    {% include "footer.html" %}
+
+
+</body>
+
+</html>

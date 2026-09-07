@@ -19,7 +19,7 @@ def home(request,category_slug=None):
         'products': urunler,
         'secilen_kategori': secilen_kategori
     }
-    return render(request,'products/home.html',context)
+    return render(request, 'anasayfa.html', context)
 
 def product_detail(request,id):
     urun = get_object_or_404(Product,id=id)
