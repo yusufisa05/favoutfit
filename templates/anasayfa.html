@@ -6,6 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 
     <title>FAV OUTFIT</title>
 
@@ -18,55 +24,47 @@
 
 
     <!-- KAMPANYA BANNER -->
-    <section class="kampanya-banner">
-
-        <div class="banner-sol">
-            <img src="{% static 'media/banner1.jpeg' %}" alt="Fav Outfit">
+    <section class="fav-picks-hero">
+    <!-- Sol Taraf: 4'lü Dikey Kolaj Görselleri -->
+    <div class="hero-kolaj">
+        <div class="kolaj-item">
+            <img src="{% static 'image/banner1.jpeg' %}" alt="Jewelry 1">
         </div>
-
-        <div class="banner-orta">
-            <img src="{% static 'media/banner2.jpeg' %}" alt="Fav Outfit">
+        <div class="kolaj-item">
+            <img src="{% static 'image/banner2.jpeg' %}" alt="Jewelry 2">
         </div>
-
-        <div class="banner-yazi">
-
-            <h1>fav picks</h1>
-
-            <p>
-                WE BELIEVE STYLE IS PERSONAL.
-                CURATE YOUR OWN LOOK
-                WITH OUR FAVORITE PIECES OF THE SEASON.
-            </p>
-
-            <a href="#" class="banner-buton">
-    EXPLORE ACCESSORIES
-</a>
-
+        <div class="kolaj-item">
+            <img src="{% static 'image/banner3.jpeg' %}" alt="Jewelry 3">
         </div>
+        <div class="kolaj-item">
+            <img src="{% static 'image/banner4.jpeg' %}" alt="Jewelry 4">
+        </div>
+    </div>
 
-    </section>
-
+    <!-- Sağ Taraf: Siyah Zeminli İçerik Alanı -->
+    <div class="hero-siyah-kutu">
+        <div class="kutu-icerik">
+            <h2>CURATED SELECTION</h2>
+            <p>WE BELIEVE STYLE IS PERSONAL. CURATE YOUR OWN LOOK WITH OUR FAVORITE PIECES OF THE SEASON.</p>
+            <a href="#" class="hero-outline-btn">EXPLORE ACCESSORIES</a>
+        </div>
+    </div>
+</section><br>
 
     <!-- KAMPANYA YAZILARI -->
-    <section class="kampanya-yazi">
-
-        <div>
-            İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM ✦
-        </div>
-
-        <div>
-            KENDİ STİLİNİ KEŞFET ✦
-        </div>
-
-        <div>
-            FAV OUTFIT ✦
-        </div>
-
-        <div>
-            YENİ KOLEKSİYON ✦
-        </div>
-
-    </section>
+    <div class="duyuru-seridi">
+    <div class="duyuru-track">
+        <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM </span>
+        <span>KENDİ STİLİNİ KEŞFET </span>
+        <span>FAV OUTFIT </span>
+        <span>YENİ KOLEKSİYON </span>
+        <!-- Kesintisiz akış için aynı yazıları bir kez daha tekrarlıyoruz -->
+        <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM </span>
+        <span>KENDİ STİLİNİ KEŞFET </span>
+        <span>FAV OUTFIT </span>
+        <span>YENİ KOLEKSİYON </span>
+    </div>
+</div>
 
 
     <!-- KATEGORİLER -->
