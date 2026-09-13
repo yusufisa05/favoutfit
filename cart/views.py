@@ -1,102 +1,65 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from products.models import Product
+from .models import Cart, CartItem
 
-# Create your views here.
+# Create your views here
 
-import os
-from pathlib import Path
+# Sepete ürün ekleme
+@login_required(login_url='login')
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
 
-# BASE_DIR: Projenin ana klasörünü otomatik bulur
-BASE_DIR = Path(__file__).resolve().parent.parent
+    # Kullanıcının sepeti varsa al, yoksa sıfırdan oluştur
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
-# Güvenlik Anahtarı (Geliştirme aşamasında kalabilir, yayına alırken değiştirilir)
-SECRET_KEY = 'django-insecure-favoutfit-projesi-icin-gecici-anahtar'
+    # Bu ürün sepette bulunuyor mu kontrol et
+    cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if not item_created:
+        # Ürün zaten sepette varmış, adedini 1 artır
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect('cart_detail')
 
-# Hata ayıklama modu AÇIK (Hataları ekranda görebilmen için)
-DEBUG = True
+# Kullanıcının sepetini görüntüleme
+@login_required(login_url='login')
+def cart_detail(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
-ALLOWED_HOSTS = []
+    # Sepetteki ürünleri al
+    cart_items = cart.items.all()
 
-# YÜKLÜ UYGULAMALAR (Kendi oluşturduğun app'leri buraya ekledik)
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    
-    # Senin uygulamaların:
-    'products',
-    'users',
-    'cart',
-]
+    # Sepetin genel toplam tutarını hesapla
+    total_price = sum(item.get_total_price() for item in cart_items)
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-ROOT_URLCONF = 'core.urls'
-
-# TEMPLATES AYARI: Django'nun senin 'templates' klasörünü bulmasını sağlar
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Ana dizindeki templates klasörü
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = 'core.wsgi.application'
-
-# VERİTABANI: Varsayılan SQLite
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    context = {
+        'cart': cart,
+        'cart_items': cart_items,
+        'total_price': total_price
     }
-}
+    return render(request, 'cart/cart_detail.html', context)
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
-]
+@login_required(login_url='login')
+def decrease_cart_item(request, item_id):
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
 
-# DİL VE SAAT DİLİMİ (Türkiye için ayarlandı)
-LANGUAGE_CODE = 'tr-tr'
-TIME_ZONE = 'Europe/Istanbul'
-USE_I18N = True
-USE_TZ = True
+    return redirect('cart_detail')
 
-# ---------------------------------------------------------
-# İŞTE SENİN TASARIMINI (CSS) VE GÖRSELLERİNİ ÇALIŞTIRACAK KISIM
-# ---------------------------------------------------------
+@login_required(login_url='login')
+def increase_cart_item(request, item_id):
+    cart_item = get_object_or_404(CartItem, id=item_id,cart__user=request.user)
+    cart_item.quantity += 1
+    cart_item.save()
 
-# Statik dosyalar (CSS, JS)
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+    return redirect('cart_detail')
 
-# Medya dosyaları (Ürün görselleri, bannerlar vs.)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# ---------------------------------------------------------
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+@login_required(login_url='login')
+def delete_cart_item(request, item_id):
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    cart_item.delete()
+    return redirect('cart_detail')

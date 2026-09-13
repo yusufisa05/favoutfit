@@ -1,0 +1,20 @@
+<h2>Sipariş ve Teslimat Bilgileri</h2>
+
+<h3>Sipariş Özeti</h3>
+<ul>
+    {% for item in cart_items %}
+        <li>{{ item.product.title }} x {{ item.quantity }} = {{ item.get_total_price }} TL</li>
+    {% endfor %}
+</ul>
+<p><strong>Genel Toplam: {{ total_price }} TL</strong></p>
+
+<hr>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Siparişi Onayla ve Tamamla</button>
+</form>
+
+<br>
+<a href="{% url 'cart_detail' %}">Sepete Geri Dön</a>

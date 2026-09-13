@@ -25,7 +25,10 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('', include('products.urls')), 
+    path('', include('products.urls')),
+    path('sepet/', include('cart.urls')),
+    path('uyelik/',include('users.urls')),
+    path('siparis/',include('orders.urls')),
 ]
 
 if settings.DEBUG:
