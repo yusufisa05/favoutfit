@@ -51,17 +51,42 @@
     </div>
 
     <!-- NAVİGASYON -->
-    <nav class="ana-menu">
-        <div class="nav-links">
-            <a href="#">NEW</a>
-            <a href="#">BASIC</a>
-            <a href="#">TOPS</a>
-            <a href="#">BOTTOMS</a>
-            <a href="#">OUTERWEAR</a>
-            <a href="#">ACCESSORIES</a>
-            <a href="#">SHOES</a>
-            <a href="#">DRESS</a>
-        </div>
-    </nav>
+   <nav class="ana-menu">
+    <div class="nav-links">
+
+        <a href="{% url 'category_filter' category_slug='new' %}">
+            NEW
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='basic' %}">
+            BASIC
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='tops' %}">
+            TOPS
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='bottoms' %}">
+            BOTTOMS
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='outwear' %}">
+            OUTWEAR
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='accessories' %}">
+            ACCESSORIES
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='shoes' %}">
+            SHOES
+        </a>
+
+        <a href="{% url 'category_filter' category_slug='dress' %}">
+            DRESS
+        </a>
+
+    </div>
+</nav>
 
 </header>

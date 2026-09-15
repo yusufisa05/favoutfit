@@ -1,10 +1,166 @@
-<!-- BACKEND TEST SAYFASI: Tasarım Yok, Sadece Veri Var -->
-<h1>{{ product.title }}</h1>
-<p>Kategori: {{ product.category }}</p>
-<p>Fiyat: {{ product.price }} TL</p>
-<p>Açıklama: {{ product.description }}</p>
-<p>Eklenme: {{ product.created_at }}</p>
+{% load static %}
 
-{% if product.image %}
-    <img src="{{ product.image.url }}" width="300">
-{% endif %}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+
+    <title>{{ product.title }} | FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+
+    <!-- ÜRÜN DETAY -->
+
+    <main class="urun-detay">
+
+        <!-- SOL: ÜRÜN GÖRSELİ -->
+
+        <div class="urun-detay-gorsel">
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.title }}">
+            {% endif %}
+
+        </div>
+
+
+        <!-- SAĞ: ÜRÜN BİLGİLERİ -->
+
+        <div class="urun-detay-bilgi">
+
+            <p class="urun-kategori">
+                {{ product.category }}
+            </p>
+
+            <h1>
+                {{ product.title }}
+            </h1>
+
+            <p class="urun-detay-fiyat">
+                {{ product.price }} TL
+            </p>
+
+            <div class="urun-ayirici"></div>
+
+
+            <!-- BEDEN -->
+<div class="beden-alani">
+
+    <div class="beden-baslik">
+        <span>Beden</span>
+    </div>
+
+    <div class="bedenler">
+
+        <button type="button" onclick="bedenSec(this)">XS</button>
+        <button type="button" onclick="bedenSec(this)">S</button>
+        <button type="button" onclick="bedenSec(this)">M</button>
+        <button type="button" onclick="bedenSec(this)">L</button>
+        <button type="button" onclick="bedenSec(this)">XL</button>
+
+    </div>
+
+</div>
+
+
+            <!-- BUTONLAR -->
+
+            <button class="sepete-ekle-btn" type="button">
+                SEPETE EKLE
+            </button>
+
+            <button class="detay-favori-btn" type="button">
+                 FAVORİLERE EKLE
+            </button>
+
+
+            <!-- ÜRÜN BİLGİSİ (AÇILIR / KAPANIR AKORDEON) -->
+
+            <div class="urun-ek-bilgi">
+
+                <!-- 1. Ürün Bilgileri -->
+                <div class="akordeon-item">
+                    <button type="button" class="akordeon-baslik">
+                        <span>Ürün Bilgileri</span>
+                        <span class="akordeon-ikon">+</span>
+                    </button>
+                    <div class="akordeon-icerik">
+                        {% if product.description %}
+                            <p>{{ product.description }}</p>
+                        {% else %}
+                            <p>Ürün açıklaması bulunmamaktadır.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 2. Kargo ve İade -->
+                <div class="akordeon-item">
+                    <button type="button" class="akordeon-baslik">
+                        <span>Kargo ve İade</span>
+                        <span class="akordeon-ikon">+</span>
+                    </button>
+                    <div class="akordeon-icerik">
+                        <p><strong>Kargo Teslimatı:</strong> Siparişleriniz 1-3 iş günü içerisinde kargoya teslim edilir. 1500 TL ve üzeri alışverişlerde kargo ücretsizdir.</p>
+                        <p><strong>İade ve Değişim:</strong> Satın aldığınız ürünü teslimat tarihinden itibaren 14 gün içerisinde ücretsiz olarak iade edebilir veya değiştirebilirsiniz.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    {% include "footer.html" %}
+
+    <!-- AKORDEON JAVASCRIPT KODU -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const basliklar = document.querySelectorAll(".akordeon-baslik");
+
+        basliklar.forEach(baslik => {
+            baslik.addEventListener("click", function () {
+                const icerik = this.nextElementSibling;
+                const ikon = this.querySelector(".akordeon-ikon");
+
+                icerik.classList.toggle("aktif");
+
+                if (icerik.classList.contains("aktif")) {
+                    ikon.textContent = "−";
+                } else {
+                    ikon.textContent = "+";
+                }
+            });
+        });
+    });
+</script>
+<script>
+
+function bedenSec(buton) {
+
+    document.querySelectorAll(".bedenler button").forEach(function(b) {
+        b.classList.remove("secili");
+    });
+
+    buton.classList.add("secili");
+}
+
+</script>
+</body>
+
+</html>

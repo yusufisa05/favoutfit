@@ -186,7 +186,48 @@
 
 
     </section>
+<!-- ÜRÜNLER -->
+<section class="urunler-sayfasi">
 
+    <div class="urunler-baslik">
+        <h1>FAV PICKS</h1>
+        <p>Sezonun favori parçalarını keşfet.</p>
+    </div>
+
+    <div class="urun-grid">
+
+        {% for product in products %}
+
+        <div class="urun-karti">
+
+            <a href="{% url 'product_detail' product.id %}">
+                <div class="urun-gorsel">
+
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                    {% endif %}
+
+                    <button class="favori-btn" type="button">♡</button>
+
+                </div>
+            </a>
+
+            <div class="urun-bilgi">
+                <h3>{{ product.title }}</h3>
+                <p>{{ product.price }} TL</p>
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>Henüz ürün bulunmuyor.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
 
     {% include "footer.html" %}
 

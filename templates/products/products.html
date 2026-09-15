@@ -1,0 +1,236 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ürünler | FavOutfit</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+
+    <main class="urunler-sayfasi">
+
+        <!-- SAYFA BAŞLIĞI -->
+        <section class="urunler-baslik">
+            <h1>ÜSTLER</h1>
+            <p>Tarzını tamamlayacak parçaları keşfet.</p>
+        </section>
+
+
+        <!-- FİLTRE VE SIRALAMA -->
+        <section class="urunler-kontrol">
+
+            <button class="filtre-btn">
+                Filtrele
+            </button>
+
+            <div class="urun-sayisi">
+                12 Ürün
+            </div>
+
+            <select class="sirala">
+                <option value="">Sırala</option>
+                <option value="new">En Yeni</option>
+                <option value="low">Fiyat: Düşükten Yükseğe</option>
+                <option value="high">Fiyat: Yüksekten Düşüğe</option>
+            </select>
+
+        </section>
+
+
+        <!-- ÜRÜNLER -->
+        <section class="urun-grid">
+
+
+            <!-- ÜRÜN 1 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Basic T-Shirt"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Basic T-Shirt</h3>
+                    <p>599 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 2 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Crop Top"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Basic Crop Top</h3>
+                    <p>499 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 3 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Oversize T-Shirt"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Oversize T-Shirt</h3>
+                    <p>699 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 4 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Basic Bluz"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Basic Bluz</h3>
+                    <p>749 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 5 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Fit T-Shirt"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Fit T-Shirt</h3>
+                    <p>549 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 6 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Crop Top"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Soft Crop Top</h3>
+                    <p>649 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 7 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="T-Shirt"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Classic T-Shirt</h3>
+                    <p>599 TL</p>
+                </div>
+
+            </div>
+
+
+            <!-- ÜRÜN 8 -->
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+                    <img 
+                        src="{% static 'image/basic.jpeg' %}" 
+                        alt="Top"
+                    >
+
+                    <button class="favori-btn">
+                        ♡
+                    </button>
+                </div>
+
+                <div class="urun-bilgi">
+                    <h3>Minimal Top</h3>
+                    <p>699 TL</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    {% include "footer.html" %}
+
+</body>
+</html>

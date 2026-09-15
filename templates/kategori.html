@@ -1,0 +1,172 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ secilen_kategori.name }} | FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+    <main class="urunler-sayfasi">
+
+        <div class="urunler-baslik">
+            <h1>{{ secilen_kategori.name }}</h1>
+            <p>FAV OUTFIT koleksiyonunu keşfet.</p>
+        </div>
+<div class="urunler-kontrol">
+
+    <div class="urun-sayisi">
+        {{ products|length }} ürün
+    </div>
+
+    <div class="filtreler">
+
+        <select onchange="filtreleFiyat(this.value)">
+            <option value="all">Fiyat</option>
+            <option value="0-500">0 - 500 TL</option>
+            <option value="500-1000">500 - 1000 TL</option>
+            <option value="1000+">1000 TL ve üzeri</option>
+        </select>
+
+        <select id="sirala" onchange="siralaUrunler(this.value)">
+            <option value="newest">Yeni ürünler</option>
+            <option value="price-low">Fiyat: Düşükten yükseğe</option>
+            <option value="price-high">Fiyat: Yüksekten düşüğe</option>
+        </select>
+
+    </div>
+
+</div>
+        <div class="urun-grid">
+
+            {% for product in products %}
+
+                <div class="urun-karti">
+
+                    <a href="{% url 'product_detail' product.id %}">
+                        <div class="urun-gorsel">
+
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                            {% endif %}
+
+                            <button class="favori-btn" type="button" onclick="favoriEkle(event, {{ product.id }})">
+    ♡
+</button>
+
+                        </div>
+                    </a>
+
+                    <div class="urun-bilgi">
+                        <h3>{{ product.title }}</h3>
+                        <p>{{ product.price }} TL</p>
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p>Bu kategoride henüz ürün bulunmuyor.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </main>
+
+    {% include "footer.html" %}
+<script>
+function siralaUrunler(secim) {
+
+    const grid = document.querySelector(".urun-grid");
+    const kartlar = Array.from(grid.querySelectorAll(".urun-karti"));
+
+    kartlar.sort(function(a, b) {
+
+        const fiyatA = parseFloat(
+            a.querySelector(".urun-bilgi p").textContent
+                .replace("TL", "")
+                .replace(",", ".")
+        );
+
+        const fiyatB = parseFloat(
+            b.querySelector(".urun-bilgi p").textContent
+                .replace("TL", "")
+                .replace(",", ".")
+        );
+
+        if (secim === "price-low") {
+            return fiyatA - fiyatB;
+        }
+
+        if (secim === "price-high") {
+            return fiyatB - fiyatA;
+        }
+
+        return 0;
+    });
+
+    kartlar.forEach(function(kart) {
+        grid.appendChild(kart);
+    });
+}
+</script>
+<script>
+function filtreleFiyat(secim) {
+
+    const kartlar = document.querySelectorAll(".urun-karti");
+
+    kartlar.forEach(function(kart) {
+
+        const fiyat = parseFloat(
+            kart.querySelector(".urun-bilgi p").textContent
+                .replace("TL", "")
+                .replace(",", ".")
+        );
+
+        let göster = true;
+
+        if (secim === "0-500") {
+            göster = fiyat <= 500;
+        }
+
+        if (secim === "500-1000") {
+            göster = fiyat >= 500 && fiyat <= 1000;
+        }
+
+        if (secim === "1000+") {
+            göster = fiyat >= 1000;
+        }
+
+        kart.style.display = göster ? "" : "none";
+    });
+}
+</script>
+<script>
+function favoriEkle(event, productId) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const buton = event.currentTarget;
+
+    if (buton.textContent.trim() === "♡") {
+        buton.textContent = "♥";
+        buton.classList.add("favori-aktif");
+    } else {
+        buton.textContent = "♡";
+        buton.classList.remove("favori-aktif");
+    }
+}
+</script>
+</body>
+
+</html>
