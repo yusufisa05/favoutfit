@@ -1,5 +1,15 @@
 <h2>Alışveriş Sepetim</h2>
 
+{% if messages %}
+    <div style="margin-bottom: 15px;">
+        {% for message in messages %}
+            <div style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
 {% if cart_items %}
     <table border="1" cellpadding="8" style="border-collapse: collapse;">
         <thead>
