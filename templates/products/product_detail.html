@@ -79,10 +79,17 @@
 
             <!-- BUTONLAR -->
 
-            <button class="sepete-ekle-btn" type="button">
-                SEPETE EKLE
-            </button>
+            <form action="{% url 'add_to_cart' product.id %}" method="POST">
 
+    {% csrf_token %}
+
+    <input type="hidden" name="size" id="secilen-beden">
+
+    <button class="sepete-ekle-btn" type="submit">
+        SEPETE EKLE
+    </button>
+
+</form>
             <button class="detay-favori-btn" type="button">
                  FAVORİLERE EKLE
             </button>
@@ -158,6 +165,8 @@ function bedenSec(buton) {
     });
 
     buton.classList.add("secili");
+
+    document.getElementById("secilen-beden").value = buton.textContent;
 }
 
 </script>
