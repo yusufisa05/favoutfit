@@ -1,0 +1,8 @@
+<h2>Tebrikler! Siparişiniz Başarıyla Alındı 🎉</h2>
+<p>Sipariş Numaranız: <strong>#{{ order.id }}</strong></p>
+<p>Teslimat Adresi: {{ order.address }} - {{ order.city }}</p>
+<p>Toplam Tutar: <strong>{{ order.get_total_cost }} TL</strong></p>
+
+<p>Kargonuz hazırlandığında bilgilendirileceksiniz.</p>
+
+<a href="{% url 'home' %}">Ana Sayfaya Dön</a>

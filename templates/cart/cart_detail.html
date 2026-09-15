@@ -1,0 +1,42 @@
+<h2>Alışveriş Sepetim</h2>
+
+{% if cart_items %}
+    <table border="1" cellpadding="8" style="border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>Ürün</th>
+                <th>Birim Fiyat</th>
+                <th>Adet</th>
+                <th>Toplam</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.product.price }} TL</td>
+                    <td>
+                        <a href="{% url 'decrease_cart_item' item.id %}" style="text-decoration: none; padding: 2px 6px; border: 1px solid #ccc;">-</a>
+                        <strong style="margin: 0 8px;">{{ item.quantity }}</strong>
+                        <a href="{% url 'increase_cart_item' item.id %}" style="text-decoration: none; padding: 2px 6px; border: 1px solid #ccc;">+</a>
+                    </td>
+                    <td>{{ item.get_total_price }} TL</td>
+                    <td>
+                        <a href="{% url 'remove_from_cart' item.id %}" onclick="return confirm('Bu ürünü sepetten kaldırmak istediğinize emin misiniz?');" style="color: red;">Kaldır</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Genel Toplam: {{ total_price }} TL</h3>
+{% else %}
+    <p>Sepetinizde henüz ürün bulunmamaktadır.</p>
+{% endif %}
+
+<br>
+<a href="{% url 'home' %}">Alışverişe Devam Et</a>
+
+<!-- cart_detail.html en altına: -->
+<a href="{% url 'order_create' %}" style="display:inline-block; padding: 10px 15px; background: green; color: white; text-decoration: none; margin-top: 10px;">Siparişi Tamamla (Satın Al)</a>
