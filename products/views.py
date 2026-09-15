@@ -5,16 +5,25 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required   
 # Create your views here.
 
-def home(request,category_slug=None):
+def home(request, category_slug=None):
     kategoriler = Category.objects.all()
 
     if category_slug:
-        secilen_kategori = get_object_or_404(Category,slug=category_slug)
+        secilen_kategori = get_object_or_404(Category, slug=category_slug)
         urunler = Product.objects.filter(category=secilen_kategori)
+
+        context = {
+            'categories': kategoriler,
+            'products': urunler,
+            'secilen_kategori': secilen_kategori
+        }
+
+        return render(request, 'kategori.html', context)
+
     else:
         urunler = Product.objects.all()
-        secilen_kategori = None
 
+<<<<<<< HEAD
     user_favorite_ids = set()
     if request.user.is_authenticated:  # <-- Parantez YOK
         user_favorite_ids = set(
@@ -28,10 +37,20 @@ def home(request,category_slug=None):
         'user_favorite_ids': user_favorite_ids,
     }
     return render(request, 'anasayfa.html', context)
+=======
+        context = {
+            'categories': kategoriler,
+            'products': urunler,
+            'secilen_kategori': None
+        }
+>>>>>>> f37666f6bd36028f9f7b3cacac1a9e5495d9fad5
 
-def product_detail(request,id):
-    urun = get_object_or_404(Product,id=id)
+        return render(request, 'anasayfa.html', context)
+#bu değişikliği z yaptı!
+def product_detail(request, id):
+    print("PRODUCT DETAIL ÇALIŞTI:", id)
 
+<<<<<<< HEAD
     return render(request,'products/product_detail.html' ,{'product':urun})
 
 @require_POST
@@ -57,3 +76,8 @@ def favorite_list(request):
     return render(request, 'products/favorite_list.html',{
         'favorites':favorites
     })
+=======
+    urun = get_object_or_404(Product, id=id)
+
+    return render(request, 'products/product_detail.html', {'product': urun})
+>>>>>>> f37666f6bd36028f9f7b3cacac1a9e5495d9fad5

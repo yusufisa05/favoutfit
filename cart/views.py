@@ -8,17 +8,26 @@ from .models import Cart, CartItem
 # Sepete ürün ekleme
 @login_required(login_url='login')
 def add_to_cart(request, product_id):
+
     product = get_object_or_404(Product, id=product_id)
 
-    # Kullanıcının sepeti varsa al, yoksa sıfırdan oluştur
+    size = request.POST.get('size')
+
+    if not size:
+        return redirect('product_detail', id=product_id)
+
     cart, created = Cart.objects.get_or_create(user=request.user)
 
-    # Bu ürün sepette bulunuyor mu kontrol et
-    cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item, item_created = CartItem.objects.get_or_create(
+        cart=cart,
+        product=product,
+        size=size
+    )
+
     if not item_created:
-        # Ürün zaten sepette varmış, adedini 1 artır
         cart_item.quantity += 1
         cart_item.save()
+
     return redirect('cart_detail')
 
 # Kullanıcının sepetini görüntüleme

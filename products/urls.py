@@ -10,6 +10,7 @@ urlpatterns = [
     
     # Ürün Detay Sayfası
     path('urun/<int:id>/', views.product_detail, name='product_detail'),
+<<<<<<< HEAD
 
     # Favoriler sayfası
     path('favorilerim/', views.favorite_list, name='favorite_list'),
@@ -17,3 +18,6 @@ urlpatterns = [
     # Favori ekleyip çıkartma
     path('favorilerim/toggle/<int:product_id>', views.toggle_favourite, name='toggle_favorite')
 ]
+=======
+]
+>>>>>>> f37666f6bd36028f9f7b3cacac1a9e5495d9fad5

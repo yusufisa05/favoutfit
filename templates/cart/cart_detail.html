@@ -1,5 +1,6 @@
-<h2>Alışveriş Sepetim</h2>
+{% load static %}
 
+<<<<<<< HEAD
 {% if messages %}
     <div style="margin-bottom: 15px;">
         {% for message in messages %}
@@ -39,14 +40,144 @@
             {% endfor %}
         </tbody>
     </table>
+=======
+<!DOCTYPE html>
+>>>>>>> f37666f6bd36028f9f7b3cacac1a9e5495d9fad5
 
-    <h3>Genel Toplam: {{ total_price }} TL</h3>
-{% else %}
-    <p>Sepetinizde henüz ürün bulunmamaktadır.</p>
-{% endif %}
+<html lang="tr">
 
-<br>
-<a href="{% url 'home' %}">Alışverişe Devam Et</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- cart_detail.html en altına: -->
-<a href="{% url 'order_create' %}" style="display:inline-block; padding: 10px 15px; background: green; color: white; text-decoration: none; margin-top: 10px;">Siparişi Tamamla (Satın Al)</a>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+
+<title>Sepetim | FAV OUTFIT</title>
+
+<link rel="stylesheet" href="{% static 'fav.css' %}">
+
+</head>
+
+<body>
+
+{% include "header.html" %}
+
+<main class="sepet-sayfasi">
+
+    <div class="sepet-baslik">
+        <h1>ALIŞVERİŞ SEPETİM</h1>
+    </div>
+
+    {% if cart_items %}
+
+        <div class="sepet-icerik">
+
+            <div class="sepet-urunler">
+
+                {% for item in cart_items %}
+
+                    <div class="sepet-urun">
+
+                        <div class="sepet-urun-gorsel">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}">
+                            {% endif %}
+                        </div>
+
+                        <div class="sepet-urun-bilgi">
+
+                            <h2>{{ item.product.title }}</h2>
+
+                            <p>Beden: {{ item.size }}</p>
+
+                            <p class="sepet-birim-fiyat">
+                                {{ item.product.price }} TL
+                            </p>
+
+                            <div class="sepet-adet">
+
+                                <a href="{% url 'decrease_cart_item' item.id %}">−</a>
+
+                                <span>{{ item.quantity }}</span>
+
+                                <a href="{% url 'increase_cart_item' item.id %}">+</a>
+
+                            </div>
+
+                            <p class="sepet-urun-toplam">
+                                {{ item.get_total_price }} TL
+                            </p>
+
+                            <a
+                                href="{% url 'remove_from_cart' item.id %}"
+                                class="sepet-urun-sil"
+                                onclick="return confirm('Bu ürünü sepetten kaldırmak istediğinize emin misiniz?');"
+                            >
+                                ÜRÜNÜ KALDIR
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="sepet-ozet">
+
+                <h2>SİPARİŞ ÖZETİ</h2>
+
+                <div class="sepet-ozet-satir">
+                    <span>Ara Toplam</span>
+                    <span>{{ total_price }} TL</span>
+                </div>
+
+                <div class="sepet-ozet-satir">
+                    <span>Kargo</span>
+                    <span>ÜCRETSİZ</span>
+                </div>
+
+                <div class="sepet-ozet-toplam">
+                    <span>TOPLAM</span>
+                    <span>{{ total_price }} TL</span>
+                </div>
+
+                <a href="{% url 'order_create' %}" class="siparis-tamamla">
+                    SİPARİŞİ TAMAMLA
+                </a>
+
+                <a href="{% url 'home' %}" class="alisverise-devam">
+                    ALIŞVERİŞE DEVAM ET
+                </a>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="bos-sepet">
+
+            <h2>Sepetiniz şu anda boş.</h2>
+
+            <p>Beğendiğiniz ürünleri sepete ekleyerek alışverişe başlayabilirsiniz.</p>
+
+            <a href="{% url 'home' %}">
+                ALIŞVERİŞE BAŞLA
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+{% include "footer.html" %}
+
+</body>
+</html>
