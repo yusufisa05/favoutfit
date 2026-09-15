@@ -1,0 +1,35 @@
+<h2>Geçmiş Siparişlerim</h2>
+
+{% if orders %}
+    <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th>Sipariş No</th>
+                <th>Tarih</th>
+                <th>Teslimat Şehri</th>
+                <th>Durum</th>
+                <th>Toplam Tutar</th>
+                <th>İncele</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                    <td>{{ order.city }}</td>
+                    <td>{{ order.get_status_display }}</td>
+                    <td>{{ order.get_total_cost }} TL</td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}">Detayları Gör</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Henüz verilmiş bir siparişiniz bulunmamaktadır.</p>
+{% endif %}
+
+<br>
+<a href="{% url 'home' %}">Alışverişe Devam Et</a>

@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.models import Cart
+from django.contrib import messages
+from django.db import transaction
 
 # Create your views here.
 
@@ -18,10 +20,15 @@ def order_create(request):
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-            order.save()
-
+            for item in cart_items:
+                if item.quantity > item.product.stock:
+                    messages.error(request,f"Üzgünüz, '{item.product.title}' için yeterli stok yok! "
+                            f"(Mevcut stok: {item.product.stock}, Sepetinizdeki: {item.quantity})")
+                    return redirect('cart_detail')
+            with transaction.atomic():
+                order = form.save(commit=False)
+                order.user = request.user
+                order.save()
             for item in cart_items:
                 OrderItem.objects.create(
                     order=order,
@@ -29,6 +36,9 @@ def order_create(request):
                     price=item.product.price,
                     quantity=item.quantity
                 )
+                product = item.product
+                product.stock -= item.quantity
+                product.save()
             # Sepeti boşalt
             cart_items.delete()
 
@@ -42,3 +52,13 @@ def order_create(request):
         form = OrderCreateForm(initial=initial_data)
     total_price = sum(item.get_total_price() for item in cart_items)
     return render(request, 'orders/checkout.html', {'cart.items':cart_items, 'form':form, 'total_price':total_price})
+
+@login_required(login_url='login')
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'orders/order_history.html',{'orders':orders})
+
+@login_required(login_url='login')
+def order_detail(request,order_id):
+    order = get_object_or_404(Order,id=order_id,user=request.user)
+    return render(request, 'orders/order_detail.html',{'order':order})
