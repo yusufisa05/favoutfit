@@ -1,0 +1,154 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+
+    <title>Arama | FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+{% include "header.html" %}
+
+<main class="urunler-sayfasi">
+
+    <div class="urunler-baslik">
+        <h1>ARAMA SONUÇLARI</h1>
+
+        {% if query %}
+            <p>"{{ query }}" için sonuçlar</p>
+        {% endif %}
+    </div>
+
+    <div class="urun-grid">
+
+        {% for product in products %}
+
+            <div class="urun-karti">
+
+                <div class="urun-gorsel">
+
+                    <a href="{% url 'product_detail' product.id %}">
+
+                        {% if product.image %}
+                            <img
+                                src="{{ product.image.url }}"
+                                alt="{{ product.title }}"
+                            >
+                        {% endif %}
+
+                    </a>
+
+                    <button
+                        class="favori-btn"
+                        type="button"
+                        onclick="favoriEkle(event, {{ product.id }})"
+                    >
+                        {% if product.id in favori_urunler %}
+                            ♥
+                        {% else %}
+                            ♡
+                        {% endif %}
+                    </button>
+
+                </div>
+
+                <div class="urun-bilgi">
+
+                    <h3>{{ product.title }}</h3>
+
+                    <p>{{ product.price }} TL</p>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="bos-sepet">
+                <h2>Ürün bulunamadı.</h2>
+                <p>Farklı bir ürün adı deneyebilirsin.</p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+{% include "footer.html" %}
+
+
+<script>
+
+function favoriEkle(event, productId) {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const buton = event.currentTarget;
+
+    fetch(`/favori/toggle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.is_favorited) {
+            buton.textContent = "♥";
+            buton.classList.add("favori-aktif");
+        } else {
+            buton.textContent = "♡";
+            buton.classList.remove("favori-aktif");
+        }
+
+    });
+}
+
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+
+        const cookies = document.cookie.split(";");
+
+        for (let cookie of cookies) {
+
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + "=")) {
+
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+</script>
+
+</body>
+
+</html>

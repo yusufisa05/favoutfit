@@ -14,29 +14,41 @@
         <div class="sag-menu">
 
             <!-- ARAMA -->
-            <div class="arama-kutusu">
-                <input
-                    type="text"
-                    class="arama"
-                    placeholder="ara"
-                >
-            </div>
+            <form action="{% url 'search_products' %}" method="GET" class="arama-kutusu">
+
+    <input
+        type="text"
+        name="q"
+        class="arama"
+        placeholder="ara"
+    >
+
+</form>
 
             <!-- İKONLAR -->
             <div class="ikonlar">
 
                 <!-- Kullanıcı -->
-                <a href="#" aria-label="Hesabım">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </a>
-
-                <!-- Kalp -->
-                <a href="#" aria-label="Favoriler">
-                <!-- Kalp -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="#c70000">
-        <path d="M48 300L228 469C236 476 246 480 256 480C266 480 276 476 284 469L464 300C495 272 512 232 512 191L512 185C512 115 462 56 393 44C347 36 301 51 268 84L256 96L244 84C211 51 165 36 119 44C51 56 0 115 0 185L0 191C0 232 17 272 48 300Z"/>
+                <!-- Kullanıcı -->
+<button type="button" class="hesap-btn" onclick="hesapPanelAc()" aria-label="Hesabım">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="24"
+         height="24"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="0.5"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
     </svg>
-
+</button>
+                <!-- Kalp -->
+                <a href="{% url 'favorite_list' %}" aria-label="Favoriler">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="#c70000">
+                        <path d="M48 300L228 469C236 476 246 480 256 480C266 480 276 476 284 469L464 300C495 272 512 232 512 191L512 185C512 115 462 56 393 44C347 36 301 51 268 84L256 96L244 84C211 51 165 36 119 44C51 56 0 115 0 185L0 191C0 232 17 272 48 300Z"/>
+                    </svg>
                 </a>
 
                 <a href="{% url 'cart_detail' %}" aria-label="Sepet">
@@ -108,3 +120,80 @@
 </nav>
 
 </header>
+<!-- HESAP PANELİ -->
+<div class="hesap-overlay" id="hesapOverlay">
+
+    <div class="hesap-panel">
+
+        <button
+            type="button"
+            class="hesap-kapat"
+            onclick="hesapPanelKapat()"
+        >
+            ×
+        </button>
+
+        <div class="hesap-baslik">
+            <h2>HESABIM</h2>
+            <p>FAV OUTFIT'e hoş geldin.</p>
+        </div>
+
+        <div class="hesap-form">
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <label>Kullanıcı adı</label>
+
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Kullanıcı adınız"
+                    required
+                >
+
+                <label>Şifre</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Şifreniz"
+                    required
+                >
+
+                <button type="submit" class="hesap-giris">
+                    GİRİŞ YAP
+                </button>
+            </form>
+
+            <div class="hesap-ayirici">
+                <span>veya</span>
+            </div>
+
+            <a href="{% url 'register' %}" class="hesap-kayit">
+                KAYIT OL
+            </a>
+
+            <button
+                type="button"
+                class="uye-olmadan"
+                onclick="hesapPanelKapat()"
+            >
+                ÜYE OLMADAN DEVAM ET
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function hesapPanelAc() {
+    document.getElementById("hesapOverlay").classList.add("aktif");
+}
+
+function hesapPanelKapat() {
+    document.getElementById("hesapOverlay").classList.remove("aktif");
+}
+</script>

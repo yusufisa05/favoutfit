@@ -90,10 +90,13 @@
     </button>
 
 </form>
-            <button class="detay-favori-btn" type="button">
-                 FAVORİLERE EKLE
-            </button>
-
+            <button
+    class="detay-favori-btn"
+    type="button"
+    onclick="favoriEkle({{ product.id }}, this)"
+>
+     FAVORİLERE EKLE
+</button>
 
             <!-- ÜRÜN BİLGİSİ (AÇILIR / KAPANIR AKORDEON) -->
 
@@ -170,6 +173,55 @@ function bedenSec(buton) {
 }
 
 </script>
+<script>
+
+function favoriEkle(productId, button) {
+
+    fetch(`/favori/toggle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.is_favorited) {
+            button.textContent = "♥ FAVORİLERDEN ÇIKAR";
+        } else {
+            button.textContent = "♡ FAVORİLERE EKLE";
+        }
+
+    });
+}
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+
+        const cookies = document.cookie.split(";");
+
+        for (let cookie of cookies) {
+
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+</script>
+
+</body>
 </body>
 
 </html>

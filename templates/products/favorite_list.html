@@ -1,0 +1,137 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin">
+
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+
+    <title>Favorilerim | FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=2">
+</head>
+
+<body>
+
+{% include "header.html" %}
+
+<main class="favoriler-sayfasi">
+
+    <div class="favoriler-baslik">
+        <h1>FAVORİLERİM</h1>
+    </div>
+
+    {% if favorites %}
+
+        <div class="favoriler-grid">
+
+            {% for item in favorites %}
+
+                <div class="favori-urun-karti">
+
+                    <a href="{% url 'product_detail' item.product.id %}">
+                        <div class="favori-urun-gorsel">
+
+                            {% if item.product.image %}
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.title }}"
+                                >
+                            {% endif %}
+
+                        </div>
+                    </a>
+
+                    <div class="favori-urun-bilgi">
+
+                        <h3>{{ item.product.title }}</h3>
+
+                        <p>{{ item.product.price }} TL</p>
+
+                        <button
+    type="button"
+    class="favoriden-cikar"
+    onclick="favoridenCikar({{ item.product.id }})"
+>
+    FAVORİLERDEN ÇIKAR
+</button>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="bos-favoriler">
+
+            <h2>Henüz favori ürününüz yok.</h2>
+
+            <p>Beğendiğiniz ürünleri favorilerinize ekleyebilirsiniz.</p>
+
+            <a href="{% url 'home' %}">
+                ALIŞVERİŞE BAŞLA
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+{% include "footer.html" %}
+<script>
+function favoridenCikar(productId) {
+
+    fetch(`/favori/toggle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (!data.is_favorited) {
+            location.reload();
+        }
+
+    });
+}
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+
+        const cookies = document.cookie.split(";");
+
+        for (let cookie of cookies) {
+
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+</script>
+</body>
+</html>
