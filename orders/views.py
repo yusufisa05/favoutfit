@@ -51,7 +51,7 @@ def order_create(request):
         }
         form = OrderCreateForm(initial=initial_data)
     total_price = sum(item.get_total_price() for item in cart_items)
-    return render(request, 'orders/checkout.html', {'cart.items':cart_items, 'form':form, 'total_price':total_price})
+    return render(request, 'orders/checkout.html', {'cart_items': cart_items, 'form': form, 'total_price': total_price})
 
 @login_required(login_url='login')
 def order_history(request):

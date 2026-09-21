@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorilerim | FAV OUTFIT</title>
+</head>
+<body>
+
+{% include "header.html" %}
+
+<main style="padding: 20px;">
+    <h2>Favorilerim</h2>
+
+    {% if favorites %}
+        <ul>
+            {% for fav in favorites %}
+                <li style="margin-bottom: 15px;">
+                    <strong>{{ fav.product.title }}</strong> - {{ fav.product.price }} TL
+                    <br>
+                    <a href="{% url 'product_detail' fav.product.id %}">Ürünü İncele</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Henüz favorilere eklediğiniz bir ürün bulunmamaktadır.</p>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'home' %}">Alışverişe Devam Et</a>
+</main>
+
+{% include "footer.html" %}
+
+</body>
+</html>

@@ -70,8 +70,8 @@ class Favorite(models.Model):
         unique_together = ('user','product')
         ordering=['-created_at']
 
-        def __str__(self):
-            return f"{self.user} - {self.product.title}"
+    def __str__(self):
+        return f"{self.user} - {self.product.title}"
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -87,6 +87,6 @@ class ProductImage(models.Model):
         verbose_name = 'Galeri Görseli'
         verbose_name_plural = 'Galeri Görselleri'
 
-        def __str__(self):
-            f'{self.product.title} - Görsel'
+    def __str__(self):
+        return f'{self.product.title} - Görsel'
         
