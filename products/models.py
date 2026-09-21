@@ -70,5 +70,5 @@ class Favorite(models.Model):
         unique_together = ('user','product')
         ordering=['-created_at']
 
-        def __str__(self):
-            return f"{self.user} - {self.product.title}"
+    def __str__(self):
+        return f"{self.user} - {self.product.title}"
