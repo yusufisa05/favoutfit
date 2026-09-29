@@ -10,7 +10,6 @@ urlpatterns = [
     
     # Ürün Detay Sayfası
     path('urun/<int:id>/', views.product_detail, name='product_detail'),
-
     # Favoriler sayfası
     path('favorilerim/', views.favorite_list, name='favorite_list'),
 
