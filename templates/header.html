@@ -133,67 +133,155 @@
             ×
         </button>
 
-        <div class="hesap-baslik">
-            <h2>HESABIM</h2>
-            <p>FAV OUTFIT'e hoş geldin.</p>
-        </div>
+        <!-- GİRİŞ -->
+        <div class="hesap-ekran" id="girisEkrani">
 
-        <div class="hesap-form">
-
-            <form method="POST" action="{% url 'login' %}">
-                {% csrf_token %}
-
-                <label>Kullanıcı adı</label>
-
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Kullanıcı adınız"
-                    required
-                >
-
-                <label>Şifre</label>
-
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Şifreniz"
-                    required
-                >
-
-                <button type="submit" class="hesap-giris">
-                    GİRİŞ YAP
-                </button>
-            </form>
-
-            <div class="hesap-ayirici">
-                <span>veya</span>
+            <div class="hesap-baslik">
+                <h2>HESABIM</h2>
+                <p>FAV OUTFIT'e hoş geldin.</p>
             </div>
 
-            <a href="{% url 'register' %}" class="hesap-kayit">
-                KAYIT OL
-            </a>
+            <div class="hesap-form">
 
-            <button
-                type="button"
-                class="uye-olmadan"
-                onclick="hesapPanelKapat()"
-            >
-                ÜYE OLMADAN DEVAM ET
-            </button>
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    <label>Kullanıcı adı</label>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Kullanıcı adınız"
+                        required
+                    >
+
+                    <label>Şifre</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Şifreniz"
+                        required
+                    >
+
+                    <button type="submit" class="hesap-giris">
+                        GİRİŞ YAP
+                    </button>
+                </form>
+
+                <div class="hesap-ayirici">
+                    <span>veya</span>
+                </div>
+
+                <button
+                    type="button"
+                    class="hesap-kayit"
+                    onclick="kayitEkraniAc()"
+                >
+                    KAYIT OL
+                </button>
+
+                <button
+                    type="button"
+                    class="uye-olmadan"
+                    onclick="hesapPanelKapat()"
+                >
+                    ÜYE OLMADAN DEVAM ET
+                </button>
+
+            </div>
 
         </div>
+
+
+        <!-- KAYIT -->
+<div class="hesap-ekran" id="kayitEkrani" style="display: none;">
+
+    <div class="hesap-baslik">
+        <h2>HESAP OLUŞTUR</h2>
+        <p>FAV OUTFIT'e katıl.</p>
+    </div>
+
+    <div class="hesap-form">
+
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <label>Kullanıcı adı</label>
+            <input
+                type="text"
+                name="username"
+                placeholder="Kullanıcı adınız"
+                required
+            >
+
+            <label>Şifre</label>
+            <input
+                type="password"
+                name="password1"
+                placeholder="Şifreniz"
+                required
+            >
+
+            <label>Şifre tekrar</label>
+            <input
+                type="password"
+                name="password2"
+                placeholder="Şifrenizi tekrar girin"
+                required
+            >
+
+            <button type="submit" class="hesap-giris">
+                HESAP OLUŞTUR
+            </button>
+        </form>
+
+        <div class="hesap-ayirici">
+            <span>veya</span>
+        </div>
+
+        <button
+            type="button"
+            class="hesap-kayit"
+            onclick="girisEkraniAc()"
+        >
+            ZATEN ÜYEYİM
+        </button>
+
+        <button
+            type="button"
+            class="uye-olmadan"
+            onclick="hesapPanelKapat()"
+        >
+            ÜYE OLMADAN DEVAM ET
+        </button>
+
+    </div>
+
+</div>
 
     </div>
 
 </div>
 
 <script>
+
 function hesapPanelAc() {
     document.getElementById("hesapOverlay").classList.add("aktif");
+    girisEkraniAc();
 }
 
 function hesapPanelKapat() {
     document.getElementById("hesapOverlay").classList.remove("aktif");
 }
+
+function kayitEkraniAc() {
+    document.getElementById("girisEkrani").style.display = "none";
+    document.getElementById("kayitEkrani").style.display = "block";
+}
+
+function girisEkraniAc() {
+    document.getElementById("kayitEkrani").style.display = "none";
+    document.getElementById("girisEkrani").style.display = "block";
+}
+
 </script>
+

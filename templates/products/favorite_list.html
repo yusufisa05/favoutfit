@@ -15,7 +15,7 @@
 
     <title>Favorilerim | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=3">
 </head>
 
 <body>
@@ -39,14 +39,23 @@
                     <a href="{% url 'product_detail' item.product.id %}">
                         <div class="favori-urun-gorsel">
 
-                            {% if item.product.image %}
-                                <img
-                                    src="{{ item.product.image.url }}"
-                                    alt="{{ item.product.title }}"
-                                >
-                            {% endif %}
+    {% if item.product.image %}
+        <img
+            src="{{ item.product.image.url }}"
+            alt="{{ item.product.title }}"
+        >
+    {% endif %}
 
-                        </div>
+    <button
+        type="button"
+        class="favori-kalp"
+        onclick="favoridenCikar({{ item.product.id }})"
+        aria-label="Favorilerden çıkar"
+    >
+        ♥
+    </button>
+
+</div>
                     </a>
 
                     <div class="favori-urun-bilgi">
@@ -54,14 +63,24 @@
                         <h3>{{ item.product.title }}</h3>
 
                         <p>{{ item.product.price }} TL</p>
+                        <form action="{% url 'add_to_cart' item.product.id %}" method="POST">
+    {% csrf_token %}
 
-                        <button
-    type="button"
-    class="favoriden-cikar"
-    onclick="favoridenCikar({{ item.product.id }})"
->
-    FAVORİLERDEN ÇIKAR
-</button>
+    <select name="size" required>
+        <option value="">BEDEN SEÇ</option>
+        <option value="XS">XS</option>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+    </select>
+
+    <button type="submit" class="favori-sepete-ekle">
+        SEPETE EKLE
+    </button>
+</form>
+
+                        
 
                     </div>
 

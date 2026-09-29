@@ -1481,12 +1481,11 @@ letter-spacing: 2px;
     color: #888;
 }
 
-
 /* KAYIT */
 
 .hesap-kayit {
     width: 100%;
-    height: 50px;
+    height: 48px;
 
     display: flex;
     align-items: center;
@@ -1500,12 +1499,12 @@ letter-spacing: 2px;
     text-decoration: none;
 
     font-family: Arial, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 500;
 
-    letter-spacing: 1.5px;
+    letter-spacing: 1.8px;
 
-    transition: 0.2s ease;
+    transition: 0.25s ease;
 }
 
 .hesap-kayit:hover {
@@ -1521,22 +1520,710 @@ letter-spacing: 2px;
 
     width: 100%;
 
-    margin-top: 22px;
-    padding: 5px 0;
+    margin-top: 20px;
+    padding: 4px 0;
 
     border: none;
     background: transparent;
 
-    color: #666;
+    color: #777;
 
     font-family: Arial, sans-serif;
-    font-size: 11px;
+    font-size: 10px;
 
     cursor: pointer;
 
-    text-decoration: underline;
+    text-decoration: none;
+
+    transition: 0.2s ease;
 }
 
 .uye-olmadan:hover {
     color: #111;
+}
+/* =========================
+   FAVORİLER - YENİ TASARIM
+========================= */
+
+.favoriler-sayfasi {
+    width: 100%;
+    padding: 55px 50px 90px;
+}
+
+.favoriler-baslik {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.favoriler-baslik h1 {
+    margin: 0;
+
+    font-family: "Bitcount Prop Single", sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 2px;
+
+    color: #111;
+}
+
+
+/* ÜRÜNLER */
+
+.favoriler-grid {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 45px 22px;
+}
+
+.favori-urun-karti {
+    min-width: 0;
+}
+
+
+/* GÖRSEL */
+
+.favori-urun-gorsel {
+    position: relative;
+
+    width: 100%;
+    aspect-ratio: 3 / 4;
+
+    overflow: hidden;
+
+    background: #e9e9e9;
+}
+
+.favori-urun-gorsel img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform 0.35s ease;
+}
+
+.favori-urun-karti:hover .favori-urun-gorsel img {
+    transform: scale(1.025);
+}
+
+
+/* KALP */
+
+.favori-kalp {
+    position: absolute;
+
+    top: 14px;
+    right: 14px;
+
+    border: none;
+    background: transparent;
+
+    padding: 0;
+
+    font-size: 22px;
+    line-height: 1;
+
+    color: #c70000;
+
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+}
+
+.favori-kalp:hover {
+    transform: scale(1.12);
+}
+
+
+/* ÜRÜN BİLGİSİ */
+
+.favori-urun-bilgi {
+    padding-top: 15px;
+}
+
+.favori-urun-bilgi h3 {
+    margin: 0 0 6px;
+
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    color: #111;
+}
+
+.favori-urun-bilgi p {
+    margin: 0 0 14px;
+
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+
+    color: #555;
+}
+
+
+/* Favoriler - beden seçimi */
+.favori-urun-bilgi form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.favori-urun-bilgi select {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+}
+
+.favori-urun-bilgi select:focus {
+    border-width: 2px;
+}
+
+/* Sepete Ekle */
+.favori-sepete-ekle {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #000;
+    background: #000;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.favori-sepete-ekle:hover {
+    background: #fff;
+    color: #000;
+}
+
+
+/* BOŞ FAVORİLER */
+
+.bos-favoriler {
+    min-height: 400px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.bos-favoriler h2 {
+    margin-bottom: 12px;
+
+    font-family: "Bitcount Prop Single", sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.bos-favoriler p {
+    margin-bottom: 25px;
+
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+
+    color: #777;
+}
+
+.bos-favoriler a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 44px;
+    padding: 0 25px;
+
+    background: #111;
+    color: #fff;
+
+    text-decoration: none;
+
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+
+/* MOBİL */
+
+@media (max-width: 900px) {
+
+    .favoriler-sayfasi {
+        padding: 45px 25px 70px;
+    }
+
+    .favoriler-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 35px 15px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .favoriler-sayfasi {
+        padding: 35px 15px 60px;
+    }
+
+    .favoriler-baslik h1 {
+        font-size: 27px;
+    }
+
+    .favoriler-grid {
+        gap: 30px 10px;
+    }
+
+}
+/* =========================
+   REGISTER / AUTH PAGE
+   ========================= */
+
+.auth-page {
+    margin: 0;
+    min-height: 100vh;
+    background: #f7f7f5;
+    font-family: "Bitcount Prop Single", sans-serif;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.auth-logo {
+    margin-bottom: 28px;
+    color: #111;
+    font-family: "Archivo Black", sans-serif;
+    font-size: 38px;
+    font-weight: 400;
+    text-decoration: none;
+    letter-spacing: -1.5px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 470px;
+    padding: 42px 44px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.auth-card h1 {
+    margin: 0;
+    color: #111;
+    font-family: "Archivo Black", sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+    margin: 10px 0 30px;
+    color: #777;
+    font-size: 15px;
+}
+
+/* Django form */
+
+.auth-card form p {
+    margin: 0 0 18px;
+}
+
+.auth-card form label {
+    display: block;
+    margin-bottom: 7px;
+    color: #222;
+    font-size: 14px;
+}
+
+.auth-card form input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+    background: #fafafa;
+    font-family: inherit;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.auth-card form input:focus {
+    border-color: #111;
+    background: #fff;
+}
+
+.auth-card form ul {
+    margin: 7px 0 0;
+    padding-left: 18px;
+    color: #888;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Hesap oluştur butonu */
+
+.auth-button {
+    width: 100%;
+    height: 50px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.auth-button:hover {
+    background: #333;
+}
+
+/* Alt bölüm */
+
+.auth-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 25px;
+    color: #777;
+    font-size: 14px;
+}
+
+.auth-bottom a {
+    color: #111;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* Ana sayfaya dönüş */
+
+.auth-back {
+    margin-top: 22px;
+    color: #777;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.auth-back:hover {
+    color: #111;
+}
+
+
+/* Mobil */
+
+@media (max-width: 600px) {
+
+    .auth-container {
+        padding: 25px 16px;
+    }
+
+    .auth-logo {
+        font-size: 30px;
+        margin-bottom: 22px;
+    }
+
+    .auth-card {
+        padding: 32px 24px;
+        border-radius: 15px;
+    }
+
+    .auth-card h1 {
+        font-size: 26px;
+    }
+}
+/* KAYIT EKRANI */
+
+#kayitEkrani .hesap-baslik {
+    margin-bottom: 28px;
+}
+
+#kayitEkrani .hesap-form label {
+    display: block;
+    margin-bottom: 7px;
+
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    color: #222;
+}
+
+#kayitEkrani .hesap-form input {
+    width: 100%;
+    height: 44px;
+
+    margin-bottom: 18px;
+    padding: 0 12px;
+
+    border: 1px solid #d8d8d8;
+    background: #fff;
+
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+
+    outline: none;
+}
+
+#kayitEkrani .hesap-form input:focus {
+    border-color: #111;
+}
+
+#kayitEkrani .hesap-giris {
+    margin-top: 3px;
+}
+
+
+/* GİRİŞ / KAYIT GEÇİŞİ */
+
+#kayitEkrani .hesap-ayirici {
+    margin: 20px 0;
+}
+
+#kayitEkrani .hesap-kayit {
+    height: 44px;
+}
+/* =========================
+   SİPARİŞ / CHECKOUT
+========================= */
+
+.checkout-sayfasi {
+    width: 88%;
+    max-width: 900px;
+    margin: 70px auto 100px;
+}
+
+.checkout-sayfasi h2 {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 40px;
+}
+
+.checkout-sayfasi h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.checkout-ozet {
+    background: #fff;
+    padding: 25px;
+    margin-bottom: 35px;
+}
+
+.checkout-ozet ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.checkout-ozet li {
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 14px;
+}
+
+.checkout-toplam {
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/* FORM */
+
+.checkout-form {
+    background: #fff;
+    padding: 30px;
+}
+
+.checkout-form p {
+    margin-bottom: 20px;
+}
+
+.checkout-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.checkout-form input,
+.checkout-form textarea,
+.checkout-form select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus,
+.checkout-form select:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.checkout-onayla {
+    width: 100%;
+    height: 52px;
+    margin-top: 10px;
+    border: 1px solid #000;
+    background: #000;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.checkout-onayla:hover {
+    background: #fff;
+    color: #000;
+}
+
+.checkout-geri {
+    display: inline-block;
+    margin-top: 20px;
+    color: #000;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.checkout-geri:hover {
+    text-decoration: underline;
+}
+/* =========================
+   SİPARİŞ BAŞARILI
+========================= */
+
+.siparis-basarili {
+    min-height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 70px 20px;
+}
+
+.siparis-basarili-kutu {
+    width: 100%;
+    max-width: 650px;
+    background: #fff;
+    padding: 55px;
+    text-align: center;
+}
+
+.siparis-ikon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 25px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.siparis-basarili h2 {
+    font-size: 30px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.siparis-mesaj {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 35px;
+}
+
+.siparis-detaylari {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+
+.siparis-detaylari p {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 17px 0;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 13px;
+}
+
+.siparis-detaylari p:last-child {
+    border-bottom: none;
+}
+
+.siparis-detaylari span {
+    color: #777;
+}
+
+.siparis-detaylari strong {
+    color: #111;
+    font-weight: 500;
+    text-align: right;
+}
+
+.kargo-mesaji {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.ana-sayfa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 52px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    transition: 0.25s ease;
+}
+
+.ana-sayfa-btn:hover {
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
 }
