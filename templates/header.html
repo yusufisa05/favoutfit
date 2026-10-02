@@ -267,9 +267,9 @@ function hesapPanelAc() {
     var overlay = document.getElementById("hesapOverlay");
     if (overlay) {
         overlay.classList.add("aktif");
-        {% if not request.user.is_authenticated %}
-        girisEkraniAc();
-        {% endif %}
+        if (document.getElementById("girisEkrani")) {
+            girisEkraniAc();
+        }
     }
 }
 
