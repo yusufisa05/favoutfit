@@ -1,16 +1,40 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product,Category,Favorite
+from .models import Product, Category, Favorite
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required   
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
+
+def search_products(request):
+    query = request.GET.get('q', '').strip()
+    products = Product.objects.filter(
+        title__icontains=query
+    ) if query else Product.objects.none()
+
+    favori_urunler = set()
+    if request.user.is_authenticated:
+        favori_urunler = set(
+            Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+        )
+
+    return render(
+        request,
+        'arama.html',
+        {
+            'products': products,
+            'query': query,
+            'favori_urunler': favori_urunler,
+            'user_favorite_ids': favori_urunler,
+        }
+    )
 
 def home(request, category_slug=None):
     kategoriler = Category.objects.all()
 
-    user_favorite_ids = set()
+    favori_urunler = set()
     if request.user.is_authenticated:
-        user_favorite_ids = set(
+        favori_urunler = set(
             Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
         )
 
@@ -22,7 +46,8 @@ def home(request, category_slug=None):
             'categories': kategoriler,
             'products': urunler,
             'secilen_kategori': secilen_kategori,
-            'user_favorite_ids': user_favorite_ids,
+            'favori_urunler': favori_urunler,
+            'user_favorite_ids': favori_urunler,
         }
         return render(request, 'kategori.html', context)
     else:
@@ -32,13 +57,25 @@ def home(request, category_slug=None):
             'categories': kategoriler,
             'products': urunler,
             'secilen_kategori': None,
-            'user_favorite_ids': user_favorite_ids,
+            'favori_urunler': favori_urunler,
+            'user_favorite_ids': favori_urunler,
         }
         return render(request, 'anasayfa.html', context)
 
 def product_detail(request, id):
     urun = get_object_or_404(Product, id=id)
-    return render(request, 'products/product_detail.html', {'product': urun})
+
+    favori_urunler = set()
+    if request.user.is_authenticated:
+        favori_urunler = set(
+            Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+        )
+
+    return render(request, 'products/product_detail.html', {
+        'product': urun,
+        'favori_urunler': favori_urunler,
+        'user_favorite_ids': favori_urunler,
+    })
 
 @require_POST
 @login_required(login_url='login')
@@ -57,7 +94,7 @@ def toggle_favourite(request, product_id):
         'total_favorites': request.user.favorites.count()
     })
 
-@login_required
+@login_required(login_url='login')
 def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related('product')
     return render(request, 'products/favorite_list.html', {
