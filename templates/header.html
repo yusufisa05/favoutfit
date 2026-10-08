@@ -10,66 +10,57 @@
             <a href="{% url 'home' %}">FAV OUTFIT</a>
         </h2>
 
-
         <!-- SAĞ TARAF -->
-        <div class="header-right">
+        <div class="sag-menu">
 
             <!-- ARAMA -->
-            <input
-                type="text"
-                class="arama"
-                placeholder="ara"
-            >
-
+            <div class="arama-kutusu">
+                <input
+                    type="text"
+                    class="arama"
+                    placeholder="ara"
+                >
+            </div>
 
             <!-- İKONLAR -->
-            <div class="header-icons">
+            <div class="ikonlar">
 
                 <!-- Kullanıcı -->
                 <a href="#" aria-label="Hesabım">
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                    >
-                        <circle cx="12" cy="8" r="3.5"/>
-                        <path d="M5 21c0-3.8 3-6 7-6s7 2.2 7 6"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </a>
-
 
                 <!-- Kalp -->
                 <a href="#" aria-label="Favoriler">
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                    >
-                        <path d="M20.8 8.7c0 5-8.8 10.3-8.8 10.3S3.2 13.7 3.2 8.7A4.5 4.5 0 0 1 12 6.3a4.5 4.5 0 0 1 8.8 2.4z"/>
-                    </svg>
+                <!-- Kalp -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="#c70000">
+        <path d="M48 300L228 469C236 476 246 480 256 480C266 480 276 476 284 469L464 300C495 272 512 232 512 191L512 185C512 115 462 56 393 44C347 36 301 51 268 84L256 96L244 84C211 51 165 36 119 44C51 56 0 115 0 185L0 191C0 232 17 272 48 300Z"/>
+    </svg>
+
                 </a>
 
+                <a href="{% url 'cart_detail' %}" aria-label="Sepet">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="24"
+         height="24"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="0.5"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         class="lucide lucide-shopping-basket">
 
-                <!-- Sepet -->
-                <a href="#" aria-label="Sepet">
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                    >
-                        <path d="M4 8h16l-1 12H5L4 8z"/>
-                        <path d="M8 8a4 4 0 0 1 8 0"/>
-                    </svg>
-                </a>
+        <path d="m15 11-1 9"/>
+        <path d="m19 11-4-7"/>
+        <path d="M2 11h20"/>
+        <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+        <path d="M4.5 15.5h15"/>
+        <path d="m5 11 4-7"/>
+        <path d="m9 11 1 9"/>
+
+    </svg>
+</a>
 
             </div>
 
@@ -77,26 +68,43 @@
 
     </div>
 
-
     <!-- NAVİGASYON -->
-<nav class="ana-menu">
+   <nav class="ana-menu">
+    <div class="nav-links">
 
-    <a href="#">NEW</a>
+        <a href="{% url 'category_filter' category_slug='new' %}">
+            NEW
+        </a>
 
-    <a href="#">BASIC</a>
+        <a href="{% url 'category_filter' category_slug='basic' %}">
+            BASIC
+        </a>
 
-    <a href="#">TOPS</a>
+        <a href="{% url 'category_filter' category_slug='tops' %}">
+            TOPS
+        </a>
 
-    <a href="#">BOTTOMS</a>
+        <a href="{% url 'category_filter' category_slug='bottoms' %}">
+            BOTTOMS
+        </a>
 
-    <a href="#">OUTERWEAR</a>
+        <a href="{% url 'category_filter' category_slug='outwear' %}">
+            OUTWEAR
+        </a>
 
-    <a href="#">ACCESSORIES</a>
+        <a href="{% url 'category_filter' category_slug='accessories' %}">
+            ACCESSORIES
+        </a>
 
-    <a href="#">SHOES</a>
+        <a href="{% url 'category_filter' category_slug='shoes' %}">
+            SHOES
+        </a>
 
-    <a href="#">DRESS</a>
+        <a href="{% url 'category_filter' category_slug='dress' %}">
+            DRESS
+        </a>
 
+    </div>
 </nav>
 
 </header>

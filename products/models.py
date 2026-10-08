@@ -76,11 +76,11 @@ class Favorite(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product,
-        on_delete = models.CASCADE,
-        related_name = 'gallery_images',
-        verbose_name = 'Ürün'
+        on_delete=models.CASCADE,
+        related_name='gallery_images',
+        verbose_name='Ürün'
     )
-    image = models.ImageField(upload_to='products/gallery/',verbose_name='Galeri Görseli')
+    image = models.ImageField(upload_to='products/gallery/', verbose_name='Galeri Görseli')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -89,4 +89,3 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f'{self.product.title} - Görsel'
-        
