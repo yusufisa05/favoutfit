@@ -5,6 +5,30 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required   
 # Create your views here.
 
+def search_products(request):
+    query = request.GET.get('q', '').strip()
+    if query:
+        products = Product.objects.filter(title__icontains=query)
+    else:
+        products = Product.objects.none()
+
+    favori_urunler = set()
+    if request.user.is_authenticated:
+        favori_urunler = set(
+            Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+        )
+
+    return render(
+        request,
+        'arama.html',
+        {
+            'products': products,
+            'query': query,
+            'favori_urunler': favori_urunler,
+            'user_favorite_ids': favori_urunler,
+        }
+    )
+
 def home(request, category_slug=None):
     kategoriler = Category.objects.all()
 
@@ -23,6 +47,7 @@ def home(request, category_slug=None):
             'products': urunler,
             'secilen_kategori': secilen_kategori,
             'user_favorite_ids': user_favorite_ids,
+            'favori_urunler': user_favorite_ids,
         }
         return render(request, 'kategori.html', context)
     else:
@@ -33,12 +58,19 @@ def home(request, category_slug=None):
             'products': urunler,
             'secilen_kategori': None,
             'user_favorite_ids': user_favorite_ids,
+            'favori_urunler': user_favorite_ids,
         }
         return render(request, 'anasayfa.html', context)
 
 def product_detail(request, id):
     urun = get_object_or_404(Product, id=id)
-    return render(request, 'products/product_detail.html', {'product': urun})
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_favorited = Favorite.objects.filter(user=request.user, product=urun).exists()
+    return render(request, 'products/product_detail.html', {
+        'product': urun,
+        'is_favorited': is_favorited,
+    })
 
 @require_POST
 @login_required(login_url='login')
@@ -57,7 +89,7 @@ def toggle_favourite(request, product_id):
         'total_favorites': request.user.favorites.count()
     })
 
-@login_required
+@login_required(login_url='login')
 def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related('product')
     return render(request, 'products/favorite_list.html', {

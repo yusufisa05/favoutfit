@@ -58,19 +58,27 @@
 
                 <div class="urun-karti">
 
-                    <a href="{% url 'product_detail' product.id %}">
-                        <div class="urun-gorsel">
+                    <div class="urun-gorsel">
 
+                        <a href="{% url 'product_detail' product.id %}">
                             {% if product.image %}
                                 <img src="{{ product.image.url }}" alt="{{ product.title }}">
                             {% endif %}
+                        </a>
 
-                            <button class="favori-btn" type="button" onclick="favoriEkle(event, {{ product.id }})">
-    ♡
-</button>
+                        <button
+                            class="favori-btn"
+                            type="button"
+                            onclick="favoriEkle(event, {{ product.id }})"
+                        >
+                            {% if product.id in favori_urunler %}
+                                ♥
+                            {% else %}
+                                ♡
+                            {% endif %}
+                        </button>
 
-                        </div>
-                    </a>
+                    </div>
 
                     <div class="urun-bilgi">
                         <h3>{{ product.title }}</h3>
@@ -164,13 +172,40 @@ function favoriEkle(event, productId) {
 
     const buton = event.currentTarget;
 
-    if (buton.textContent.trim() === "♡") {
-        buton.textContent = "♥";
-        buton.classList.add("favori-aktif");
-    } else {
-        buton.textContent = "♡";
-        buton.classList.remove("favori-aktif");
+    fetch(`/favori/toggle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.is_favorited) {
+            buton.textContent = "♥";
+            buton.classList.add("favori-aktif");
+        } else {
+            buton.textContent = "♡";
+            buton.classList.remove("favori-aktif");
+        }
+    })
+    .catch(err => {
+        console.error("Favori işlemi hatası:", err);
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
+    return cookieValue;
 }
 </script>
 </body>

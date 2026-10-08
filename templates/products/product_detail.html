@@ -90,8 +90,12 @@
     </button>
 
 </form>
-            <button class="detay-favori-btn" type="button">
-                 FAVORİLERE EKLE
+            <button
+                class="detay-favori-btn"
+                type="button"
+                onclick="favoriEkle({{ product.id }}, this)"
+            >
+                {% if is_favorited %}♥ FAVORİLERDEN ÇIKAR{% else %}♡ FAVORİLERE EKLE{% endif %}
             </button>
 
 
@@ -157,18 +161,49 @@
     });
 </script>
 <script>
-
 function bedenSec(buton) {
-
     document.querySelectorAll(".bedenler button").forEach(function(b) {
         b.classList.remove("secili");
     });
 
     buton.classList.add("secili");
-
     document.getElementById("secilen-beden").value = buton.textContent;
 }
 
+function favoriEkle(productId, button) {
+    fetch(`/favori/toggle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.is_favorited) {
+            button.textContent = "♥ FAVORİLERDEN ÇIKAR";
+        } else {
+            button.textContent = "♡ FAVORİLERE EKLE";
+        }
+    })
+    .catch(err => {
+        console.error("Favori işlemi hatası:", err);
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>
 </body>
 

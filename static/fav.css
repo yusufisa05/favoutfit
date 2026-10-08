@@ -956,3 +956,715 @@ body {
   letter-spacing: 1.5px;
   text-transform: lowercase;
 }
+
+/* ========================================================
+   8. HESAP PANELİ (SLIDE-IN ÇEKMECE)
+======================================================== */
+.hesap-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #000;
+}
+
+.hesap-btn svg {
+  display: block;
+}
+
+/* KARARTMA */
+.hesap-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999999 !important;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.hesap-overlay.aktif {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* SAĞDAN AÇILAN PANEL */
+.hesap-panel {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 420px;
+  max-width: 90vw;
+  height: 100vh !important;
+  background: #fff;
+  padding: 50px 40px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+.hesap-overlay.aktif .hesap-panel {
+  transform: translateX(0);
+}
+
+/* KAPATMA */
+.hesap-kapat {
+  position: absolute !important;
+  top: 18px !important;
+  right: 22px !important;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 35px;
+  color: #111;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hesap-kapat:hover {
+  opacity: 0.5;
+}
+
+/* BAŞLIK */
+.hesap-baslik {
+  margin-top: 25px;
+  margin-bottom: 35px;
+}
+
+.hesap-baslik h2 {
+  margin: 0 0 10px;
+  font-family: "Archivo Black", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #111;
+}
+
+.hesap-baslik p {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #777;
+}
+
+/* FORM */
+.hesap-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.hesap-form label {
+  margin-top: 18px;
+  margin-bottom: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #222;
+}
+
+.hesap-form input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d8d8d8;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.hesap-form input:focus {
+  border-color: #111;
+}
+
+/* GİRİŞ BUTONU */
+.hesap-giris {
+  width: 100%;
+  height: 50px;
+  margin-top: 25px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-sizing: border-box;
+}
+
+.hesap-giris:hover {
+  background: #333;
+}
+
+/* AYIRICI */
+.hesap-ayirici {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 28px 0;
+}
+
+.hesap-ayirici::before,
+.hesap-ayirici::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+.hesap-ayirici span {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: #888;
+}
+
+/* KAYIT BUTONU */
+.hesap-kayit {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-sizing: border-box;
+}
+
+.hesap-kayit:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* ÜYE OLMADAN */
+.uye-olmadan {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.2s ease;
+  text-align: center;
+}
+
+.uye-olmadan:hover {
+  color: #111;
+}
+
+/* KAYIT EKRANI ÖZELLEŞTİRME */
+#kayitEkrani .hesap-baslik {
+  margin-bottom: 28px;
+}
+
+#kayitEkrani .hesap-form label {
+  display: block;
+  margin-bottom: 7px;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #222;
+}
+
+#kayitEkrani .hesap-form input {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 18px;
+  padding: 0 12px;
+  border: 1px solid #d8d8d8;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+#kayitEkrani .hesap-form input:focus {
+  border-color: #111;
+}
+
+#kayitEkrani .hesap-giris {
+  margin-top: 3px;
+}
+
+#kayitEkrani .hesap-ayirici {
+  margin: 20px 0;
+}
+
+#kayitEkrani .hesap-kayit {
+  height: 44px;
+}
+
+/* ========================================================
+   9. FAVORİLER SAYFASI
+======================================================== */
+.favoriler-sayfasi {
+  width: 100%;
+  padding: 55px 50px 90px;
+  box-sizing: border-box;
+}
+
+.favoriler-baslik {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.favoriler-baslik h1 {
+  margin: 0;
+  font-family: "Bitcount Prop Single", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #111;
+}
+
+.favoriler-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 45px 22px;
+}
+
+.favori-urun-karti {
+  min-width: 0;
+}
+
+.favori-urun-gorsel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #e9e9e9;
+}
+
+.favori-urun-gorsel img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.favori-urun-karti:hover .favori-urun-gorsel img {
+  transform: scale(1.025);
+}
+
+.favori-kalp {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: #c70000;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.favori-kalp:hover {
+  transform: scale(1.12);
+}
+
+.favori-urun-bilgi {
+  padding-top: 15px;
+}
+
+.favori-urun-bilgi h3 {
+  margin: 0 0 6px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+}
+
+.favori-urun-bilgi p {
+  margin: 0 0 14px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #555;
+}
+
+.favori-urun-bilgi form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.favori-urun-bilgi select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.favori-urun-bilgi select:focus {
+  border-width: 2px;
+}
+
+.favori-sepete-ekle {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.favori-sepete-ekle:hover {
+  background: #fff;
+  color: #000;
+}
+
+.bos-favoriler {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bos-favoriler h2 {
+  margin-bottom: 12px;
+  font-family: "Bitcount Prop Single", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.bos-favoriler p {
+  margin-bottom: 25px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #777;
+}
+
+.bos-favoriler a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 25px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 900px) {
+  .favoriler-sayfasi {
+    padding: 45px 25px 70px;
+  }
+  .favoriler-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 35px 15px;
+  }
+}
+
+@media (max-width: 500px) {
+  .favoriler-sayfasi {
+    padding: 35px 15px 60px;
+  }
+  .favoriler-baslik h1 {
+    font-size: 27px;
+  }
+  .favoriler-grid {
+    gap: 30px 10px;
+  }
+}
+
+/* ========================================================
+   10. SİPARİŞ / CHECKOUT & SİPARİŞ BAŞARILI
+======================================================== */
+.checkout-sayfasi {
+  width: 88%;
+  max-width: 900px;
+  margin: 70px auto 100px;
+}
+
+.checkout-sayfasi h2 {
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 40px;
+}
+
+.checkout-sayfasi h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.checkout-ozet {
+  background: #fff;
+  padding: 25px;
+  margin-bottom: 35px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.checkout-ozet ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.checkout-ozet li {
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 14px;
+}
+
+.checkout-toplam {
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.checkout-form {
+  background: #fff;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.checkout-form p {
+  margin-bottom: 20px;
+}
+
+.checkout-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.checkout-form input,
+.checkout-form textarea,
+.checkout-form select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus,
+.checkout-form select:focus {
+  outline: none;
+  border-color: #000;
+}
+
+.checkout-onayla {
+  width: 100%;
+  height: 52px;
+  margin-top: 10px;
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.checkout-onayla:hover {
+  background: #fff;
+  color: #000;
+}
+
+.checkout-geri {
+  display: inline-block;
+  margin-top: 20px;
+  color: #000;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.checkout-geri:hover {
+  text-decoration: underline;
+}
+
+/* SİPARİŞ BAŞARILI */
+.siparis-basarili {
+  min-height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 70px 20px;
+}
+
+.siparis-basarili-kutu {
+  width: 100%;
+  max-width: 650px;
+  background: #fff;
+  padding: 55px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.siparis-ikon {
+  width: 55px;
+  height: 55px;
+  margin: 0 auto 25px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.siparis-basarili h2 {
+  font-size: 30px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.siparis-mesaj {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 35px;
+}
+
+.siparis-detaylari {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 25px;
+}
+
+.siparis-detaylari p {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 17px 0;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 13px;
+}
+
+.siparis-detaylari p:last-child {
+  border-bottom: none;
+}
+
+.siparis-detaylari span {
+  color: #777;
+}
+
+.siparis-detaylari strong {
+  color: #111;
+  font-weight: 500;
+  text-align: right;
+}
+
+.kargo-mesaji {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.ana-sayfa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 52px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  transition: 0.25s ease;
+}
+
+.ana-sayfa-btn:hover {
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+}
+
+/* ========================================================
+   11. SİSTEM BİLDİRİM MESAJLARI
+======================================================== */
+.site-mesajlar-kapsayici {
+  max-width: 1200px;
+  margin: 15px auto 0;
+  padding: 0 20px;
+}
+
+.site-mesaj {
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+}
+
+.site-mesaj-error {
+  background: #fde8e8;
+  color: #9b1c1c;
+  border: 1px solid #f8b4b4;
+}
+
+.site-mesaj-success {
+  background: #def7ec;
+  color: #03543f;
+  border: 1px solid #bcf0da;
+}
+
+.site-mesaj-info {
+  background: #e1effe;
+  color: #1e429f;
+  border: 1px solid #b4c6fc;
+}
+

@@ -1,8 +1,71 @@
-<h2>Tebrikler! Siparişiniz Başarıyla Alındı 🎉</h2>
-<p>Sipariş Numaranız: <strong>#{{ order.id }}</strong></p>
-<p>Teslimat Adresi: {{ order.address }} - {{ order.city }}</p>
-<p>Toplam Tutar: <strong>{{ order.get_total_cost }} TL</strong></p>
+{% load static %}
 
-<p>Kargonuz hazırlandığında bilgilendirileceksiniz.</p>
+<!DOCTYPE html>
+<html lang="tr">
 
-<a href="{% url 'home' %}">Ana Sayfaya Dön</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+
+    <title>Siparişiniz Alındı | FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+    <main class="siparis-basarili">
+
+        <div class="siparis-basarili-kutu">
+
+            <div class="siparis-ikon">✓</div>
+
+            <h2>Tebrikler!</h2>
+
+            <p class="siparis-mesaj">
+                Siparişiniz başarıyla alındı.
+            </p>
+
+            <div class="siparis-detaylari">
+
+                <p>
+                    <span>Sipariş Numaranız</span>
+                    <strong>#{{ order.id }}</strong>
+                </p>
+
+                <p>
+                    <span>Teslimat Adresi</span>
+                    <strong>{{ order.address }} - {{ order.city }}</strong>
+                </p>
+
+                <p>
+                    <span>Toplam Tutar</span>
+                    <strong>{{ order.get_total_cost }} TL</strong>
+                </p>
+
+            </div>
+
+            <p class="kargo-mesaji">
+                Kargonuz hazırlandığında bilgilendirileceksiniz.
+            </p>
+
+            <a href="{% url 'home' %}" class="ana-sayfa-btn">
+                ANA SAYFAYA DÖN
+            </a>
+
+        </div>
+
+    </main>
+
+    {% include "footer.html" %}
+
+</body>
+</html>

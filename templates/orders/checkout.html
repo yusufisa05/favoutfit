@@ -1,20 +1,72 @@
-<h2>Sipariş ve Teslimat Bilgileri</h2>
+{% load static %}
 
-<h3>Sipariş Özeti</h3>
-<ul>
-    {% for item in cart_items %}
-        <li>{{ item.product.title }} x {{ item.quantity }} = {{ item.get_total_price }} TL</li>
-    {% endfor %}
-</ul>
-<p><strong>Genel Toplam: {{ total_price }} TL</strong></p>
+<!DOCTYPE html>
+<html lang="tr">
 
-<hr>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Siparişi Onayla ve Tamamla</button>
-</form>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<br>
-<a href="{% url 'cart_detail' %}">Sepete Geri Dön</a>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+
+    <title>Sipariş ve Teslimat Bilgileri | FAV OUTFIT</title>
+
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
+</head>
+
+<body>
+
+    {% include "header.html" %}
+
+    <main class="checkout-sayfasi">
+
+        <h2>Sipariş ve Teslimat Bilgileri</h2>
+
+        <div class="checkout-ozet">
+
+            <h3>Sipariş Özeti</h3>
+
+            <ul>
+                {% for item in cart_items %}
+                    <li>
+                        {{ item.product.title }}
+                        x {{ item.quantity }}
+                        = {{ item.get_total_price }} TL
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <p class="checkout-toplam">
+                <strong>Genel Toplam: {{ total_price }} TL</strong>
+            </p>
+
+        </div>
+
+        <div class="checkout-form">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="checkout-onayla">
+                    SİPARİŞİ ONAYLA VE TAMAMLA
+                </button>
+            </form>
+
+        </div>
+
+        <a href="{% url 'cart_detail' %}" class="checkout-geri">
+            ← Sepete Geri Dön
+        </a>
+
+    </main>
+
+    {% include "footer.html" %}
+
+</body>
+</html>

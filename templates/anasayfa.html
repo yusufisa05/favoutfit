@@ -200,17 +200,27 @@
 
         <div class="urun-karti">
 
-            <a href="{% url 'product_detail' product.id %}">
-                <div class="urun-gorsel">
+            <div class="urun-gorsel">
 
+                <a href="{% url 'product_detail' product.id %}">
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.title }}">
                     {% endif %}
+                </a>
 
-                    <button class="favori-btn" type="button">♡</button>
+                <button
+                    class="favori-btn"
+                    type="button"
+                    onclick="favoriEkle({{ product.id }}, this)"
+                >
+                    {% if product.id in favori_urunler %}
+                        ♥
+                    {% else %}
+                        ♡
+                    {% endif %}
+                </button>
 
-                </div>
-            </a>
+            </div>
 
             <div class="urun-bilgi">
                 <h3>{{ product.title }}</h3>
@@ -231,6 +241,42 @@
 
     {% include "footer.html" %}
 
+<script>
+function favoriEkle(productId, button) {
+    fetch(`/favori/toggle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.is_favorited) {
+            button.textContent = "♥";
+        } else {
+            button.textContent = "♡";
+        }
+    })
+    .catch(err => {
+        console.error("Favori işlemi hatası:", err);
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 
 </body>
 

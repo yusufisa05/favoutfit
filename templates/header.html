@@ -14,53 +14,63 @@
         <div class="sag-menu">
 
             <!-- ARAMA -->
-            <div class="arama-kutusu">
+            <form action="{% url 'search_products' %}" method="GET" class="arama-kutusu">
                 <input
                     type="text"
+                    name="q"
                     class="arama"
                     placeholder="ara"
+                    value="{{ query|default:'' }}"
                 >
-            </div>
+            </form>
 
             <!-- İKONLAR -->
             <div class="ikonlar">
 
-                <!-- Kullanıcı -->
-                <a href="#" aria-label="Hesabım">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <!-- Kullanıcı Butonu (Sağdan Açılan Panel) -->
+                <button type="button" class="hesap-btn" onclick="hesapPanelAc()" aria-label="Hesabım">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="0.5"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </button>
+
+                <!-- Favoriler -->
+                <a href="{% url 'favorite_list' %}" aria-label="Favoriler">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="#c70000">
+                        <path d="M48 300L228 469C236 476 246 480 256 480C266 480 276 476 284 469L464 300C495 272 512 232 512 191L512 185C512 115 462 56 393 44C347 36 301 51 268 84L256 96L244 84C211 51 165 36 119 44C51 56 0 115 0 185L0 191C0 232 17 272 48 300Z"/>
+                    </svg>
                 </a>
 
-                <!-- Kalp -->
-                <a href="#" aria-label="Favoriler">
-                <!-- Kalp -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="#c70000">
-        <path d="M48 300L228 469C236 476 246 480 256 480C266 480 276 476 284 469L464 300C495 272 512 232 512 191L512 185C512 115 462 56 393 44C347 36 301 51 268 84L256 96L244 84C211 51 165 36 119 44C51 56 0 115 0 185L0 191C0 232 17 272 48 300Z"/>
-    </svg>
-
-                </a>
-
+                <!-- Sepet -->
                 <a href="{% url 'cart_detail' %}" aria-label="Sepet">
-    <svg xmlns="http://www.w3.org/2000/svg"
-         width="24"
-         height="24"
-         viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         stroke-width="0.5"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         class="lucide lucide-shopping-basket">
-
-        <path d="m15 11-1 9"/>
-        <path d="m19 11-4-7"/>
-        <path d="M2 11h20"/>
-        <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
-        <path d="M4.5 15.5h15"/>
-        <path d="m5 11 4-7"/>
-        <path d="m9 11 1 9"/>
-
-    </svg>
-</a>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="0.5"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         class="lucide lucide-shopping-basket">
+                        <path d="m15 11-1 9"/>
+                        <path d="m19 11-4-7"/>
+                        <path d="M2 11h20"/>
+                        <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+                        <path d="M4.5 15.5h15"/>
+                        <path d="m5 11 4-7"/>
+                        <path d="m9 11 1 9"/>
+                    </svg>
+                </a>
 
             </div>
 
@@ -69,42 +79,234 @@
     </div>
 
     <!-- NAVİGASYON -->
-   <nav class="ana-menu">
-    <div class="nav-links">
-
-        <a href="{% url 'category_filter' category_slug='new' %}">
-            NEW
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='basic' %}">
-            BASIC
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='tops' %}">
-            TOPS
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='bottoms' %}">
-            BOTTOMS
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='outwear' %}">
-            OUTWEAR
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='accessories' %}">
-            ACCESSORIES
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='shoes' %}">
-            SHOES
-        </a>
-
-        <a href="{% url 'category_filter' category_slug='dress' %}">
-            DRESS
-        </a>
-
-    </div>
-</nav>
+    <nav class="ana-menu">
+        <div class="nav-links">
+            <a href="{% url 'category_filter' category_slug='new' %}">NEW</a>
+            <a href="{% url 'category_filter' category_slug='basic' %}">BASIC</a>
+            <a href="{% url 'category_filter' category_slug='tops' %}">TOPS</a>
+            <a href="{% url 'category_filter' category_slug='bottoms' %}">BOTTOMS</a>
+            <a href="{% url 'category_filter' category_slug='outwear' %}">OUTWEAR</a>
+            <a href="{% url 'category_filter' category_slug='accessories' %}">ACCESSORIES</a>
+            <a href="{% url 'category_filter' category_slug='shoes' %}">SHOES</a>
+            <a href="{% url 'category_filter' category_slug='dress' %}">DRESS</a>
+        </div>
+    </nav>
 
 </header>
+
+<!-- SİSTEM MESAJLARI (ALERT BANNER) -->
+{% if messages %}
+<div class="site-mesajlar-kapsayici">
+    {% for message in messages %}
+        <div class="site-mesaj site-mesaj-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- HESAP PANELİ (SAĞDAN AÇILIR SLIDE-IN ÇEKMECE) -->
+<div class="hesap-overlay" id="hesapOverlay" onclick="if(event.target === this) hesapPanelKapat()">
+
+    <div class="hesap-panel">
+
+        <button
+            type="button"
+            class="hesap-kapat"
+            onclick="hesapPanelKapat()"
+            aria-label="Kapat"
+        >
+            ×
+        </button>
+
+        {% if user.is_authenticated %}
+        <!-- GİRİŞ YAPILMIŞ DURUMDA HESAP MENÜSÜ -->
+        <div class="hesap-ekran" id="kullaniciEkrani">
+
+            <div class="hesap-baslik">
+                <h2>HESABIM</h2>
+                <p>Hoş geldin, <strong>{{ user.username }}</strong></p>
+            </div>
+
+            <div class="hesap-form">
+
+                <a href="{% url 'order_history' %}" class="hesap-giris" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
+                    SİPARİŞLERİM
+                </a>
+
+                <a href="{% url 'favorite_list' %}" class="hesap-kayit" style="display:flex; align-items:center; justify-content:center; text-decoration:none; margin-top:12px;">
+                    FAVORİLERİM
+                </a>
+
+                <div class="hesap-ayirici">
+                    <span></span>
+                </div>
+
+                <a href="{% url 'logout' %}" class="uye-olmadan" style="text-align:center; color:#c70000; font-weight:600; font-size:12px;">
+                    ÇIKIŞ YAP
+                </a>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <!-- GİRİŞ EKRANI -->
+        <div class="hesap-ekran" id="girisEkrani">
+
+            <div class="hesap-baslik">
+                <h2>HESABIM</h2>
+                <p>FAV OUTFIT'e hoş geldin.</p>
+            </div>
+
+            <div class="hesap-form">
+
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    <label>Kullanıcı adı</label>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Kullanıcı adınız"
+                        required
+                    >
+
+                    <label>Şifre</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Şifreniz"
+                        required
+                    >
+
+                    <button type="submit" class="hesap-giris">
+                        GİRİŞ YAP
+                    </button>
+                </form>
+
+                <div class="hesap-ayirici">
+                    <span>veya</span>
+                </div>
+
+                <button
+                    type="button"
+                    class="hesap-kayit"
+                    onclick="kayitEkraniAc()"
+                >
+                    KAYIT OL
+                </button>
+
+                <button
+                    type="button"
+                    class="uye-olmadan"
+                    onclick="hesapPanelKapat()"
+                >
+                    ÜYE OLMADAN DEVAM ET
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- KAYIT EKRANI -->
+        <div class="hesap-ekran" id="kayitEkrani" style="display: none;">
+
+            <div class="hesap-baslik">
+                <h2>HESAP OLUŞTUR</h2>
+                <p>FAV OUTFIT'e katıl.</p>
+            </div>
+
+            <div class="hesap-form">
+
+                <form method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+
+                    <label>Kullanıcı adı</label>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Kullanıcı adınız"
+                        required
+                    >
+
+                    <label>Şifre</label>
+                    <input
+                        type="password"
+                        name="password1"
+                        placeholder="Şifreniz"
+                        required
+                    >
+
+                    <label>Şifre tekrar</label>
+                    <input
+                        type="password"
+                        name="password2"
+                        placeholder="Şifrenizi tekrar girin"
+                        required
+                    >
+
+                    <button type="submit" class="hesap-giris">
+                        HESAP OLUŞTUR
+                    </button>
+                </form>
+
+                <div class="hesap-ayirici">
+                    <span>veya</span>
+                </div>
+
+                <button
+                    type="button"
+                    class="hesap-kayit"
+                    onclick="girisEkraniAc()"
+                >
+                    ZATEN ÜYEYİM
+                </button>
+
+                <button
+                    type="button"
+                    class="uye-olmadan"
+                    onclick="hesapPanelKapat()"
+                >
+                    ÜYE OLMADAN DEVAM ET
+                </button>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+function hesapPanelAc() {
+    document.getElementById("hesapOverlay").classList.add("aktif");
+    {% if not user.is_authenticated %}
+    girisEkraniAc();
+    {% endif %}
+}
+
+function hesapPanelKapat() {
+    document.getElementById("hesapOverlay").classList.remove("aktif");
+}
+
+{% if not user.is_authenticated %}
+function kayitEkraniAc() {
+    const giris = document.getElementById("girisEkrani");
+    const kayit = document.getElementById("kayitEkrani");
+    if (giris) giris.style.display = "none";
+    if (kayit) kayit.style.display = "block";
+}
+
+function girisEkraniAc() {
+    const giris = document.getElementById("girisEkrani");
+    const kayit = document.getElementById("kayitEkrani");
+    if (kayit) kayit.style.display = "none";
+    if (giris) giris.style.display = "block";
+}
+{% endif %}
+</script>
