@@ -30,7 +30,11 @@ def search_products(request):
     )
 
 def home(request, category_slug=None):
-    kategoriler = Category.objects.all()
+    # 1. Üst menü için TÜM kategoriler (NEW dahil hepsi burada kalacak)
+    menu_kategorileri = Category.objects.all()
+    
+    # 2. Anasayfa kartları için sadece admin panelinden tiklenenler
+    homepage_kategorileri = Category.objects.filter(show_on_homepage=True)
 
     favori_urunler = set()
     if request.user.is_authenticated:
@@ -43,7 +47,8 @@ def home(request, category_slug=None):
         urunler = Product.objects.filter(category=secilen_kategori)
 
         context = {
-            'categories': kategoriler,
+            'categories': menu_kategorileri,
+            'homepage_categories': homepage_kategorileri,
             'products': urunler,
             'secilen_kategori': secilen_kategori,
             'favori_urunler': favori_urunler,
@@ -54,7 +59,8 @@ def home(request, category_slug=None):
         urunler = Product.objects.all()
 
         context = {
-            'categories': kategoriler,
+            'categories': menu_kategorileri,          # Üst menü (header) için tümü
+            'homepage_categories': homepage_kategorileri, # Anasayfa kartları için sadece tikliler
             'products': urunler,
             'secilen_kategori': None,
             'favori_urunler': favori_urunler,
@@ -94,9 +100,23 @@ def toggle_favourite(request, product_id):
         'total_favorites': request.user.favorites.count()
     })
 
-@login_required(login_url='login')
 def favorite_list(request):
-    favorites = Favorite.objects.filter(user=request.user).select_related('product')
+    # Giriş yapmış kullanıcı
+    if request.user.is_authenticated:
+        favorites = Favorite.objects.filter(
+            user=request.user
+        ).select_related('product')
+
+        return render(request, 'products/favorite_list.html', {
+            'favorites': favorites,
+            'misafir': False,
+        })
+
+    # Misafir kullanıcı
+    products = Product.objects.all()
+
     return render(request, 'products/favorite_list.html', {
-        'favorites': favorites
+        'favorites': [],
+        'products': products,
+        'misafir': True,
     })

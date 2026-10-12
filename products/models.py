@@ -2,15 +2,11 @@ from django.db import models
 from django.conf import settings
 # Create your models here.
 class Category(models.Model):
-    name = models.CharField(max_length=50,
-                            verbose_name='Kategori adı'
-                            )
-    slug = models.SlugField(max_length=100,
-                            unique=True,
-                            null=True,
-                            blank=True,
-                            verbose_name = 'URL İsmi (Slug)'
-                            )
+    name = models.CharField(max_length=50, verbose_name='Kategori adı')
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True, verbose_name='URL İsmi (Slug)')
+    image = models.ImageField(upload_to='categories/', blank=True, null=True, verbose_name='Kategori Görseli') # <--- Fotoğraf yükleme alanı
+    show_on_homepage = models.BooleanField(default=True, verbose_name='Anasayfada Göster') # <--- Anasayfada görünüp görünmeyeceği
+
     class Meta:
         verbose_name = "Kategori"
         verbose_name_plural = "Kategoriler"
@@ -88,4 +84,5 @@ class ProductImage(models.Model):
         verbose_name_plural = 'Galeri Görselleri'
 
     def __str__(self):
-        return f'{self.product.title} - Görsel'
+        return f'{self.product.title} - Görsel'
+

@@ -12,107 +12,128 @@ body {
 /* ========================================================
    1. HEADER & NAVBAR
 ======================================================== */
+
 .ust-bar {
-  width: 100%;
-  padding: 20px 10px;
+    width: 100%;
+    background-color: #fff; /* Bütün header'ı tek parça temiz beyaz yaptık */
+    border-bottom: 1px solid #e5e5e5;
+    padding: 0;
 }
 
 .header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 50px; /* Dikeydeki kabalığı almak için 20px'i 16px yaptık */
 }
 
 .logo {
-  font-family: "Archivo Black", sans-serif;
-  font-weight: 400;
-  font-size: 45px;
-  line-height: 1.1;
+    font-family: "Archivo Black", sans-serif;
+    font-weight: 400;
+    font-size: 36px; /* 45px çok devasaydı, 36px ile tam kıvama getirdik */
+    line-height: 1;
+    letter-spacing: 0.5px;
 }
 
 .logo a,
 .logo a:visited,
 .logo a:hover,
 .logo a:active {
-  color: #000 !important;
-  text-decoration: none !important;
+    color: #000 !important;
+    text-decoration: none !important;
 }
 
 .sag-menu {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
+/* Çerçeveli Urban Outfitters Arama Kutusu */
 .arama-kutusu {
-  display: inline-block;
-  padding: 5px 11px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-}
-
-.arama-kutusu input {
-  border: none;
-  outline: none;
-  background: transparent;
+    display: flex;
+    align-items: center;
+    border: 1px solid #b5b5b5; /* Net, modern gri çerçeve */
+    background-color: #fff;
+    padding: 6px 12px;
+    width: 220px;
 }
 
 .arama {
-  width: 250px;
-  padding: 8px 15px;
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  outline: none;
-  font-family: Arial, sans-serif;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    width: 100%;
+    font-family: inherit;
+    color: #111;
+    padding: 0;
+}
+
+.arama-ikon {
+    stroke: #555;
+    flex-shrink: 0;
+    margin-left: 6px;
 }
 
 .ikonlar {
-  display: flex;
-  gap: 15px;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.ikonlar a {
-  color: #000;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
+.ikonlar a,
+.ikonlar button {
+    color: #222;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-/* NAVBAR */
+.ikonlar svg {
+    width: 22px;
+    height: 22px;
+    stroke: #222 !important;
+    stroke-width: 1.2 !important;
+    fill: none;
+}
+
+/* Alt Kategori Menüsü (Ortalanmış & Seninkiyle Aynı Font) */
 .ana-menu {
-  width: 100%;
-  padding: 12px 0;
-  background-color: white;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    width: 100%;
+    padding: 12px 0 16px 0;
+    background-color: #fff;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: center; /* İstediğin gibi tam ortada */
+    align-items: center;
 }
 
 .nav-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
 }
 
 .nav-links a {
-  font-family: "Bitcount Prop Single", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  color: #000;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 0.2s ease;
+    font-family: "Bitcount Prop Single", sans-serif; /* Orijinal fontun korundu */
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    color: #000;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
-  color: #666;
+    color: #666;
 }
 
 /* ========================================================
@@ -221,39 +242,59 @@ body {
   }
 }
 
-/* Kayan Duyuru Şeridi */
+/* ========================================================
+   DİNAMİK DUYURU ŞERİDİ (Kesintisiz & Hover Durdurmalı)
+======================================================== */
 .duyuru-seridi {
-  background-color: #353535;
-  color: #ffffff;
-  padding: 10px 0;
-  overflow: hidden;
-  white-space: nowrap;
-  font-family: "Bitcount Prop Single", sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
+    width: 100%;
+    background-color: #1a1a1a;
+    color: #fff;
+    overflow: hidden;
+    padding: 12px 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .duyuru-track {
-  display: inline-flex;
-  gap: 70px;
-  animation: kaydirma 25s linear infinite;
+    display: flex;
+    width: max-content;
+    animation: duyuruKaydir 25s linear infinite;
+}
+
+/* Şeridin üzerine gelindiğinde akışı durdurur */
+.duyuru-seridi:hover .duyuru-track {
+    animation-play-state: paused;
+}
+
+.duyuru-grup {
+    display: flex;
+    align-items: center;
 }
 
 .duyuru-track span {
-  display: inline-block;
+    font-family: "Bitcount Prop Single", sans-serif; 
+    font-size: 12px;
+    font-weight: 370;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #fff;
+    padding-right: 40px;
 }
 
-.duyuru-seridi:hover .duyuru-track {
-  animation-play-state: paused;
+.duyuru-track .dot {
+    color: #777;
+    padding-right: 40px;
 }
 
-@keyframes kaydirma {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+/* 3 grup olduğu için tam 1 grup boyutu kadar kaydırıp kusursuz döngü sağlar */
+@keyframes duyuruKaydir {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-33.333%);
+    }
 }
 
 /* ========================================================
@@ -280,7 +321,7 @@ body {
   position: relative;
   width: 280px;
   height: 400px;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   transition: transform 0.3s ease;
 }
@@ -432,33 +473,52 @@ body {
   font-size: 14px;
   color: #666;
 }
+/* ========================================================
+   FAVORİ BUTONU - AKTİF / İÇİ DOLU DURUMU
+======================================================== */
 
-/* FAVORİ BUTONU */
+/* Temel Durum (İçi boş, zarif çizgi) */
 .favori-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 50%;
-  background-color: white;
-  font-size: 22px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.2s ease;
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(4px) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    z-index: 10 !important;
+    padding: 0 !important;
+    transition: all 0.2s ease !important;
 }
 
+.favori-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke: #1a1a1a !important;
+    stroke-width: 1.2 !important;
+    fill: none !important; /* Başlangıçta içi boştur */
+    pointer-events: none !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Üzerine gelince hafif büyüme */
 .favori-btn:hover {
-  transform: scale(1.1);
+    background: #ffffff !important;
+    transform: scale(1.08) !important;
 }
 
-.favori-btn.favori-aktif {
-  color: #c70000;
+/* 🖤 FAVORİYE EKLENDİĞİ AN (İçi şık bir şekilde siyah dolar) */
+.favori-btn.active svg {
+    fill: #9e0202 !important;
+    stroke: #e5b7b7 !important;
 }
-
 /* ========================================================
    5. ÜRÜN DETAY SAYFASI
 ======================================================== */
@@ -957,7 +1017,7 @@ body {
   text-transform: lowercase;
 }
 
-}
+
 /* =========================
    HESAP PANELİ
 ========================= */
@@ -1944,6 +2004,144 @@ body {
 }
 
 .ana-sayfa-btn:hover {
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+}
+/* FAVORİ GİRİŞ UYARISI */
+
+.favori-uyari-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.favori-uyari-overlay.aktif {
+    display: flex;
+}
+
+.favori-uyari {
+    position: relative;
+    width: 380px;
+    max-width: 90%;
+    background: #fff;
+    padding: 40px 35px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.favori-uyari-kapat {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #111;
+}
+
+.favori-uyari-icon {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.favori-uyari h3 {
+    margin: 0 0 18px;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.favori-uyari p {
+    margin: 0 auto 10px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.favori-uyari-alt {
+    color: #777;
+    font-size: 13px !important;
+}
+
+.favori-uyari-giris {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+/* FAVORİ SEÇİM MODALI */
+
+.favori-secim-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.favori-secim-kutu {
+    position: relative;
+    width: 400px;
+    max-width: 90%;
+    background: #fff;
+    padding: 45px 35px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.favori-secim-kutu h2 {
+    margin: 0 0 15px;
+    font-size: 22px;
+}
+
+.favori-secim-kutu p {
+    margin: 0 0 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.favori-secim-icon {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+.favori-secim-kapat {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.favori-secim-giris,
+.favori-secim-misafir {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.favori-secim-giris {
+    background: #000;
+    color: #fff;
+    border: 1px solid #000;
+}
+
+.favori-secim-misafir {
     background: #fff;
     color: #000;
     border: 1px solid #000;
