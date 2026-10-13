@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Normal Ana Sayfa
+    # Ana Sayfa
     path('', views.home, name='home'),
 
     # Kategori Filtreleme Sayfası
@@ -18,7 +18,7 @@ urlpatterns = [
     path('favorilerim/', views.favorite_list, name='favorite_list'),
     path('favoriler/', views.favorite_list, name='favorite_list_alt'),
 
-    # Favori ekleyip çıkartma (iki URL yapısını da destekle)
+    # Favori ekleyip çıkartma
     path('favori/toggle/<int:product_id>/', views.toggle_favourite, name='toggle_favourite'),
     path('favorilerim/toggle/<int:product_id>/', views.toggle_favourite, name='toggle_favorite'),
     path('favorilerim/toggle/<int:product_id>', views.toggle_favourite, name='toggle_favorite_noslash'),

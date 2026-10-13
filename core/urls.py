@@ -25,7 +25,7 @@ from users.views import user_logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('logout/', user_logout, name='logout_root'),
+    path('logout/', user_logout, name='logout'),
     path('', include('products.urls')),
     path('sepet/', include('cart.urls')),
     path('uyelik/', include('users.urls')),

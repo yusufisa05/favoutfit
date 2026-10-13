@@ -7,277 +7,266 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 
     <title>FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=10">
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
 </head>
 
 <body>
 
     {% include "header.html" %}
 
-
     <!-- KAMPANYA BANNER -->
     <section class="fav-picks-hero">
-    <!-- Sol Taraf: 4'lü Dikey Kolaj Görselleri -->
-    <div class="hero-kolaj">
-        <div class="kolaj-item">
-            <img src="{% static 'image/banner1.jpeg' %}" alt="Jewelry 1">
+        <!-- Sol Taraf: 4'lü Dikey Kolaj Görselleri -->
+        <div class="hero-kolaj">
+            <div class="kolaj-item">
+                <img src="{% static 'image/banner1.jpeg' %}" alt="Jewelry 1">
+            </div>
+            <div class="kolaj-item">
+                <img src="{% static 'image/banner2.jpeg' %}" alt="Jewelry 2">
+            </div>
+            <div class="kolaj-item">
+                <img src="{% static 'image/banner3.jpeg' %}" alt="Jewelry 3">
+            </div>
+            <div class="kolaj-item">
+                <img src="{% static 'image/banner4.jpeg' %}" alt="Jewelry 4">
+            </div>
         </div>
-        <div class="kolaj-item">
-            <img src="{% static 'image/banner2.jpeg' %}" alt="Jewelry 2">
-        </div>
-        <div class="kolaj-item">
-            <img src="{% static 'image/banner3.jpeg' %}" alt="Jewelry 3">
-        </div>
-        <div class="kolaj-item">
-            <img src="{% static 'image/banner4.jpeg' %}" alt="Jewelry 4">
-        </div>
-    </div>
 
-    <!-- Sağ Taraf: Siyah Zeminli İçerik Alanı -->
-    <div class="hero-siyah-kutu">
-        <div class="kutu-icerik">
-            <h2>CURATED SELECTION</h2>
-            <p>WE BELIEVE STYLE IS PERSONAL. CURATE YOUR OWN LOOK WITH OUR FAVORITE PIECES OF THE SEASON.</p>
-            <a href="#" class="hero-outline-btn">EXPLORE ACCESSORIES</a>
+        <!-- Sağ Taraf: Siyah Zeminli İçerik Alanı -->
+        <div class="hero-siyah-kutu">
+            <div class="kutu-icerik">
+                <h2>CURATED SELECTION</h2>
+                <p>WE BELIEVE STYLE IS PERSONAL. CURATE YOUR OWN LOOK WITH OUR FAVORITE PIECES OF THE SEASON.</p>
+                <a href="#" class="hero-outline-btn">EXPLORE ACCESSORIES</a>
+            </div>
         </div>
-    </div>
-</section><br>
+    </section><br>
 
-    <!-- KAMPANYA YAZILARI -->
+    <!-- DİNAMİK KAMPANYA YAZILARI (DUYURU ŞERİDİ) -->
     <div class="duyuru-seridi">
-    <div class="duyuru-track">
-        <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM </span>
-        <span>KENDİ STİLİNİ KEŞFET </span>
-        <span>FAV OUTFIT </span>
-        <span>YENİ KOLEKSİYON </span>
-        <!-- Kesintisiz akış için aynı yazıları bir kez daha tekrarlıyoruz -->
-        <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM </span>
-        <span>KENDİ STİLİNİ KEŞFET </span>
-        <span>FAV OUTFIT </span>
-        <span>YENİ KOLEKSİYON </span>
+        <div class="duyuru-track">
+            <!-- 1. Grup -->
+            <div class="duyuru-grup">
+                {% for duyuru in duyurular %}
+                    <span>{{ duyuru.metin }}</span>
+                    <span class="dot">•</span>
+                {% empty %}
+                    <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM</span>
+                    <span class="dot">•</span>
+                    <span>KENDİ STİLİNİ KEŞFET</span>
+                    <span class="dot">•</span>
+                    <span>FAV OUTFIT</span>
+                    <span class="dot">•</span>
+                {% endfor %}
+            </div>
+            <!-- 2. Grup (Kopya) -->
+            <div class="duyuru-grup" aria-hidden="true">
+                {% for duyuru in duyurular %}
+                    <span>{{ duyuru.metin }}</span>
+                    <span class="dot">•</span>
+                {% empty %}
+                    <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM</span>
+                    <span class="dot">•</span>
+                    <span>KENDİ STİLİNİ KEŞFET</span>
+                    <span class="dot">•</span>
+                    <span>FAV OUTFIT</span>
+                    <span class="dot">•</span>
+                {% endfor %}
+            </div>
+            <!-- 3. Grup -->
+            <div class="duyuru-grup" aria-hidden="true">
+                {% for duyuru in duyurular %}
+                    <span>{{ duyuru.metin }}</span>
+                    <span class="dot">•</span>
+                {% empty %}
+                    <span>İLK ALIŞVERİŞTE FAV20 KODU İLE %20 İNDİRİM</span>
+                    <span class="dot">•</span>
+                    <span>KENDİ STİLİNİ KEŞFET</span>
+                    <span class="dot">•</span>
+                    <span>FAV OUTFIT</span>
+                    <span class="dot">•</span>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-</div>
-
 
     <!-- KATEGORİLER -->
     <section class="kategori-kaydirici">
-
-
-        <!-- BASIC -->
-        <a href="#" class="kategori-kart">
-
-            <div class="kart-icerik">
-
-                <img
-                    src="{% static 'image/basic.jpeg' %}"
-                    alt="Basic"
-                >
-
-                <div class="kategori-baslik">
-                    BASIC
+        {% for category in homepage_categories %}
+            <a href="{% url 'category_filter' category_slug=category.slug %}" class="kategori-kart">
+                <div class="kart-icerik">
+                    {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                    {% endif %}
+                    <div class="kategori-baslik">
+                        {{ category.name }}
+                    </div>
                 </div>
-
-            </div>
-
-        </a>
-
-
-        <!-- TOPS -->
-        <a href="#" class="kategori-kart">
-
-            <div class="kart-icerik">
-
-                <img
-                    src="{% static 'image/top.jpeg' %}"
-                    alt="Tops"
-                >
-
-                <div class="kategori-baslik">
-                    TOPS
-                </div>
-
-            </div>
-
-        </a>
-
-
-        <!-- BOTTOMS -->
-        <a href="#" class="kategori-kart">
-
-            <div class="kart-icerik">
-
-                <img
-                    src="{% static 'image/bottom.jpeg' %}"
-                    alt="Bottoms"
-                >
-
-                <div class="kategori-baslik">
-                    BOTTOMS
-                </div>
-
-            </div>
-
-        </a>
-
-
-        <!-- ACCESSORIES -->
-        <a href="#" class="kategori-kart">
-
-            <div class="kart-icerik">
-
-                <img
-                    src="{% static 'image/accesories.jpeg' %}"
-                    alt="Accessories"
-                >
-
-                <div class="kategori-baslik">
-                    ACCESSORIES
-                </div>
-
-            </div>
-
-        </a>
-
-
-        <!-- OUTERWEAR -->
-        <a href="#" class="kategori-kart">
-
-            <div class="kart-icerik">
-
-                <img
-                    src="{% static 'image/outwear.jpeg' %}"
-                    alt="Outerwear"
-                >
-
-                <div class="kategori-baslik">
-                    OUTWEAR
-                </div>
-
-            </div>
-
-        </a>
-
-
-        <!-- DRESS -->
-        <a href="#" class="kategori-kart">
-
-            <div class="kart-icerik">
-
-                <img
-                    src="{% static 'image/dress.jpeg' %}"
-                    alt="Dress"
-                >
-
-                <div class="kategori-baslik">
-                    DRESS
-                </div>
-
-            </div>
-
-        </a>
-
-
+            </a>
+        {% empty %}
+            <p style="text-align: center; width: 100%; color: #666; font-size: 12px;">
+                Henüz kategori eklenmedi.
+            </p>
+        {% endfor %}
     </section>
-<!-- ÜRÜNLER -->
-<section class="urunler-sayfasi">
 
-    <div class="urunler-baslik">
-        <h1>FAV PICKS</h1>
-        <p>Sezonun favori parçalarını keşfet.</p>
-    </div>
-
-    <div class="urun-grid">
-
-        {% for product in products %}
-
-        <div class="urun-karti">
-
-            <div class="urun-gorsel">
-
-                <a href="{% url 'product_detail' product.id %}">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
-                    {% endif %}
-                </a>
-
-                <button
-                    class="favori-btn"
-                    type="button"
-                    onclick="favoriEkle({{ product.id }}, this)"
-                >
-                    {% if product.id in favori_urunler %}
-                        ♥
-                    {% else %}
-                        ♡
-                    {% endif %}
-                </button>
-
-            </div>
-
-            <div class="urun-bilgi">
-                <h3>{{ product.title }}</h3>
-                <p>{{ product.price }} TL</p>
-            </div>
-
+    <!-- ÜRÜNLER -->
+    <section class="urunler-sayfasi">
+        <div class="urunler-baslik">
+            <h1>FAV PICKS</h1>
+            <p>Sezonun favori parçalarını keşfet.</p>
         </div>
 
-        {% empty %}
+        <div class="urun-grid">
+            {% for product in products %}
+                <div class="urun-karti">
+                    <div class="urun-gorsel">
+                        <a href="{% url 'product_detail' product.id %}">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                            {% endif %}
+                        </a>
 
-        <p>Henüz ürün bulunmuyor.</p>
+                        {% if request.user.is_authenticated %}
+                            <button 
+                                class="favori-btn {% if product.id in favori_urunler %}active{% endif %}" 
+                                type="button"
+                                data-url="{% url 'toggle_favourite' product.id %}"
+                                data-product-id="{{ product.id }}"
+                                onclick="favoriEkle(event)"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </button>
+                        {% else %}
+                            <button 
+                                class="favori-btn" 
+                                type="button" 
+                                data-product-id="{{ product.id }}" 
+                                onclick="favoriSecimAc(event)"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </button>
+                        {% endif %}
+                    </div>
 
-        {% endfor %}
+                    <div class="urun-bilgi">
+                        <h3>{{ product.title }}</h3>
+                        <p>{{ product.price }} TL</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Henüz ürün bulunmuyor.</p>
+            {% endfor %}
+        </div>
+    </section>
 
+    <!-- FAVORİ SEÇİM KUTUSU -->
+    <div class="favori-secim-overlay" id="favoriSecimOverlay">
+        <div class="favori-secim-kutu">
+            <button type="button" class="favori-secim-kapat" onclick="favoriSecimKapat()">×</button>
+            <div class="favori-secim-icon">♡</div>
+            <h2>FAVORİLERİNİZİ KAYDEDİN</h2>
+            <p>Favorilerinizi kalıcı olarak kaydetmek için üye olun veya giriş yapın.</p>
+            <button type="button" class="favori-secim-giris" onclick="favoriGirisAc()">ÜYE OL / GİRİŞ YAP</button>
+            <button type="button" class="favori-secim-misafir" onclick="misafirOlarakDevamEt()">MİSAFİR OLARAK DEVAM ET</button>
+        </div>
     </div>
-
-</section>
 
     {% include "footer.html" %}
 
-<script>
-function favoriEkle(productId, button) {
-    fetch(`/favori/toggle/${productId}/`, {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken")
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.is_favorited) {
-            button.textContent = "♥";
-        } else {
-            button.textContent = "♡";
-        }
-    })
-    .catch(err => {
-        console.error("Favori işlemi hatası:", err);
-    });
-}
+    <script>
+        let secilenFavoriUrunId = null;
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let cookie of cookies) {
-            cookie = cookie.trim();
-            if (cookie.startsWith(name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+        function favoriSecimAc(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const button = event.currentTarget;
+            secilenFavoriUrunId = button.dataset.productId;
+            document.getElementById("favoriSecimOverlay").style.display = "flex";
         }
-    }
-    return cookieValue;
-}
-</script>
+
+        function favoriSecimKapat() {
+            document.getElementById("favoriSecimOverlay").style.display = "none";
+            secilenFavoriUrunId = null;
+        }
+
+        function misafirOlarakDevamEt() {
+            if (!secilenFavoriUrunId) return;
+
+            let favoriler = JSON.parse(sessionStorage.getItem("misafirFavoriler") || "[]");
+            if (!favoriler.includes(secilenFavoriUrunId)) {
+                favoriler.push(secilenFavoriUrunId);
+            }
+            sessionStorage.setItem("misafirFavoriler", JSON.stringify(favoriler));
+
+            const button = document.querySelector(`.favori-btn[data-product-id="${secilenFavoriUrunId}"]`);
+            if (button) {
+                button.classList.add('active');
+            }
+            favoriSecimKapat();
+        }
+
+        // Ana Favori Ekleme Fonksiyonu
+        function favoriEkle(event) {
+            event.preventDefault();
+            const btn = event.currentTarget;
+            const targetUrl = btn.getAttribute('data-url');
+
+            if (!targetUrl) return;
+
+            // Anında görsel tepki (akıcılık için)
+            btn.classList.toggle('active');
+
+            fetch(targetUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Sunucu yanıt vermedi');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Başarılı:", data);
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                // Hata durumunda görseli geri al
+                btn.classList.toggle('active');
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 
 </body>
-
 </html>

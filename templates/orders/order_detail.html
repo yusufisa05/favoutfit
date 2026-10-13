@@ -1,72 +1,63 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
-
-    <title>Sipariş Detayı #{{ order.id }} | FAV OUTFIT</title>
-
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=10">
+    <title>Sipariş Detayı (#{{ order.id }}) | FAV OUTFIT</title>
+    <link rel="stylesheet" href="{% static 'fav.css' %}">
 </head>
-
 <body>
 
-    {% include "header.html" %}
+{% include "header.html" %}
 
-    <main class="checkout-sayfasi">
+<main class="checkout-sayfasi">
+    <h2>Sipariş Detayı (#{{ order.id }})</h2>
 
-        <h1 style="font-family: 'Bitcount Prop Single', sans-serif; font-size: 28px; margin-bottom: 25px;">SİPARİŞ DETAYI (#{{ order.id }})</h1>
+    <div class="checkout-ozet" style="margin-bottom: 25px;">
+        <p style="margin-bottom: 8px;"><strong>Sipariş Tarihi:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+        <p style="margin-bottom: 8px;"><strong>Durum:</strong> {{ order.get_status_display }}</p>
+        <p style="margin-bottom: 0;"><strong>Teslimat Adresi:</strong> {{ order.address }} - {{ order.city }} ({{ order.postal_code }})</p>
+    </div>
 
-        <div class="checkout-ozet" style="margin-bottom: 25px;">
-            <p style="margin-bottom: 8px;"><strong>Sipariş Tarihi:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
-            <p style="margin-bottom: 8px;"><strong>Durum:</strong> {{ order.get_status_display }}</p>
-            <p style="margin-bottom: 8px;"><strong>Teslimat Adresi:</strong> {{ order.address }} - {{ order.city }} ({{ order.postal_code }})</p>
-        </div>
-
-        <div class="checkout-ozet" style="overflow-x: auto;">
-            <h3 style="margin-bottom: 15px;">Satın Alınan Ürünler</h3>
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #111;">
-                        <th style="padding: 10px 8px;">Ürün Adı</th>
-                        <th style="padding: 10px 8px;">Birim Fiyat</th>
-                        <th style="padding: 10px 8px;">Adet</th>
-                        <th style="padding: 10px 8px;">Tutar</th>
+    <div class="checkout-ozet" style="overflow-x: auto;">
+        <h3 style="margin-bottom: 15px;">Satın Alınan Ürünler</h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+            <thead>
+                <tr style="border-bottom: 2px solid #111;">
+                    <th style="padding: 12px 8px;">Ürün Adı</th>
+                    <th style="padding: 12px 8px;">Birim Fiyat</th>
+                    <th style="padding: 12px 8px;">Adet</th>
+                    <th style="padding: 12px 8px; text-align: right;">Tutar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                    <tr style="border-bottom: 1px solid #e5e5e5;">
+                        <td style="padding: 14px 8px; font-weight: 500;">{{ item.product.title }}</td>
+                        <td style="padding: 14px 8px;">{{ item.price }} TL</td>
+                        <td style="padding: 14px 8px;">{{ item.quantity }}</td>
+                        <td style="padding: 14px 8px; text-align: right; font-weight: 600;">{{ item.get_cost }} TL</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for item in order.items.all %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 12px 8px; font-weight: 500;">{{ item.product.title }}</td>
-                            <td style="padding: 12px 8px;">{{ item.price }} TL</td>
-                            <td style="padding: 12px 8px;">{{ item.quantity }}</td>
-                            <td style="padding: 12px 8px; font-weight: 600;">{{ item.get_cost }} TL</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                {% endfor %}
+            </tbody>
+        </table>
 
-            <p class="checkout-toplam" style="margin-top: 25px;">
-                <strong>Genel Toplam: {{ order.get_total_cost }} TL</strong>
-            </p>
+        <div style="margin-top: 25px; text-align: right; font-size: 18px; font-weight: 600;">
+            Genel Toplam: {{ order.get_total_cost }} TL
         </div>
+    </div>
 
-        <div style="margin-top: 25px;">
-            <a href="{% url 'order_history' %}" class="checkout-geri">← Tüm Siparişlerime Dön</a>
-        </div>
+    <div style="margin-top: 25px;">
+        <a href="{% url 'order_history' %}" class="checkout-geri">← Tüm Siparişlerime Dön</a>
+    </div>
+</main>
 
-    </main>
-
-    {% include "footer.html" %}
+{% include "footer.html" %}
 
 </body>
 </html>

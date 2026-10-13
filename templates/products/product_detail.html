@@ -95,7 +95,11 @@
                 type="button"
                 onclick="favoriEkle({{ product.id }}, this)"
             >
-                {% if is_favorited %}♥ FAVORİLERDEN ÇIKAR{% else %}♡ FAVORİLERE EKLE{% endif %}
+                {% if is_favorited or product.id in favori_urunler %}
+                    ♥ FAVORİLERDEN ÇIKAR
+                {% else %}
+                    ♡ FAVORİLERE EKLE
+                {% endif %}
             </button>
 
 
@@ -177,17 +181,24 @@ function favoriEkle(productId, button) {
             "X-CSRFToken": getCookie("csrftoken")
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+            return null;
+        }
+        return response.json();
+    })
     .then(data => {
-        if (data.is_favorited) {
-            button.textContent = "♥ FAVORİLERDEN ÇIKAR";
-        } else {
-            button.textContent = "♡ FAVORİLERE EKLE";
+        if (!data) return;
+        if (button) {
+            if (data.is_favorited) {
+                button.textContent = "♥ FAVORİLERDEN ÇIKAR";
+            } else {
+                button.textContent = "♡ FAVORİLERE EKLE";
+            }
         }
     })
-    .catch(err => {
-        console.error("Favori işlemi hatası:", err);
-    });
+    .catch(error => console.error("Favori işlemi hatası:", error));
 }
 
 function getCookie(name) {

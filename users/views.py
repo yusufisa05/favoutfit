@@ -9,16 +9,20 @@ def register(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-            # Kullanıcıyı doğrudan giriş yapmış olarak başlat
             login(request, user)
             messages.success(request, f'Hoş geldin, {username}! Hesabın başarıyla oluşturuldu.')
+            referer = request.META.get('HTTP_REFERER')
+            if referer and 'kaydol' not in referer:
+                return redirect(referer)
             return redirect('home')
         else:
-            # Şifre uyuşmazlığı, zayıf şifre gibi hataları ekrana gönder
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, error)
-            return redirect(request.META.get('HTTP_REFERER', 'home'))
+            referer = request.META.get('HTTP_REFERER')
+            if referer and 'kaydol' not in referer:
+                return redirect(referer)
+            return redirect('home')
     else:
         form = UserCreationForm()
 
