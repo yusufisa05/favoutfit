@@ -5,8 +5,11 @@ from .models import Product, Category, ProductImage
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name','slug']
+    list_display = ('name','parent','slug')
+    list_filter = ('parent',)
+    search_fields = ('name',)
     prepopulated_fields = {'slug':('name',)}
+
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 3

@@ -6,12 +6,29 @@ class Category(models.Model):
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True, verbose_name='URL İsmi (Slug)')
     image = models.ImageField(upload_to='categories/', blank=True, null=True, verbose_name='Kategori Görseli')
     show_on_homepage = models.BooleanField(default=True, verbose_name='Anasayfada Göster')
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='subcategories',
+        verbose_name='Üst Kategori',
+    )
     class Meta:
         verbose_name = "Kategori"
         verbose_name_plural = "Kategoriler"
-
+        unique_together = ('slug','parent')
     def __str__(self):
-        return self.name
+        full_path = [self.name]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.name)
+            k = k.parent
+        return ' > '.join(full_path[::-1])
+
+    @property
+    def is_parent(self):
+        return self.parent is None
     
 class Product(models.Model):
     title = models.CharField(max_length=200,
