@@ -15,40 +15,96 @@
 
     <title>FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=8">
 </head>
 
-<body>
+<body class="anasayfa-page">
 
     {% include "header.html" %}
+<!-- DİNAMİK BÖLÜNEN HERO BANNER -->
+{% if hero_banners %}
+<section class="hero-banner-section">
+    <div class="hero-banner-grid">
+        {% for banner in hero_banners %}
+            <div class="hero-banner-item {% if banner.video %}has-video fit-{{ banner.video_fit|default:'auto' }}{% endif %}" {% if banner.image and not banner.video %}style="background-image: url('{{ banner.image.url }}');"{% endif %}>
+                
+                {% if banner.video %}
+                    <!-- Ambient Bulanık Arka Plan Videosu (Dikey/Reels videolarda yanlardaki boşluğu sinematik doldurur) -->
+                    <div class="hero-banner-ambient-wrap" aria-hidden="true">
+                        <video 
+                            class="hero-banner-video-ambient" 
+                            muted 
+                            autoplay 
+                            loop 
+                            playsinline
+                            tabindex="-1"
+                        >
+                            <source src="{{ banner.video.url }}" type="video/mp4">
+                        </video>
+                    </div>
 
-    <!-- KAMPANYA BANNER -->
-    <section class="fav-picks-hero">
-        <!-- Sol Taraf: 4'lü Dikey Kolaj Görselleri -->
-        <div class="hero-kolaj">
-            <div class="kolaj-item">
-                <img src="{% static 'image/banner1.jpeg' %}" alt="Jewelry 1">
-            </div>
-            <div class="kolaj-item">
-                <img src="{% static 'image/banner2.jpeg' %}" alt="Jewelry 2">
-            </div>
-            <div class="kolaj-item">
-                <img src="{% static 'image/banner3.jpeg' %}" alt="Jewelry 3">
-            </div>
-            <div class="kolaj-item">
-                <img src="{% static 'image/banner4.jpeg' %}" alt="Jewelry 4">
-            </div>
-        </div>
+                    <!-- Ana Video -->
+                    <video 
+                        class="hero-banner-video video-fit-{{ banner.video_fit|default:'auto' }}" 
+                        {% if banner.is_muted %}muted{% endif %} 
+                        autoplay 
+                        loop 
+                        playsinline 
+                        {% if banner.image %}poster="{{ banner.image.url }}"{% endif %}
+                        id="bannerVideo{{ banner.id }}"
+                        data-fit="{{ banner.video_fit|default:'auto' }}"
+                        onloadedmetadata="adjustBannerVideoFit(this)"
+                    >
+                        <source src="{{ banner.video.url }}" type="video/mp4">
+                    </video>
 
-        <!-- Sağ Taraf: Siyah Zeminli İçerik Alanı -->
-        <div class="hero-siyah-kutu">
-            <div class="kutu-icerik">
-                <h2>CURATED SELECTION</h2>
-                <p>WE BELIEVE STYLE IS PERSONAL. CURATE YOUR OWN LOOK WITH OUR FAVORITE PIECES OF THE SEASON.</p>
-                <a href="#" class="hero-outline-btn">EXPLORE ACCESSORIES</a>
+                    {% if banner.show_sound_toggle %}
+                        <!-- Ses Aç/Kapa Butonu -->
+                        <button 
+                            type="button" 
+                            class="banner-ses-btn {% if not banner.is_muted %}ses-aktif{% endif %}" 
+                            onclick="toggleBannerSes(event, 'bannerVideo{{ banner.id }}')" 
+                            title="Sesi Aç / Kapat"
+                            aria-label="Sesi Aç veya Kapat"
+                        >
+                            <span class="ses-ikon ses-kapali" {% if not banner.is_muted %}style="display: none;"{% endif %}>🔇</span>
+                            <span class="ses-ikon ses-acik" {% if banner.is_muted %}style="display: none;"{% endif %}>🔊</span>
+                        </button>
+                    {% endif %}
+                {% endif %}
+
+                <div class="hero-banner-content">
+                    {% if banner.title %}
+                        <h2>{{ banner.title }}</h2>
+                    {% endif %}
+                    
+                    {% if banner.subtitle %}
+                        <p>{{ banner.subtitle }}</p>
+                    {% endif %}
+
+                    {% with banner_buttons=banner.buttons.all %}
+                        {% if banner_buttons %}
+                            <div class="hero-banner-buttons">
+                                {% for btn in banner_buttons %}
+                                    <a href="{{ btn.link }}" class="hero-banner-btn">
+                                        {{ btn.text }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% elif banner.button_text and banner.button_link %}
+                            <div class="hero-banner-buttons">
+                                <a href="{{ banner.button_link }}" class="hero-banner-btn">
+                                    {{ banner.button_text }}
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
             </div>
-        </div>
-    </section><br>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
     <!-- DİNAMİK KAMPANYA YAZILARI (DUYURU ŞERİDİ) -->
     <div class="duyuru-seridi">
@@ -118,41 +174,67 @@
         {% endfor %}
     </section>
 
-    <!-- ÜRÜNLER -->
-    <section class="urunler-sayfasi">
-        <div class="urunler-baslik">
-            <h1>FAV PICKS</h1>
-            <p>Sezonun favori parçalarını keşfet.</p>
+    <!-- YENİ FAVORİLER SLIDER -->
+    {% if yeni_favoriler %}
+    <section class="yeni-favoriler-section">
+
+        <!-- Başlık Satırı -->
+        <div class="yf-header">
+            <div class="yf-baslik-grup">
+                <span class="yf-etiket">YENİ</span>
+                <h2 class="yf-baslik">YENİ FAVORİLER</h2>
+            </div>
+            <div class="yf-nav-butonlar">
+                <button class="yf-nav-btn yf-prev" id="yfPrev" aria-label="Önceki">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                </button>
+                <button class="yf-nav-btn yf-next" id="yfNext" aria-label="Sonraki">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <div class="urun-grid">
-            {% for product in products %}
-                <div class="urun-karti">
+        <!-- Kaydırılabilir Şerit -->
+        <div class="yf-slider-wrap">
+            <div class="yf-slider" id="yfSlider">
+                {% for product in yeni_favoriler %}
+                <div class="yf-kart">
                     <div class="urun-gorsel">
                         <a href="{% url 'product_detail' product.id %}">
                             {% if product.image %}
-                                <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="urun-ana-gorsel">
                             {% endif %}
+                            {% with g=product.gallery_images.first %}
+                                {% if g %}
+                                    <img src="{{ g.image.url }}" alt="{{ product.title }}" class="urun-hover-gorsel">
+                                {% endif %}
+                            {% endwith %}
                         </a>
 
                         {% if request.user.is_authenticated %}
-                            <button 
-                                class="favori-btn {% if product.id in favori_urunler %}active{% endif %}" 
+                            <button
+                                class="favori-btn {% if product.id in favori_urunler %}active{% endif %}"
                                 type="button"
                                 data-url="{% url 'toggle_favourite' product.id %}"
                                 data-product-id="{{ product.id }}"
                                 onclick="favoriEkle(event)"
+                                aria-label="Favorilere ekle"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                                 </svg>
                             </button>
                         {% else %}
-                            <button 
-                                class="favori-btn" 
-                                type="button" 
-                                data-product-id="{{ product.id }}" 
+                            <button
+                                class="favori-btn"
+                                type="button"
+                                data-product-id="{{ product.id }}"
                                 onclick="favoriSecimAc(event)"
+                                aria-label="Favorilere ekle"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
@@ -166,11 +248,28 @@
                         <p>{{ product.price }} TL</p>
                     </div>
                 </div>
-            {% empty %}
-                <p>Henüz ürün bulunmuyor.</p>
-            {% endfor %}
+                {% endfor %}
+
+                <!-- SLİDER SONU: TÜMÜNÜ GÖR (KARTSIZ, SADECE ALT ÇİZİLİ YAZI) -->
+                <div class="yf-son-alan">
+                    <a href="{% url 'category_filter' category_slug='new' %}" class="yf-tumunu-gor-link yf-son-link">
+                        <span>TÜMÜNÜ GÖR</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
+
+        <!-- İlerleme Çizgisi -->
+        <div class="yf-progress-wrap">
+            <div class="yf-progress-bar" id="yfProgress"></div>
+        </div>
+
     </section>
+    {% endif %}
 
     <!-- FAVORİ SEÇİM KUTUSU -->
     <div class="favori-secim-overlay" id="favoriSecimOverlay">
@@ -252,6 +351,95 @@
             });
         }
 
+        // Banner Video Ses Aç / Kapat
+        function toggleBannerSes(event, videoId) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const video = document.getElementById(videoId);
+            const btn = event.currentTarget;
+            if (!video || !btn) return;
+
+            video.muted = !video.muted;
+            const ikonKapali = btn.querySelector('.ses-kapali');
+            const ikonAcik = btn.querySelector('.ses-acik');
+
+            if (video.muted) {
+                if (ikonKapali) ikonKapali.style.display = 'inline';
+                if (ikonAcik) ikonAcik.style.display = 'none';
+                btn.classList.remove('ses-aktif');
+            } else {
+                if (ikonKapali) ikonKapali.style.display = 'none';
+                if (ikonAcik) ikonAcik.style.display = 'inline';
+                btn.classList.add('ses-aktif');
+            }
+        }
+
+        // Banner Video Boyut ve Sığdırma Ayarı (Dikey/Reels videoların kesilmesini önler)
+        function adjustBannerVideoFit(videoEl) {
+            if (!videoEl) return;
+            const fitMode = videoEl.dataset.fit || 'auto';
+            const item = videoEl.closest('.hero-banner-item');
+            
+            if (fitMode === 'contain') {
+                videoEl.classList.add('is-contain');
+                videoEl.classList.remove('is-cover');
+                if (item) {
+                    item.classList.add('is-contain');
+                    item.classList.remove('fit-cover');
+                }
+                return;
+            }
+            if (fitMode === 'cover') {
+                videoEl.classList.add('is-cover');
+                videoEl.classList.remove('is-contain');
+                if (item) {
+                    item.classList.add('fit-cover');
+                    item.classList.remove('is-contain');
+                }
+                return;
+            }
+
+            // 'auto' modu (Video dikey ise veya ekran oranına göre kesilecekse otomatik sığdırır):
+            const vW = videoEl.videoWidth || 1;
+            const vH = videoEl.videoHeight || 1;
+            const cW = item ? item.clientWidth : window.innerWidth;
+            const cH = item ? item.clientHeight : 560;
+
+            const videoAspect = vW / vH;
+            const containerAspect = cW / cH;
+
+            // Video dikeyse veya container videoya göre çok daha genişse contain yap
+            if (videoAspect < 1 || (containerAspect / videoAspect > 1.25)) {
+                videoEl.classList.add('is-contain');
+                videoEl.classList.remove('is-cover');
+                if (item) {
+                    item.classList.add('is-contain');
+                    item.classList.remove('fit-cover');
+                }
+            } else {
+                videoEl.classList.add('is-cover');
+                videoEl.classList.remove('is-contain');
+                if (item) {
+                    item.classList.add('fit-cover');
+                    item.classList.remove('is-contain');
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.hero-banner-video').forEach(v => adjustBannerVideoFit(v));
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.hero-banner-video').forEach(v => {
+                if (v.readyState >= 1) {
+                    adjustBannerVideoFit(v);
+                }
+            });
+        });
+
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== "") {
@@ -266,6 +454,73 @@
             }
             return cookieValue;
         }
+
+        // ═══ YENİ FAVORİLER SLIDER ═══
+        (function () {
+            const slider   = document.getElementById('yfSlider');
+            const progress = document.getElementById('yfProgress');
+            const btnPrev  = document.getElementById('yfPrev');
+            const btnNext  = document.getElementById('yfNext');
+            if (!slider) return;
+
+            const SCROLL_AMOUNT = 290;
+
+            function updateProgress() {
+                const max = slider.scrollWidth - slider.clientWidth;
+                if (max <= 0) {
+                    if (progress) progress.style.width = '100%';
+                    return;
+                }
+                const pct = (slider.scrollLeft / max) * 100;
+                if (progress) progress.style.width = pct + '%';
+
+                const isAtEnd = slider.scrollLeft >= max - 15;
+                if (btnPrev) btnPrev.disabled = slider.scrollLeft <= 0;
+                if (btnNext) btnNext.disabled = isAtEnd;
+            }
+
+            slider.addEventListener('scroll', updateProgress, { passive: true });
+            window.addEventListener('resize', updateProgress);
+            updateProgress();
+
+            if (btnPrev) btnPrev.addEventListener('click', () => {
+                slider.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+            });
+            if (btnNext) btnNext.addEventListener('click', () => {
+                slider.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+            });
+
+            // Drag-to-scroll (mouse)
+            let isDragging = false, startX = 0, scrollStart = 0;
+
+            slider.addEventListener('mousedown', e => {
+                isDragging  = true;
+                startX      = e.pageX - slider.offsetLeft;
+                scrollStart = slider.scrollLeft;
+                slider.classList.add('is-dragging');
+            });
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                slider.classList.remove('is-dragging');
+            });
+            document.addEventListener('mousemove', e => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                slider.scrollLeft = scrollStart - (x - startX);
+            });
+
+            // Touch drag
+            let touchStartX = 0, touchScrollStart = 0;
+            slider.addEventListener('touchstart', e => {
+                touchStartX    = e.touches[0].pageX;
+                touchScrollStart = slider.scrollLeft;
+            }, { passive: true });
+            slider.addEventListener('touchmove', e => {
+                const dx = touchStartX - e.touches[0].pageX;
+                slider.scrollLeft = touchScrollStart + dx;
+            }, { passive: true });
+        })();
     </script>
 
 </body>

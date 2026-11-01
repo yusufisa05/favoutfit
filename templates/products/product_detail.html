@@ -15,40 +15,74 @@
 
     <title>{{ product.title }} | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=14">
 </head>
 
-<body>
+<body class="urun-detay-sayfasi-body">
 
     {% include "header.html" %}
 
+    <!-- DİNAMİK BİLDİRİM TOAST KAPSAYICISI -->
+    <div id="detayToastContainer" class="fav-toast-container"></div>
 
-    <!-- ÜRÜN DETAY -->
-
+    <!-- ÜRÜN DETAY ALANI -->
     <main class="urun-detay">
 
-        <!-- SOL: ÜRÜN GÖRSELİ -->
+        <!-- SOL: DİKEY GALERİ VE KOMPAKT ANA GÖRSEL -->
+        <div class="urun-sol-galeri">
+            
+            <!-- Küçük Ek Görseller (Dikey Şerit) -->
+            <div class="urun-ek-gorseller">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" 
+                         alt="{{ product.title }}" 
+                         onclick="gorselSec(this.src)" 
+                         class="aktif-onizleme"
+                         data-index="0">
+                {% endif %}
+                
+                {% for galeri in product.gallery_images.all %}
+                    <img src="{{ galeri.image.url }}" 
+                         alt="{{ product.title }}" 
+                         onclick="gorselSec(this.src)"
+                         data-index="{{ forloop.counter }}">
+                {% endfor %}
+            </div>
 
-        <div class="urun-detay-gorsel">
+            <!-- Kompakt Ana Görsel Kutusu -->
+            <div class="urun-detay-gorsel" onclick="lightboxAc()" title="Görseli Büyütmek İçin Tıklayın">
+                {% if product.image %}
+                    <img id="ana-urun-gorsel" src="{{ product.image.url }}" alt="{{ product.title }}">
+                {% else %}
+                    <div class="urun-gorsel-yok">Görsel Bulunmuyor</div>
+                {% endif %}
 
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.title }}">
-            {% endif %}
+                <!-- Zarif Büyüt Rozeti -->
+                <div class="gorsel-buyut-rozet">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                    <span>BÜYÜT</span>
+                </div>
+            </div>
 
         </div>
 
-
-        <!-- SAĞ: ÜRÜN BİLGİLERİ -->
-
+        <!-- SAĞ: ÜRÜN BİLGİLERİ VE SATIN ALMA ALANI -->
         <div class="urun-detay-bilgi">
 
-            <p class="urun-kategori">
-                {{ product.category }}
-            </p>
+            {% if product.category %}
+                <a href="{% url 'category_filter' category_slug=product.category.slug %}" class="urun-kategori-link">
+                    {{ product.category.name }}
+                </a>
+            {% else %}
+                <span class="urun-kategori-link">FAV OUTFIT</span>
+            {% endif %}
 
-            <h1>
-                {{ product.title }}
-            </h1>
+            <h1>{{ product.title }}</h1>
 
             <p class="urun-detay-fiyat">
                 {{ product.price }} TL
@@ -56,81 +90,167 @@
 
             <div class="urun-ayirici"></div>
 
+            <!-- FORM: BEDEN SEÇİMİ VE SEPETE EKLE -->
+            <form id="sepeteEkleForm" action="{% url 'add_to_cart' product.id %}" method="POST" onsubmit="sepeteEkleAjax(event)">
+                {% csrf_token %}
 
-            <!-- BEDEN -->
-<div class="beden-alani">
+                {% if is_accessory %}
+                    <!-- AKSESUARLAR İÇİN: STD (STANDART BEDEN) -->
+                    <input type="hidden" name="size" id="secilen-beden" value="STD">
 
-    <div class="beden-baslik">
-        <span>Beden</span>
-    </div>
+                    <div class="beden-alani">
+                        <div class="beden-baslik-satiri">
+                            <span class="beden-etiket-baslik">
+                                BEDEN: <span class="secilen-beden-deger" id="secilenBedenGosterge">STANDART (STD)</span>
+                            </span>
+                            <button type="button" class="beden-rehberi-link" onclick="bedenRehberiAc()">
+                                Ürün Ölçüleri
+                            </button>
+                        </div>
 
-    <div class="bedenler">
-
-        <button type="button" onclick="bedenSec(this)">XS</button>
-        <button type="button" onclick="bedenSec(this)">S</button>
-        <button type="button" onclick="bedenSec(this)">M</button>
-        <button type="button" onclick="bedenSec(this)">L</button>
-        <button type="button" onclick="bedenSec(this)">XL</button>
-
-    </div>
-
-</div>
-
-
-            <!-- BUTONLAR -->
-
-            <form action="{% url 'add_to_cart' product.id %}" method="POST">
-
-    {% csrf_token %}
-
-    <input type="hidden" name="size" id="secilen-beden">
-
-    <button class="sepete-ekle-btn" type="submit">
-        SEPETE EKLE
-    </button>
-
-</form>
-            <button
-                class="detay-favori-btn"
-                type="button"
-                onclick="favoriEkle({{ product.id }}, this)"
-            >
-                {% if product.id in favori_urunler %}
-                    ♥ FAVORİLERDEN ÇIKAR
+                        <div class="bedenler" id="bedenlerKutusu">
+                            <button type="button" class="std-beden secili" onclick="bedenSec(this, 'STD')">STD</button>
+                        </div>
+                    </div>
                 {% else %}
-                    ♡ FAVORİLERE EKLE
+                    <!-- GİYİM ÜRÜNLERİ İÇİN: KİBAR BEDEN SEÇİCİ -->
+                    <input type="hidden" name="size" id="secilen-beden" value="">
+
+                    <div class="beden-alani">
+                        <div class="beden-baslik-satiri">
+                            <span class="beden-etiket-baslik">
+                                BEDEN: <span class="secilen-beden-deger" id="secilenBedenGosterge">Seçiniz</span>
+                            </span>
+                            <button type="button" class="beden-rehberi-link" onclick="bedenRehberiAc()">
+                                Beden Rehberi
+                            </button>
+                        </div>
+
+                        <div class="bedenler" id="bedenlerKutusu">
+                            <button type="button" onclick="bedenSec(this, 'XS')">XS</button>
+                            <button type="button" onclick="bedenSec(this, 'S')">S</button>
+                            <button type="button" onclick="bedenSec(this, 'M')">M</button>
+                            <button type="button" onclick="bedenSec(this, 'L')">L</button>
+                            <button type="button" onclick="bedenSec(this, 'XL')">XL</button>
+                        </div>
+
+                        <div id="bedenUyari" class="beden-uyari">
+                            Lütfen sepetinize eklemeden önce bir beden seçiniz.
+                        </div>
+                    </div>
                 {% endif %}
-            </button>
 
+                <!-- BUTONLAR: SEPETE EKLE & SADE KALP BUTONU -->
+                <div class="urun-aksiyon-grubu">
+                    <button class="sepete-ekle-btn" type="submit" id="sepeteEkleBtn">
+                        SEPETE EKLE
+                    </button>
 
-            <!-- ÜRÜN BİLGİSİ (AÇILIR / KAPANIR AKORDEON) -->
+                    {% if request.user.is_authenticated %}
+                        <button
+                            class="detay-kalp-btn {% if product.id in favori_urunler %}aktif{% endif %}"
+                            type="button"
+                            id="detayKalpBtn"
+                            onclick="favoriToggle(event, {{ product.id }})"
+                            aria-label="Favorilere Ekle"
+                            title="Favorilere Ekle"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                            </svg>
+                        </button>
+                    {% else %}
+                        <button
+                            class="detay-kalp-btn"
+                            type="button"
+                            onclick="hesapPanelAc()"
+                            aria-label="Favorilere eklemek için giriş yap"
+                            title="Favorilere eklemek için giriş yap"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                            </svg>
+                        </button>
+                    {% endif %}
+                </div>
+            </form>
 
+            <!-- GÜVENCE ROZETLERİ -->
+            <div class="urun-guvenceler">
+                <div class="guvence-madde">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"></rect>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                    <span>1500 TL ve Üzeri Ücretsiz Hızlı Kargo</span>
+                </div>
+                <div class="guvence-madde">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    <span>14 Gün İçinde Ücretsiz Kolay İade &amp; Değişim</span>
+                </div>
+                <div class="guvence-madde">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span>256-Bit SSL Şifreleme ile Güvenli Ödeme</span>
+                </div>
+            </div>
+
+            <!-- AKORDEON: ÜRÜN BİLGİSİ & KARGO İADE (TAMAMEN SAĞ KOLONDA KORUNUR) -->
             <div class="urun-ek-bilgi">
 
                 <!-- 1. Ürün Bilgileri -->
-                <div class="akordeon-item">
-                    <button type="button" class="akordeon-baslik">
-                        <span>Ürün Bilgileri</span>
-                        <span class="akordeon-ikon">+</span>
+                <div class="akordeon-item acik">
+                    <button type="button" class="akordeon-baslik" onclick="akordeonTikla(this)">
+                        <span>ÜRÜN BİLGİLERİ</span>
+                        <svg class="akordeon-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </button>
                     <div class="akordeon-icerik">
-                        {% if product.description %}
-                            <p>{{ product.description }}</p>
-                        {% else %}
-                            <p>Ürün açıklaması bulunmamaktadır.</p>
-                        {% endif %}
+                        <div class="akordeon-icerik-ic">
+                            {% if product.description %}
+                                <p>{{ product.description|linebreaksbr }}</p>
+                            {% else %}
+                                <p>Modern kesim, birinci sınıf kumaş dokusu ve FAV OUTFIT zamansız tasarım anlayışıyla özenle üretilmiştir.</p>
+                            {% endif %}
+                            
+                            <ul class="urun-ozellik-liste">
+                                {% if is_accessory %}
+                                    <li><span>Kategori:</span> Aksesuar &amp; Takı</li>
+                                    <li><span>Ebat:</span> Standart (STD)</li>
+                                    <li><span>Materyal:</span> Yüksek Dayanımlı Alaşım / Kaplama</li>
+                                    <li><span>Bakım:</span> Kimyasallarla temasından kaçınınız</li>
+                                {% else %}
+                                    <li><span>Kumaş Dokusu:</span> %100 Premium Pamuk</li>
+                                    <li><span>Kalıp:</span> Rahat &amp; Çağdaş Döküm</li>
+                                    <li><span>Yıkama Talimatı:</span> 30°C'de tersten yıkayınız</li>
+                                    <li><span>Üretim:</span> İstanbul, Türkiye</li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 2. Kargo ve İade -->
+                <!-- 2. Teslimat ve İade -->
                 <div class="akordeon-item">
-                    <button type="button" class="akordeon-baslik">
-                        <span>Kargo ve İade</span>
-                        <span class="akordeon-ikon">+</span>
+                    <button type="button" class="akordeon-baslik" onclick="akordeonTikla(this)">
+                        <span>TESLİMAT VE İADE</span>
+                        <svg class="akordeon-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </button>
                     <div class="akordeon-icerik">
-                        <p><strong>Kargo Teslimatı:</strong> Siparişleriniz 1-3 iş günü içerisinde kargoya teslim edilir. 1500 TL ve üzeri alışverişlerde kargo ücretsizdir.</p>
-                        <p><strong>İade ve Değişim:</strong> Satın aldığınız ürünü teslimat tarihinden itibaren 14 gün içerisinde ücretsiz olarak iade edebilir veya değiştirebilirsiniz.</p>
+                        <div class="akordeon-icerik-ic">
+                            <p><strong>Hızlı Kargo:</strong> Siparişleriniz 24-48 saat içinde özenle hazırlanarak sigortalı kargo ile gönderilir. 1500 TL ve üzeri siparişlerde kargo ücretsizdir.</p>
+                            <p><strong>Kolay İade:</strong> Ürünü teslim aldığınız tarihten itibaren 14 gün içerisinde orijinal kutusu ve faturasıyla birlikte ücretsiz olarak iade edebilir veya değiştirebilirsiniz.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -140,86 +260,410 @@
 
     </main>
 
+    <!-- SİZİN İÇİN SEÇTİKLERİMİZ (BENZER ÜRÜNLER - ZARİF & KOMPAKT) -->
+    {% if benzer_urunler %}
+        <section class="urun-benzer-bolum">
+            <h2 class="benzer-baslik">SİZİN İÇİN SEÇTİKLERİMİZ</h2>
+            <div class="benzer-grid">
+                {% for b_urun in benzer_urunler %}
+                    <a href="{% url 'product_detail' b_urun.id %}" class="benzer-kart">
+                        <div class="benzer-gorsel-wrap">
+                            {% if b_urun.image %}
+                                <img src="{{ b_urun.image.url }}" alt="{{ b_urun.title }}" loading="lazy">
+                            {% else %}
+                                <div class="urun-gorsel-yok"></div>
+                            {% endif %}
+                        </div>
+
+                        <div class="benzer-bilgi">
+                            <span class="benzer-urun-ad">{{ b_urun.title }}</span>
+                            <span class="benzer-urun-fiyat">{{ b_urun.price }} TL</span>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    <!-- ========================================================
+         LIGHTBOX (TAM EKRAN GÖRSEL BÜYÜTME MODALI)
+    ======================================================== -->
+    <div id="urunLightbox" class="urun-lightbox" onclick="lightboxDisariTikla(event)" role="dialog" aria-modal="true" aria-label="Görsel Büyütme">
+        <button type="button" class="lightbox-kapat-btn" onclick="lightboxKapat()" aria-label="Kapat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <button type="button" class="lightbox-ok-btn onceki" onclick="lightboxOnceki(event)" aria-label="Önceki Görsel">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+
+        <div class="lightbox-icerik">
+            <img id="lightboxGorsel" src="" alt="{{ product.title }}">
+            <div class="lightbox-sayac" id="lightboxSayac">1 / 1</div>
+        </div>
+
+        <button type="button" class="lightbox-ok-btn sonraki" onclick="lightboxSonraki(event)" aria-label="Sonraki Görsel">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ========================================================
+         BEDEN REHBERİ MODALI (ADMİNDEN DÜZENLENEBİLİR)
+    ======================================================== -->
+    <div id="bedenRehberiModal" class="beden-modal-overlay" onclick="bedenModalDisariTikla(event)" role="dialog" aria-modal="true" aria-label="Beden Rehberi">
+        <div class="beden-modal-kutu">
+            <button type="button" class="beden-modal-kapat" onclick="bedenRehberiKapat()" aria-label="Kapat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <h3 class="beden-modal-baslik">BEDEN REHBERİ &amp; ÖLÇÜLER</h3>
+            <p class="beden-modal-alt-bilgi">{{ product.title }}</p>
+
+            {% if product.size_guide %}
+                <!-- Admin Panelinde Ürüne Özel Girilen Beden Rehberi -->
+                <div class="beden-rehber-ozel-metin">
+                    {{ product.size_guide|linebreaksbr }}
+                </div>
+            {% elif product.category and product.category.size_guide %}
+                <!-- Admin Panelinde Kategoriye Özel Girilen Beden Rehberi -->
+                <div class="beden-rehber-ozel-metin">
+                    {{ product.category.size_guide|linebreaksbr }}
+                </div>
+            {% else %}
+                {% if is_accessory %}
+                    <!-- Aksesuarlar için Standart Bilgilendirme -->
+                    <div class="beden-rehber-ozel-metin">
+                        <p><strong>Standart (STD) Beden:</strong></p>
+                        <p>Bu ürün tek ebat olarak üretilmiştir. Ayarlanabilir mekanizması veya elastik yapısı sayesinde standart beden ölçülerine uygundur.</p>
+                    </div>
+                {% else %}
+                    <!-- Giysiler İçin Varsayılan Ölçü Tablosu -->
+                    <div class="beden-tablo-kapsayici">
+                        <table class="beden-tablosu">
+                            <thead>
+                                <tr>
+                                    <th>BEDEN</th>
+                                    <th>GÖĞÜS (CM)</th>
+                                    <th>BEL (CM)</th>
+                                    <th>BASEN (CM)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>XS (34)</td><td>82 - 85</td><td>62 - 65</td><td>88 - 91</td></tr>
+                                <tr><td>S (36)</td><td>86 - 89</td><td>66 - 69</td><td>92 - 95</td></tr>
+                                <tr><td>M (38)</td><td>90 - 93</td><td>70 - 73</td><td>96 - 99</td></tr>
+                                <tr><td>L (40)</td><td>94 - 98</td><td>74 - 78</td><td>100 - 104</td></tr>
+                                <tr><td>XL (42)</td><td>99 - 104</td><td>79 - 84</td><td>105 - 110</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="beden-olcu-ipucu">
+                        <strong>Doğru Ölçü Nasıl Alınır?</strong>
+                        <p>• <strong>Göğüs:</strong> Mezuranızı göğsün en dolgun noktasından yatay biçimde sararak ölçün.</p>
+                        <p>• <strong>Bel:</strong> Doğal bel oyuntunuzun etrafını mezurayı sıkmadan ölçün.</p>
+                        <p>• <strong>Basen:</strong> Ayaklarınız bir aradayken baseninizin en geniş kısmını ölçün.</p>
+                        <p style="margin-top: 8px; color: #888;">* Ürünlerimiz standart kalıptır, ara bedende kalıyorsanız bir üst bedeni tercih etmeniz önerilir.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 
     {% include "footer.html" %}
 
-    <!-- AKORDEON JAVASCRIPT KODU -->
+    <!-- JAVASCRIPT İŞLEVLERİ -->
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const basliklar = document.querySelectorAll(".akordeon-baslik");
+    // Tüm Ürün Görselleri Listesi
+    const tumGorseller = [
+        {% if product.image %}"{{ product.image.url }}",{% endif %}
+        {% for galeri in product.gallery_images.all %}
+            "{{ galeri.image.url }}",
+        {% endfor %}
+    ];
+    let aktifGorselIndex = 0;
 
-        basliklar.forEach(baslik => {
-            baslik.addEventListener("click", function () {
-                const icerik = this.nextElementSibling;
-                const ikon = this.querySelector(".akordeon-ikon");
+    // Küçük Görsele Tıklayınca Ana Görseli Değiştirme
+    function gorselSec(yeniSrc) {
+        const anaGorsel = document.getElementById('ana-urun-gorsel');
+        if (anaGorsel) {
+            anaGorsel.src = yeniSrc;
+        }
 
-                icerik.classList.toggle("aktif");
-
-                if (icerik.classList.contains("aktif")) {
-                    ikon.textContent = "−";
-                } else {
-                    ikon.textContent = "+";
-                }
-            });
+        // Aktif küçük resim çerçevesini güncelle
+        document.querySelectorAll('.urun-ek-gorseller img').forEach((img, idx) => {
+            img.classList.remove('aktif-onizleme');
+            if (img.src === yeniSrc) {
+                img.classList.add('aktif-onizleme');
+                aktifGorselIndex = idx;
+            }
         });
-    });
-</script>
-<script>
+    }
 
-function bedenSec(buton) {
+    // Beden Seçimi
+    function bedenSec(buton, bedenDegeri) {
+        document.querySelectorAll(".bedenler button").forEach(b => b.classList.remove("secili"));
+        buton.classList.add("secili");
 
-    document.querySelectorAll(".bedenler button").forEach(function(b) {
-        b.classList.remove("secili");
-    });
-
-    buton.classList.add("secili");
-
-    document.getElementById("secilen-beden").value = buton.textContent;
-}
-
-function favoriEkle(productId, button) {
-    fetch(`/favori/toggle/${productId}/`, {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken")
+        document.getElementById("secilen-beden").value = bedenDegeri;
+        const gosterge = document.getElementById("secilenBedenGosterge");
+        if (gosterge) {
+            gosterge.textContent = bedenDegeri === "STD" ? "STANDART (STD)" : bedenDegeri;
         }
-    })
-    .then(response => {
-        if (response.redirected) {
-            window.location.href = response.url;
-            return null;
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!data) return;
-        if (button) {
-            if (data.is_favorited) {
-                button.textContent = "♥ FAVORİLERDEN ÇIKAR";
-            } else {
-                button.textContent = "♡ FAVORİLERE EKLE";
-            }
-        }
-    })
-    .catch(error => console.error("Favori işlemi hatası:", error));
-}
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let cookie of cookies) {
-            cookie = cookie.trim();
-            if (cookie.startsWith(name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+        // Varsa uyarıyı gizle
+        const uyari = document.getElementById("bedenUyari");
+        if (uyari) uyari.classList.remove("aktif");
+    }
+
+    // Beden Rehberi Modalını Aç/Kapat
+    function bedenRehberiAc() {
+        const modal = document.getElementById("bedenRehberiModal");
+        if (modal) {
+            modal.classList.add("aktif");
+            document.body.style.overflow = "hidden";
         }
     }
-    return cookieValue;
-}
 
-</script>
+    function bedenRehberiKapat() {
+        const modal = document.getElementById("bedenRehberiModal");
+        if (modal) {
+            modal.classList.remove("aktif");
+            document.body.style.overflow = "";
+        }
+    }
+
+    function bedenModalDisariTikla(e) {
+        if (e.target.id === "bedenRehberiModal") {
+            bedenRehberiKapat();
+        }
+    }
+
+    // Akordeon Aç / Kapa (Tamamen sağ kolonda düzenli kalır)
+    function akordeonTikla(buton) {
+        const item = buton.closest('.akordeon-item');
+        if (!item) return;
+        item.classList.toggle('acik');
+    }
+
+    // AJAX ile Sepete Ekle
+    function sepeteEkleAjax(e) {
+        e.preventDefault();
+
+        const beden = document.getElementById("secilen-beden").value;
+        const uyari = document.getElementById("bedenUyari");
+
+        if (!beden) {
+            if (uyari) {
+                uyari.classList.add("aktif");
+                document.getElementById("bedenlerKutusu").scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        const form = document.getElementById("sepeteEkleForm");
+        const btn = document.getElementById("sepeteEkleBtn");
+        const originalText = btn.textContent;
+        btn.textContent = "EKLENİYOR...";
+        btn.disabled = true;
+
+        const formData = new FormData(form);
+        formData.append("ajax", "1");
+
+        fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            btn.disabled = false;
+            if (!data) return;
+
+            if (data.status === "success") {
+                btn.textContent = "✓ SEPETE EKLENDİ";
+                btn.classList.add("eklendi");
+
+                detayToastGoster(`✓ "${data.product_title || 'Ürün'}" (${data.size}) sepete eklendi.`);
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove("eklendi");
+                }, 1800);
+            } else {
+                btn.textContent = originalText;
+                detayToastGoster(data.message || "Bir hata oluştu, lütfen tekrar deneyin.");
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            console.error("Sepete ekleme hatası:", err);
+            detayToastGoster("Sepete eklenirken bir sorun oluştu.");
+        });
+    }
+
+    // Detay Sayfası Favori Toggle (Sadece şık kalp ikonu)
+    function favoriToggle(e, productId) {
+        if (e) e.preventDefault();
+
+        const btn = document.getElementById("detayKalpBtn");
+
+        fetch(`/favori/toggle/${productId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+            if (data.is_favorited) {
+                if (btn) btn.classList.add("aktif");
+                detayToastGoster("♥ Ürün favorilerinize eklendi.");
+            } else {
+                if (btn) btn.classList.remove("aktif");
+                detayToastGoster("Ürün favorilerinizden çıkarıldı.");
+            }
+        })
+        .catch(err => console.error("Favori işlemi hatası:", err));
+    }
+
+    // Dinamik Floating Toast Bildirimi
+    function detayToastGoster(mesaj) {
+        const container = document.getElementById("detayToastContainer");
+        if (!container) return;
+
+        const toast = document.createElement("div");
+        toast.className = "fav-toast";
+        toast.textContent = mesaj;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add("cikis");
+            setTimeout(() => toast.remove(), 400);
+        }, 2600);
+    }
+
+    // ========================================================
+    // LIGHTBOX GÖRSEL BÜYÜTME İŞLEVLERİ
+    // ========================================================
+    function lightboxAc() {
+        if (!tumGorseller.length) return;
+        const modal = document.getElementById("urunLightbox");
+        const img = document.getElementById("lightboxGorsel");
+        const sayac = document.getElementById("lightboxSayac");
+
+        img.src = tumGorseller[aktifGorselIndex];
+        sayac.textContent = `${aktifGorselIndex + 1} / ${tumGorseller.length}`;
+
+        modal.classList.add("aktif");
+        document.body.style.overflow = "hidden";
+    }
+
+    function lightboxKapat() {
+        const modal = document.getElementById("urunLightbox");
+        if (modal) {
+            modal.classList.remove("aktif");
+            document.body.style.overflow = "";
+        }
+    }
+
+    function lightboxDisariTikla(e) {
+        if (e.target.id === "urunLightbox") {
+            lightboxKapat();
+        }
+    }
+
+    function lightboxOnceki(e) {
+        if (e) e.stopPropagation();
+        if (!tumGorseller.length) return;
+        aktifGorselIndex = (aktifGorselIndex - 1 + tumGorseller.length) % tumGorseller.length;
+        guncelleLightboxGorsel();
+    }
+
+    function lightboxSonraki(e) {
+        if (e) e.stopPropagation();
+        if (!tumGorseller.length) return;
+        aktifGorselIndex = (aktifGorselIndex + 1) % tumGorseller.length;
+        guncelleLightboxGorsel();
+    }
+
+    function guncelleLightboxGorsel() {
+        const img = document.getElementById("lightboxGorsel");
+        const sayac = document.getElementById("lightboxSayac");
+        img.src = tumGorseller[aktifGorselIndex];
+        sayac.textContent = `${aktifGorselIndex + 1} / ${tumGorseller.length}`;
+
+        // Arka plandaki ana görseli de eşitle
+        const anaGorsel = document.getElementById('ana-urun-gorsel');
+        if (anaGorsel) anaGorsel.src = tumGorseller[aktifGorselIndex];
+
+        document.querySelectorAll('.urun-ek-gorseller img').forEach((thumb, idx) => {
+            thumb.classList.toggle('aktif-onizleme', idx === aktifGorselIndex);
+        });
+    }
+
+    // Klavye Kısayolları (ESC, Sol Ok, Sağ Ok)
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            lightboxKapat();
+            bedenRehberiKapat();
+            return;
+        }
+
+        const modal = document.getElementById("urunLightbox");
+        if (modal && modal.classList.contains("aktif")) {
+            if (e.key === "ArrowLeft") {
+                lightboxOnceki();
+            } else if (e.key === "ArrowRight") {
+                lightboxSonraki();
+            }
+        }
+    });
+
+    // CSRF Cookie Yardımcısı
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
 </body>
 
 </html>

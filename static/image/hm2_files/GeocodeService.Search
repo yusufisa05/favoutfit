@@ -1,0 +1,62 @@
+/**/_xdc_._nbmpjd && _xdc_._nbmpjd( {
+   "results" : 
+   [
+      {
+         "address_components" : 
+         [
+            {
+               "long_name" : "Türkiye",
+               "short_name" : "TR",
+               "types" : 
+               [
+                  "country",
+                  "political"
+               ]
+            }
+         ],
+         "formatted_address" : "Türkiye",
+         "geometry" : 
+         {
+            "bounds" : 
+            {
+               "northeast" : 
+               {
+                  "lat" : 42.3666999,
+                  "lng" : 44.8178449
+               },
+               "southwest" : 
+               {
+                  "lat" : 35.805916,
+                  "lng" : 25.4408142
+               }
+            },
+            "location" : 
+            {
+               "lat" : 38.963745,
+               "lng" : 35.243322
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : 
+            {
+               "northeast" : 
+               {
+                  "lat" : 42.3666999,
+                  "lng" : 44.8178449
+               },
+               "southwest" : 
+               {
+                  "lat" : 35.805916,
+                  "lng" : 25.4408142
+               }
+            }
+         },
+         "place_id" : "ChIJcSZPllwVsBQRKl9iKtTb2UA",
+         "types" : 
+         [
+            "country",
+            "political"
+         ]
+      }
+   ],
+   "status" : "OK"
+} )

@@ -89,42 +89,92 @@
     <div class="hesap-panel">
 
         <button type="button" class="hesap-kapat" onclick="hesapPanelKapat()" aria-label="Kapat">
-            ×
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
         </button>
 
         {% if request.user.is_authenticated %}
         <!-- GİRİŞ YAPMIŞ KULLANICI -->
         <div class="hesap-ekran" id="kullaniciEkrani">
             <div class="hesap-baslik">
+                <span class="hesap-etiket">HESAP MERKEZİ</span>
                 <h2>HESABIM</h2>
-                <p>Merhaba, <strong>{{ request.user.username }}</strong></p>
             </div>
 
-            <div class="hesap-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
-                <a href="{% url 'order_history' %}" class="hesap-giris"
-                    style="text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                    SİPARİŞLERİM
+            <!-- KULLANICI PROFİL KARTI -->
+            <div class="hesap-profil-karti">
+                <div class="hesap-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <div class="hesap-profil-bilgi">
+                    <span class="hesap-profil-etiket">GİRİŞ YAPILDI</span>
+                    <h3 class="hesap-profil-ad">{{ request.user.username }}</h3>
+                </div>
+            </div>
+
+            <!-- ŞIK MENÜ SATIRLARI (ZARA/LUXURY STYLE) -->
+            <div class="hesap-menu-liste">
+                <a href="{% url 'order_history' %}" class="hesap-menu-satir">
+                    <div class="hesap-menu-sol">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2"/>
+                            <path d="M3 9h18"/>
+                            <path d="M9 21V9"/>
+                        </svg>
+                        <span>SİPARİŞLERİM</span>
+                    </div>
+                    <span class="hesap-menu-ok">→</span>
                 </a>
-                <a href="{% url 'favorite_list' %}" class="hesap-giris"
-                    style="text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; background: #333;">
-                    FAVORİLERİM
+
+                <a href="{% url 'favorite_list' %}" class="hesap-menu-satir">
+                    <div class="hesap-menu-sol">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                        <span>FAVORİLERİM</span>
+                    </div>
+                    <span class="hesap-menu-ok">→</span>
                 </a>
+
+                <a href="{% url 'cart_detail' %}" class="hesap-menu-satir">
+                    <div class="hesap-menu-sol">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                            <path d="M3 6h18"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                        <span>SEPETİM</span>
+                    </div>
+                    <span class="hesap-menu-ok">→</span>
+                </a>
+            </div>
+
+            <!-- ÇIKIŞ YAP -->
+            <div class="hesap-cikis-alani">
                 <form method="POST" action="{% url 'logout' %}" style="margin: 0; padding: 0;">
                     {% csrf_token %}
-                    <button type="submit" class="hesap-kayit" style="width: 100%;">
-                        ÇIKIŞ YAP
+                    <button type="submit" class="hesap-cikis-btn">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        <span>GÜVENLİ ÇIKIŞ YAP</span>
                     </button>
                 </form>
             </div>
         </div>
 
         {% else %}
-        <!-- GİRİŞ -->
+        <!-- GİRİŞ YAPILMAMIŞSA -->
         <div class="hesap-ekran" id="girisEkrani">
 
             <div class="hesap-baslik">
+                <span class="hesap-etiket">HESAP MERKEZİ</span>
                 <h2>HESABIM</h2>
-                <p>FAV OUTFIT'e hoş geldin.</p>
+                <p>FAV OUTFIT dünyasına hoş geldiniz.</p>
             </div>
 
             <div class="hesap-form">
@@ -132,11 +182,11 @@
                 <form method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
 
-                    <label>Kullanıcı adı</label>
-                    <input type="text" name="username" placeholder="Kullanıcı adınız" required>
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" name="username" placeholder="Kullanıcı adınızı girin" required>
 
                     <label>Şifre</label>
-                    <input type="password" name="password" placeholder="Şifreniz" required>
+                    <input type="password" name="password" placeholder="Şifrenizi girin" required>
 
                     <button type="submit" class="hesap-giris">
                         GİRİŞ YAP
@@ -148,23 +198,24 @@
                 </div>
 
                 <button type="button" class="hesap-kayit" onclick="kayitEkraniAc()">
-                    KAYIT OL
+                    YENİ HESAP OLUŞTUR
                 </button>
 
                 <button type="button" class="uye-olmadan" onclick="hesapPanelKapat()">
-                    ÜYE OLMADAN DEVAM ET
+                    ÜYE OLMADAN ALIŞVERİŞE DEVAM ET →
                 </button>
 
             </div>
 
         </div>
 
-        <!-- KAYIT -->
+        <!-- KAYIT EKRANI -->
         <div class="hesap-ekran" id="kayitEkrani" style="display: none;">
 
             <div class="hesap-baslik">
+                <span class="hesap-etiket">FAV OUTFIT CLUB</span>
                 <h2>HESAP OLUŞTUR</h2>
-                <p>FAV OUTFIT'e katıl.</p>
+                <p>Ayrıcalıklı moda dünyamıza katılın.</p>
             </div>
 
             <div class="hesap-form">
@@ -172,17 +223,17 @@
                 <form method="POST" action="{% url 'register' %}">
                     {% csrf_token %}
 
-                    <label>Kullanıcı adı</label>
-                    <input type="text" name="username" placeholder="Kullanıcı adınız" required>
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" name="username" placeholder="Kullanıcı adınızı belirleyin" required>
 
                     <label>Şifre</label>
-                    <input type="password" name="password1" placeholder="Şifreniz" required>
+                    <input type="password" name="password1" placeholder="Güçlü bir şifre girin" required>
 
-                    <label>Şifre tekrar</label>
+                    <label>Şifre Tekrar</label>
                     <input type="password" name="password2" placeholder="Şifrenizi tekrar girin" required>
 
                     <button type="submit" class="hesap-giris">
-                        HESAP OLUŞTUR
+                        KAYIT OL VE BAŞLA
                     </button>
                 </form>
 
@@ -191,11 +242,11 @@
                 </div>
 
                 <button type="button" class="hesap-kayit" onclick="girisEkraniAc()">
-                    ZATEN ÜYEYİM
+                    ZATEN HESABIM VAR (GİRİŞ YAP)
                 </button>
 
                 <button type="button" class="uye-olmadan" onclick="hesapPanelKapat()">
-                    ÜYE OLMADAN DEVAM ET
+                    ÜYE OLMADAN DEVAM ET →
                 </button>
 
             </div>

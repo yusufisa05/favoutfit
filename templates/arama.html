@@ -8,147 +8,415 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
 
-    <title>Arama | FAV OUTFIT</title>
+    <title>{% if query %}"{{ query }}" Arama Sonuçları{% else %}Arama Sonuçları{% endif %} | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=15">
 </head>
 
 <body>
 
-{% include "header.html" %}
+    {% include "header.html" %}
 
-<main class="urunler-sayfasi">
+    <!-- DİNAMİK BİLDİRİM TOAST KAPSAYICISI -->
+    <div id="favToastContainer" class="fav-toast-container"></div>
 
-    <div class="urunler-baslik">
-        <h1>ARAMA SONUÇLARI</h1>
+    <main class="urunler-sayfasi">
 
-        {% if query %}
-            <p>"{{ query }}" için sonuçlar</p>
+        <!-- BAŞLIK ALANI -->
+        <div class="urunler-baslik">
+            <h1>ARAMA SONUÇLARI</h1>
+            {% if query %}
+                <p>"{{ query }}" İÇİN SONUÇLAR</p>
+            {% else %}
+                <p>TÜM ÜRÜNLER</p>
+            {% endif %}
+        </div>
+
+        {% if products %}
+            <!-- KONTROL BARI: SAYAC VE SIRALAMA -->
+            <div class="urunler-kontrol">
+                <div class="filtre-sol-alan">
+                    <span class="urun-sayisi">
+                        <strong id="urunSayac">{{ products|length }}</strong> ÜRÜN BULUNDU
+                    </span>
+                </div>
+
+                <div class="filtreler">
+                    <!-- SIRALAMA DROPDOWN -->
+                    <div class="custom-dropdown" id="siralaDropdown">
+                        <button type="button" class="custom-dropdown-btn" onclick="toggleDropdown('siralaDropdown', event)" aria-haspopup="listbox" aria-expanded="false">
+                            <span class="dropdown-label">SIRALA:</span>
+                            <span class="dropdown-secili-deger" id="siralaSeciliEtiket">Yeni Ürünler</span>
+                            <svg class="dropdown-ok" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="custom-dropdown-menu" role="listbox">
+                            <button type="button" class="custom-dropdown-item is-selected" data-value="newest" onclick="secSirala('newest', 'Yeni Ürünler', event)">
+                                <span class="item-text">Yeni Ürünler</span>
+                                <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                            <button type="button" class="custom-dropdown-item" data-value="price-low" onclick="secSirala('price-low', 'Fiyat: Düşükten Yükseğe', event)">
+                                <span class="item-text">Fiyat: Düşükten Yükseğe</span>
+                                <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                            <button type="button" class="custom-dropdown-item" data-value="price-high" onclick="secSirala('price-high', 'Fiyat: Yüksekten Düşüğe', event)">
+                                <span class="item-text">Fiyat: Yüksekten Düşüğe</span>
+                                <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                            <button type="button" class="custom-dropdown-item" data-value="name-az" onclick="secSirala('name-az', 'İsim: A - Z', event)">
+                                <span class="item-text">İsim: A - Z</span>
+                                <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% endif %}
-    </div>
 
-    <div class="urun-grid">
+        <!-- ÜRÜN GRİDİ -->
+        <div class="urun-grid" id="urunGrid">
 
-        {% for product in products %}
+            {% for product in products %}
 
-            <div class="urun-karti">
+                <div class="urun-karti" data-price="{{ product.price }}" data-title="{{ product.title|escape }}" data-index="{{ forloop.counter0 }}">
 
-                <div class="urun-gorsel">
+                    <div class="urun-gorsel">
+                        <a href="{% url 'product_detail' product.id %}">
+                            <!-- 1. Ana Görsel -->
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="urun-ana-gorsel">
+                            {% endif %}
 
-                    <a href="{% url 'product_detail' product.id %}">
+                            <!-- 2. İkinci Görsel (Hover Efekti) -->
+                            {% with ikinci_gorsel=product.gallery_images.first %}
+                                {% if ikinci_gorsel %}
+                                    <img src="{{ ikinci_gorsel.image.url }}" alt="{{ product.title }}" class="urun-hover-gorsel">
+                                {% endif %}
+                            {% endwith %}
+                        </a>
 
-                        {% if product.image %}
-                            <img
-                                src="{{ product.image.url }}"
-                                alt="{{ product.title }}"
+                        <!-- Şık Kalp Favori Butonu -->
+                        {% if request.user.is_authenticated %}
+                            <button
+                                class="favori-btn {% if product.id in favori_urunler %}active{% endif %}"
+                                type="button"
+                                onclick="favoriEkle(event, {{ product.id }})"
+                                aria-label="Favorilere ekle"
                             >
-                        {% endif %}
-
-                    </a>
-
-                    <button
-                        class="favori-btn"
-                        type="button"
-                        onclick="favoriEkle(event, {{ product.id }})"
-                    >
-                        {% if product.id in favori_urunler %}
-                            ♥
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </button>
                         {% else %}
-                            ♡
+                            <button
+                                class="favori-btn"
+                                type="button"
+                                onclick="hesapPanelAc()"
+                                aria-label="Favorilere eklemek için giriş yap"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </button>
                         {% endif %}
-                    </button>
+
+                        <!-- Hızlı Beden Seçimi & Sepete Ekleme Çekmecesi -->
+                        <div class="hizli-ekle-paneli">
+                            <span class="hizli-ekle-etiket">HIZLI EKLE</span>
+                            <div class="hizli-beden-liste">
+                                {% if product.category and product.category.slug == 'accessories' %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'STD', '{{ product.title|escapejs }}')">STD</button>
+                                {% else %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'XS', '{{ product.title|escapejs }}')">XS</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'S', '{{ product.title|escapejs }}')">S</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'M', '{{ product.title|escapejs }}')">M</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'L', '{{ product.title|escapejs }}')">L</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'XL', '{{ product.title|escapejs }}')">XL</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="urun-bilgi">
+                        <a href="{% url 'product_detail' product.id %}" class="urun-baslik-link">
+                            <h3>{{ product.title }}</h3>
+                        </a>
+                        <p class="urun-fiyat">{{ product.price }} TL</p>
+                    </div>
 
                 </div>
 
-                <div class="urun-bilgi">
+            {% empty %}
 
-                    <h3>{{ product.title }}</h3>
-
-                    <p>{{ product.price }} TL</p>
-
+                <!-- ARAMA SONUCU BOŞ DURUMU -->
+                <div class="kategori-bos-durum">
+                    <div class="kategori-bos-icon">
+                        <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                        </svg>
+                    </div>
+                    <h3>{% if query %}"{{ query }}" için sonuç bulunamadı{% else %}Arama terimi girilmedi{% endif %}</h3>
+                    <p>Farklı bir anahtar kelime deneyebilir veya diğer kategorilerimizi keşfedebilirsiniz.</p>
+                    <a href="{% url 'home' %}" class="kategori-bos-btn">ALIŞVERİŞE BAŞLA</a>
                 </div>
 
-            </div>
+            {% endfor %}
 
-        {% empty %}
+        </div>
 
-            <div class="bos-sepet">
-                <h2>Ürün bulunamadı.</h2>
-                <p>Farklı bir ürün adı deneyebilirsin.</p>
-            </div>
+    </main>
 
-        {% endfor %}
+    {% include "footer.html" %}
 
-    </div>
+    <script>
+    const isUserLoggedIn = {% if request.user.is_authenticated %}true{% else %}false{% endif %};
 
-</main>
-
-{% include "footer.html" %}
-
-
-<script>
-
-function favoriEkle(event, productId) {
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    const buton = event.currentTarget;
-
-    fetch(`/favori/toggle/${productId}/`, {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": getCookie("csrftoken")
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-
-        if (data.is_favorited) {
-            buton.textContent = "♥";
-            buton.classList.add("favori-aktif");
-        } else {
-            buton.textContent = "♡";
-            buton.classList.remove("favori-aktif");
+    // Hızlı Beden Seçimi & Sepete Ekleme Fonksiyonu
+    function hizliSepeteEkle(event, productId, size, productTitle) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
         }
 
-    });
-}
-
-
-function getCookie(name) {
-
-    let cookieValue = null;
-
-    if (document.cookie && document.cookie !== "") {
-
-        const cookies = document.cookie.split(";");
-
-        for (let cookie of cookies) {
-
-            cookie = cookie.trim();
-
-            if (cookie.startsWith(name + "=")) {
-
-                cookieValue = decodeURIComponent(
-                    cookie.substring(name.length + 1)
-                );
-
-                break;
+        if (!isUserLoggedIn) {
+            if (typeof hesapPanelAc === "function") {
+                hesapPanelAc();
             }
+            gosterFavToast("Giriş Yapmalısınız", "Sepete eklemek için lütfen giriş yapın.", true);
+            return;
         }
+
+        const buton = event ? event.currentTarget : null;
+        const orijinalMetin = buton ? buton.textContent : size;
+
+        if (buton) {
+            buton.classList.add("yukleniyor");
+            buton.textContent = "...";
+        }
+
+        const formData = new FormData();
+        formData.append("size", size);
+        formData.append("ajax", "1");
+
+        fetch(`/sepet/ekle/${productId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+
+            if (data.status === "success") {
+                if (buton) {
+                    buton.classList.remove("yukleniyor");
+                    buton.classList.add("eklendi");
+                    buton.textContent = "✓";
+
+                    setTimeout(() => {
+                        buton.classList.remove("eklendi");
+                        buton.textContent = orijinalMetin;
+                    }, 1400);
+                }
+
+                gosterFavToast(productTitle || "Ürün", size, false);
+            } else {
+                if (buton) {
+                    buton.classList.remove("yukleniyor");
+                    buton.textContent = orijinalMetin;
+                }
+                gosterFavToast("Hata", data.message || "Sepete eklenemedi.", true);
+            }
+        })
+        .catch(err => {
+            if (buton) {
+                buton.classList.remove("yukleniyor");
+                buton.textContent = orijinalMetin;
+            }
+            console.error("Sepete ekleme hatası:", err);
+            gosterFavToast("Hata", "Bir sorun oluştu.", true);
+        });
     }
 
-    return cookieValue;
-}
+    // Favori Ekle / Çıkar
+    function favoriEkle(event, productId) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const buton = event ? event.currentTarget : null;
 
-</script>
+        if (buton) {
+            buton.classList.toggle("active");
+        }
 
+        fetch(`/favori/toggle/${productId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+            if (buton) {
+                if (data.is_favorited) {
+                    buton.classList.add("active");
+                    gosterFavToast("Favorilere Eklendi", "Ürün favorilerinize kaydedildi.", false);
+                } else {
+                    buton.classList.remove("active");
+                    gosterFavToast("Favorilerden Çıkarıldı", "Ürün favorilerinizden kaldırıldı.", false);
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Favori işlemi hatası:", error);
+            if (buton) {
+                buton.classList.toggle("active");
+            }
+        });
+    }
+
+    // Dinamik Toast Bildirimi
+    function gosterFavToast(baslik, aciklama, isError) {
+        let container = document.getElementById("favToastContainer");
+        if (!container) {
+            container = document.createElement("div");
+            container.id = "favToastContainer";
+            container.className = "fav-toast-container";
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement("div");
+        toast.className = "fav-toast" + (isError ? " fav-toast-error" : "");
+
+        const iconHtml = isError
+            ? `<div class="fav-toast-icon error">!</div>`
+            : `<div class="fav-toast-icon">✓</div>`;
+
+        toast.innerHTML = `
+            ${iconHtml}
+            <div class="fav-toast-content">
+                <span class="fav-toast-title">${baslik}</span>
+                <span class="fav-toast-subtitle">${isError ? aciklama : aciklama + ' bedeni sepete eklendi.'}</span>
+            </div>
+            <a href="/sepet/" class="fav-toast-link">SEPETE GİT</a>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add("cikis");
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3200);
+    }
+
+    // Dropdown Aç / Kapa
+    let aktifDropdown = null;
+    function toggleDropdown(id, event) {
+        if (event) event.stopPropagation();
+        const dd = document.getElementById(id);
+        if (!dd) return;
+
+        if (aktifDropdown && aktifDropdown !== dd) {
+            aktifDropdown.classList.remove("is-open");
+        }
+
+        dd.classList.toggle("is-open");
+        aktifDropdown = dd.classList.contains("is-open") ? dd : null;
+    }
+
+    document.addEventListener("click", function (event) {
+        if (aktifDropdown && !aktifDropdown.contains(event.target)) {
+            aktifDropdown.classList.remove("is-open");
+            aktifDropdown = null;
+        }
+    });
+
+    // Sıralama
+    let seciliSiralama = "newest";
+    function secSirala(deger, etiket, event) {
+        if (event) event.stopPropagation();
+        seciliSiralama = deger;
+
+        const etiketEl = document.getElementById("siralaSeciliEtiket");
+        if (etiketEl) etiketEl.textContent = etiket;
+
+        const dd = document.getElementById("siralaDropdown");
+        if (dd) {
+            dd.querySelectorAll(".custom-dropdown-item").forEach(item => {
+                item.classList.toggle("is-selected", item.getAttribute("data-value") === deger);
+            });
+            dd.classList.remove("is-open");
+            aktifDropdown = null;
+        }
+
+        siralamaUygula();
+    }
+
+    function siralamaUygula() {
+        const grid = document.getElementById("urunGrid");
+        if (!grid) return;
+
+        const kartlar = Array.from(grid.querySelectorAll(".urun-karti"));
+        kartlar.sort((a, b) => {
+            const fA = parseFloat(a.getAttribute("data-price")) || 0;
+            const fB = parseFloat(b.getAttribute("data-price")) || 0;
+            const tA = (a.getAttribute("data-title") || "").toLowerCase();
+            const tB = (b.getAttribute("data-title") || "").toLowerCase();
+            const iA = parseInt(a.getAttribute("data-index")) || 0;
+            const iB = parseInt(b.getAttribute("data-index")) || 0;
+
+            if (seciliSiralama === "price-low") return fA - fB;
+            if (seciliSiralama === "price-high") return fB - fA;
+            if (seciliSiralama === "name-az") return tA.localeCompare(tB, 'tr');
+            return iA - iB;
+        });
+
+        kartlar.forEach(k => grid.appendChild(k));
+    }
+
+    // CSRF Cookie Yardımcısı
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
 </body>
 
 </html>

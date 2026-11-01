@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.models import Cart
+from products.models import Category
 from django.contrib import messages
 from django.db import transaction
 
@@ -12,6 +13,7 @@ from django.db import transaction
 def order_create(request):
     cart = get_object_or_404(Cart, user=request.user)
     cart_items = cart.items.all()
+    categories = Category.objects.all()
 
     # Sepet boşsa doğrudan sepete geri yönlendir
     if not cart_items:
@@ -42,7 +44,7 @@ def order_create(request):
             # Sepeti boşalt
             cart_items.delete()
 
-            return render(request,'orders/order_success.html', {'order':order})
+            return render(request,'orders/order_success.html', {'order': order, 'categories': categories})
     else:
         initial_data = {
             'first_name':request.user.first_name,
@@ -51,14 +53,27 @@ def order_create(request):
         }
         form = OrderCreateForm(initial=initial_data)
     total_price = sum(item.get_total_price() for item in cart_items)
-    return render(request, 'orders/checkout.html', {'cart_items': cart_items, 'form': form, 'total_price': total_price})
+    return render(request, 'orders/checkout.html', {
+        'cart_items': cart_items,
+        'form': form,
+        'total_price': total_price,
+        'categories': categories,
+    })
 
 @login_required(login_url='login')
 def order_history(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'orders/order_history.html',{'orders':orders})
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
+    categories = Category.objects.all()
+    return render(request, 'orders/order_history.html', {
+        'orders': orders,
+        'categories': categories,
+    })
 
 @login_required(login_url='login')
-def order_detail(request,order_id):
-    order = get_object_or_404(Order,id=order_id,user=request.user)
-    return render(request, 'orders/order_detail.html',{'order':order})
+def order_detail(request, order_id):
+    order = get_object_or_404(Order.objects.prefetch_related('items__product'), id=order_id, user=request.user)
+    categories = Category.objects.all()
+    return render(request, 'orders/order_detail.html', {
+        'order': order,
+        'categories': categories,
+    })

@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -15,7 +14,7 @@
 
     <title>Favorilerim | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=9">
 </head>
 
 <body>
@@ -24,158 +23,187 @@
 
 <main class="favoriler-sayfasi">
 
-    <div class="favoriler-baslik">
-        <h1>FAVORİLERİM</h1>
+    <!-- BAŞLIK & BİLGİ ALANI -->
+    <div class="favoriler-baslik-wrap">
+        <span class="favoriler-etiket">KİŞİSEL SEÇKİNİZ</span>
+        <h1 class="favoriler-ana-baslik">FAVORİLERİM</h1>
+        <p class="favoriler-alt-metin">Beğendiğiniz parçaları buradan takip edebilir, bedeninizi seçip tek tıkla sepetinize ekleyebilirsiniz.</p>
+        <div class="favoriler-sayac-kutusu">
+            <span class="favoriler-sayac-badge" id="favSayacBadge">
+                {% if misafir %}
+                    <span id="misafirSayac">0</span> PARÇA
+                {% elif favorites %}
+                    {{ favorites|length }} PARÇA
+                {% else %}
+                    0 PARÇA
+                {% endif %}
+            </span>
+        </div>
     </div>
 
     {% if misafir %}
 
+        <!-- MİSAFİR FAVORİLER LİSTESİ -->
         <div class="favoriler-grid" id="misafirFavorilerGrid">
-
             {% for product in products %}
-
                 <div
                     class="favori-urun-karti misafir-favori-karti"
+                    id="fav-kart-{{ product.id }}"
                     data-product-id="{{ product.id }}"
                     style="display: none;"
                 >
-
-                    <a href="{% url 'product_detail' product.id %}">
-                        <div class="favori-urun-gorsel">
-
+                    <div class="favori-urun-gorsel">
+                        <a href="{% url 'product_detail' product.id %}">
                             {% if product.image %}
-                                <img
-                                    src="{{ product.image.url }}"
-                                    alt="{{ product.title }}"
-                                >
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}">
                             {% endif %}
+                        </a>
 
-                            <button
-                                type="button"
-                                class="favori-btn active"
-                                onclick="favoridenCikar({{ product.id }}, event)"
-                                aria-label="Favorilerden çıkar"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                                </svg>
-                            </button>
-
-                        </div>
-                    </a>
-
-                    <div class="favori-urun-bilgi">
-                        <h3>{{ product.title }}</h3>
-                        <p>{{ product.price }} TL</p>
-
-                        <form
-                            action="{% url 'add_to_cart' product.id %}"
-                            method="POST"
+                        <button
+                            type="button"
+                            class="favori-btn active"
+                            data-id="{{ product.id }}"
+                            onclick="favoridenCikar(this.getAttribute('data-id'), event)"
+                            aria-label="Favorilerden çıkar"
+                            title="Favorilerden Kaldır"
                         >
-                            {% csrf_token %}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                            </svg>
+                        </button>
 
-                            <select name="size" required>
-                                <option value="">BEDEN SEÇ</option>
-                                <option value="XS">XS</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-
-                            <button type="submit" class="favori-sepete-ekle">
-                                SEPETE EKLE
-                            </button>
-                        </form>
+                        <!-- ZARA TARZI HIZLI BEDEN SEÇİMİ ÇEKMECESİ -->
+                        <div class="hizli-ekle-paneli">
+                            <span class="hizli-ekle-etiket">BEDEN SEÇ</span>
+                            <div class="hizli-beden-liste">
+                                {% if product.category and product.category.slug == 'accessories' %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'STANDART', '{{ product.title|escapejs }}')">STD</button>
+                                {% else %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'XS', '{{ product.title|escapejs }}')">XS</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'S', '{{ product.title|escapejs }}')">S</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'M', '{{ product.title|escapejs }}')">M</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'L', '{{ product.title|escapejs }}')">L</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'XL', '{{ product.title|escapejs }}')">XL</button>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="favori-urun-bilgi">
+                        <a href="{% url 'product_detail' product.id %}" class="favori-urun-baslik-link">
+                            <h3>{{ product.title }}</h3>
+                        </a>
+                        <p class="favori-urun-fiyat">{{ product.price }} TL</p>
+                    </div>
                 </div>
-
             {% endfor %}
-
         </div>
 
         <div class="bos-favoriler" id="misafirBosFavoriler" style="display: none;">
-            <h2>Henüz favori ürününüz yok.</h2>
-            <p>Beğendiğiniz ürünleri favorilerinize ekleyebilirsiniz.</p>
-            <a href="{% url 'home' %}">ALIŞVERİŞE BAŞLA</a>
+            <div class="bos-fav-icon">♡</div>
+            <h2>Henüz favori ürününüz yok</h2>
+            <p>Koleksiyonumuzdaki beğendiğiniz parçaları kalp ikonuna tıklayarak buraya kaydedebilirsiniz.</p>
+            <a href="{% url 'home' %}" class="bos-fav-btn">ALIŞVERİŞE BAŞLA</a>
         </div>
 
     {% elif favorites %}
 
+        <!-- ÜYE KULLANICI FAVORİLER LİSTESİ -->
         <div class="favoriler-grid">
-
             {% for item in favorites %}
-
-                <div class="favori-urun-karti">
-
-                    <a href="{% url 'product_detail' item.product.id %}">
-                        <div class="favori-urun-gorsel">
-
+                <div class="favori-urun-karti" id="fav-kart-{{ item.product.id }}">
+                    <div class="favori-urun-gorsel">
+                        <a href="{% url 'product_detail' item.product.id %}">
                             {% if item.product.image %}
-                                <img
-                                    src="{{ item.product.image.url }}"
-                                    alt="{{ item.product.title }}"
-                                >
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}">
                             {% endif %}
+                        </a>
 
-                            <button
-                                type="button"
-                                class="favori-btn active"
-                                onclick="favoridenCikar({{ item.product.id }}, event)"
-                                aria-label="Favorilerden çıkar"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                                </svg>
-                            </button>
+                        <button
+                            type="button"
+                            class="favori-btn active"
+                            data-id="{{ item.product.id }}"
+                            onclick="favoridenCikar(this.getAttribute('data-id'), event)"
+                            aria-label="Favorilerden çıkar"
+                            title="Favorilerden Kaldır"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                            </svg>
+                        </button>
 
+                        <!-- ZARA TARZI HIZLI BEDEN SEÇİMİ ÇEKMECESİ -->
+                        <div class="hizli-ekle-paneli">
+                            <span class="hizli-ekle-etiket">BEDEN SEÇ</span>
+                            <div class="hizli-beden-liste">
+                                {% if item.product.category and item.product.category.slug == 'accessories' %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ item.product.id }}, 'STANDART', '{{ item.product.title|escapejs }}')">STD</button>
+                                {% else %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ item.product.id }}, 'XS', '{{ item.product.title|escapejs }}')">XS</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ item.product.id }}, 'S', '{{ item.product.title|escapejs }}')">S</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ item.product.id }}, 'M', '{{ item.product.title|escapejs }}')">M</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ item.product.id }}, 'L', '{{ item.product.title|escapejs }}')">L</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ item.product.id }}, 'XL', '{{ item.product.title|escapejs }}')">XL</button>
+                                {% endif %}
+                            </div>
                         </div>
-                    </a>
-
-                    <div class="favori-urun-bilgi">
-
-                        <h3>{{ item.product.title }}</h3>
-                        <p>{{ item.product.price }} TL</p>
-
-                        <form action="{% url 'add_to_cart' item.product.id %}" method="POST">
-                            {% csrf_token %}
-
-                            <select name="size" required>
-                                <option value="">BEDEN SEÇ</option>
-                                <option value="XS">XS</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-
-                            <button type="submit" class="favori-sepete-ekle">
-                                SEPETE EKLE
-                            </button>
-                        </form>
-
                     </div>
 
+                    <div class="favori-urun-bilgi">
+                        <a href="{% url 'product_detail' item.product.id %}" class="favori-urun-baslik-link">
+                            <h3>{{ item.product.title }}</h3>
+                        </a>
+                        <p class="favori-urun-fiyat">{{ item.product.price }} TL</p>
+                    </div>
                 </div>
-
             {% endfor %}
-
         </div>
 
     {% else %}
 
+        <!-- FAVORİSİ OLMAYAN KULLANICI -->
         <div class="bos-favoriler">
-            <h2>Henüz favori ürününüz yok.</h2>
-            <p>Beğendiğiniz ürünleri favorilerinize ekleyebilirsiniz.</p>
-            <a href="{% url 'home' %}">ALIŞVERİŞE BAŞLA</a>
+            <div class="bos-fav-icon">♡</div>
+            <h2>Henüz favori ürününüz yok</h2>
+            <p>Koleksiyonumuzdaki beğendiğiniz parçaları kalp ikonuna tıklayarak buraya kaydedebilirsiniz.</p>
+            <a href="{% url 'home' %}" class="bos-fav-btn">ALIŞVERİŞE BAŞLA</a>
         </div>
 
+    {% endif %}
+
+    <!-- SAYFAYI ZENGİNLEŞTİREN ÖNERİLEN PARÇALAR BÖLÜMÜ -->
+    {% if oneri_urunler %}
+    <section class="favori-oneriler-section">
+        <div class="favori-oneriler-baslik">
+            <span class="favori-oneriler-etiket">SİZİN İÇİN</span>
+            <h2>SİZİN İÇİN SEÇTİKLERİMİZ</h2>
+        </div>
+
+        <div class="favori-oneriler-grid">
+            {% for p in oneri_urunler %}
+            <div class="favori-oneri-kart">
+                <a href="{% url 'product_detail' p.id %}">
+                    <div class="favori-oneri-gorsel">
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" alt="{{ p.title }}">
+                        {% endif %}
+                    </div>
+                </a>
+                <div class="favori-oneri-bilgi">
+                    <h4>{{ p.title }}</h4>
+                    <p>{{ p.price }} TL</p>
+                    <a href="{% url 'product_detail' p.id %}" class="oneri-incele-link">ÜRÜNÜ İNCELE →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
     {% endif %}
 
 </main>
 
 {% include "footer.html" %}
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const favoriler = JSON.parse(
@@ -183,30 +211,34 @@ document.addEventListener("DOMContentLoaded", function() {
     );
 
     const kartlar = document.querySelectorAll(".misafir-favori-karti");
-
     let sayac = 0;
 
     kartlar.forEach(function(kart) {
         const productId = kart.dataset.productId;
-
         if (favoriler.includes(productId)) {
             kart.style.display = "block";
             sayac++;
         }
     });
 
+    const misafirSayacEl = document.getElementById("misafirSayac");
+    if (misafirSayacEl) misafirSayacEl.textContent = sayac;
+
     if (sayac === 0 && kartlar.length > 0) {
         const bosFav = document.getElementById("misafirBosFavoriler");
-        if (bosFav) bosFav.style.display = "block";
+        if (bosFav) bosFav.style.display = "flex";
+        const grid = document.getElementById("misafirFavorilerGrid");
+        if (grid) grid.style.display = "none";
     }
 });
 
-
 function favoridenCikar(productId, event) {
-    event.preventDefault();
-    event.stopPropagation();
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 
-    const buton = event.currentTarget;
+    const kart = document.getElementById(`fav-kart-${productId}`);
 
     // 1. Misafir kullanıcılar için (sessionStorage)
     let misafirFavoriler = JSON.parse(
@@ -214,15 +246,29 @@ function favoridenCikar(productId, event) {
     );
 
     if (misafirFavoriler.includes(String(productId)) || misafirFavoriler.includes(productId)) {
-        misafirFavoriler = misafirFavoriler.filter(function(id) {
-            return String(id) !== String(productId);
-        });
+        misafirFavoriler = misafirFavoriler.filter(id => String(id) !== String(productId));
         sessionStorage.setItem("misafirFavoriler", JSON.stringify(misafirFavoriler));
-        location.reload(); // Sayfayı yenileyip güncel listeyi göster
+
+        if (kart) {
+            kart.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+            kart.style.opacity = "0";
+            kart.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                kart.remove();
+                const kalan = document.querySelectorAll(".misafir-favori-karti[style*='display: block']").length;
+                const badge = document.getElementById("favSayacBadge");
+                if (badge) badge.textContent = `${kalan} PARÇA`;
+                if (kalan === 0) {
+                    const bosFav = document.getElementById("misafirBosFavoriler");
+                    if (bosFav) bosFav.style.display = "flex";
+                }
+            }, 300);
+        }
+        gosterFavToast("Favorilerden Kaldırıldı", "Ürün listenizden çıkarıldı.", false);
         return;
     }
 
-    // 2. Giriş yapmış (üye) kullanıcılar için (Backend / Django API)
+    // 2. Giriş yapmış kullanıcılar için (AJAX)
     fetch(`/favori/toggle/${productId}/`, {
         method: "POST",
         headers: {
@@ -239,12 +285,142 @@ function favoridenCikar(productId, event) {
     })
     .then(data => {
         if (!data) return;
-        // Sunucudan favoriden çıkarıldığı teyit edilince kartı sayfadan uçur veya yenile
-        location.reload();
+        if (kart) {
+            kart.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+            kart.style.opacity = "0";
+            kart.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                kart.remove();
+                const kalan = document.querySelectorAll(".favori-urun-karti").length;
+                const badge = document.getElementById("favSayacBadge");
+                if (badge) badge.textContent = `${kalan} PARÇA`;
+                if (kalan === 0) {
+                    location.reload();
+                }
+            }, 300);
+        }
+        gosterFavToast("Favorilerden Kaldırıldı", "Ürün listenizden çıkarıldı.", false);
     })
     .catch(error => {
         console.error("Favoriden çıkarma hatası:", error);
     });
+}
+
+const isUserLoggedIn = {% if request.user.is_authenticated %}true{% else %}false{% endif %};
+
+// Hızlı Beden Seçimi & Sepete Ekleme
+function hizliSepeteEkle(event, productId, size, productTitle) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    if (!isUserLoggedIn) {
+        if (typeof hesapPanelAc === "function") {
+            hesapPanelAc();
+        }
+        gosterFavToast("Giriş Yapmalısınız", "Sepete eklemek için lütfen giriş yapın.", true);
+        return;
+    }
+
+    const buton = event ? event.currentTarget : null;
+    const orijinalMetin = buton ? buton.textContent : size;
+
+    if (buton) {
+        buton.classList.add("yukleniyor");
+        buton.textContent = "...";
+    }
+
+    const formData = new FormData();
+    formData.append("size", size);
+    formData.append("ajax", "1");
+
+    fetch(`/sepet/ekle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data) return;
+
+        if (data.status === "success") {
+            if (buton) {
+                buton.classList.remove("yukleniyor");
+                buton.classList.add("eklendi");
+                buton.textContent = "✓";
+
+                setTimeout(() => {
+                    buton.classList.remove("eklendi");
+                    buton.textContent = orijinalMetin;
+                }, 1400);
+            }
+            gosterFavToast(productTitle || "Ürün", `${size} bedeni sepete eklendi!`, false);
+        } else {
+            if (buton) {
+                buton.classList.remove("yukleniyor");
+                buton.textContent = orijinalMetin;
+            }
+            gosterFavToast("Hata", data.message || "Sepete eklenemedi.", true);
+        }
+    })
+    .catch(error => {
+        console.error("Sepete ekleme hatası:", error);
+        if (buton) {
+            buton.classList.remove("yukleniyor");
+            buton.textContent = orijinalMetin;
+        }
+        gosterFavToast("Hata", "Bağlantı hatası oluştu.", true);
+    });
+}
+
+// Şık & Minimalist Toast Bildirim Sistemi (Sağ üstte yüzen dinamik bildirim)
+function gosterFavToast(baslik, bedenVeyaMesaj, isUyari) {
+    let container = document.getElementById("favToastContainer");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "favToastContainer";
+        container.className = "fav-toast-container";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = "fav-toast";
+
+    const ikonHtml = isUyari
+        ? `<svg class="fav-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+        : `<svg class="fav-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+    const icerikHtml = isUyari
+        ? `<div><span class="fav-toast-title">${baslik}</span><div style="font-size: 12px; color: #555; margin-top: 2px;">${bedenVeyaMesaj}</div></div>`
+        : `<div>
+             <div><span class="fav-toast-title">${baslik}</span> <span class="fav-toast-size">${bedenVeyaMesaj}</span> sepete eklendi.</div>
+             <a href="/sepet/" class="fav-toast-link">SEPETİ GÖRÜNTÜLE →</a>
+           </div>`;
+
+    toast.innerHTML = `
+        ${ikonHtml}
+        <div class="fav-toast-content">
+            ${icerikHtml}
+        </div>
+        <button type="button" class="fav-toast-kapat" onclick="this.parentElement.remove()" aria-label="Kapat">×</button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("toast-gizle");
+        setTimeout(() => toast.remove(), 250);
+    }, 2800);
 }
 
 function getCookie(name) {
@@ -263,5 +439,4 @@ function getCookie(name) {
 }
 </script>
 </body>
-</html>
 </html>

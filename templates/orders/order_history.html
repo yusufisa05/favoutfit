@@ -9,57 +9,126 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
     <title>Geçmiş Siparişlerim | FAV OUTFIT</title>
-    <link rel="stylesheet" href="{% static 'fav.css' %}">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=16">
 </head>
-<body>
+<body class="checkout-body">
 
 {% include "header.html" %}
 
-<main class="checkout-sayfasi">
-    <h2>Geçmiş Siparişlerim</h2>
+<main class="siparis-sayfa-kapsayici">
+
+    <!-- BAŞLIK & BREADCRUMB ALANI -->
+    <div class="siparis-baslik-blogu">
+        <div class="siparis-breadcrumb">
+            <a href="{% url 'home' %}">ANA SAYFA</a>
+            <span class="ayrac">/</span>
+            <span>HESABIM</span>
+            <span class="ayrac">/</span>
+            <span class="aktif">SİPARİŞ GEÇMİŞİ</span>
+        </div>
+        <h1 class="siparis-ana-baslik">GEÇMİŞ SİPARİŞLERİM</h1>
+        <div class="siparis-alt-aciklama">
+            <span>Verdiğiniz tüm siparişleri ve kargo durumlarını buradan takip edebilirsiniz.</span>
+            {% if orders %}
+                <span class="siparis-sayac-rozet">{{ orders|length }} SİPARİŞ</span>
+            {% endif %}
+        </div>
+    </div>
 
     {% if orders %}
-        <div class="checkout-ozet" style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #111;">
-                        <th style="padding: 12px 8px;">Sipariş No</th>
-                        <th style="padding: 12px 8px;">Tarih</th>
-                        <th style="padding: 12px 8px;">Teslimat Şehri</th>
-                        <th style="padding: 12px 8px;">Durum</th>
-                        <th style="padding: 12px 8px;">Toplam Tutar</th>
-                        <th style="padding: 12px 8px; text-align: right;">İncele</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                        <tr style="border-bottom: 1px solid #e5e5e5;">
-                            <td style="padding: 14px 8px; font-weight: 600;">#{{ order.id }}</td>
-                            <td style="padding: 14px 8px;">{{ order.created_at|date:"d.m.Y H:i" }}</td>
-                            <td style="padding: 14px 8px;">{{ order.city }}</td>
-                            <td style="padding: 14px 8px;">{{ order.get_status_display }}</td>
-                            <td style="padding: 14px 8px; font-weight: 600;">{{ order.get_total_cost }} TL</td>
-                            <td style="padding: 14px 8px; text-align: right;">
-                                <a href="{% url 'order_detail' order.id %}" style="color: #000; font-weight: 600; text-decoration: underline;">
-                                    Detayları Gör
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- SİPARİŞ KARTLARI -->
+        <div class="siparis-kart-listesi">
+            {% for order in orders %}
+                <div class="siparis-karti">
+                    <!-- ÜST BİLGİ BARI -->
+                    <div class="siparis-karti-ust">
+                        <div class="siparis-ust-sol">
+                            <div class="siparis-bilgi-grup">
+                                <span class="siparis-bilgi-etiket">SİPARİŞ NO</span>
+                                <span class="siparis-bilgi-deger siparis-no">#{{ order.id }}</span>
+                            </div>
+                            <div class="siparis-bilgi-grup">
+                                <span class="siparis-bilgi-etiket">SİPARİŞ TARİHİ</span>
+                                <span class="siparis-bilgi-deger">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+                            </div>
+                            <div class="siparis-bilgi-grup">
+                                <span class="siparis-bilgi-etiket">TESLİMAT ŞEHRİ</span>
+                                <span class="siparis-bilgi-deger">{{ order.city }}</span>
+                            </div>
+                        </div>
+
+                        <div class="siparis-ust-sag">
+                            <div class="siparis-bilgi-grup" style="text-align: right;">
+                                <span class="siparis-bilgi-etiket">TOPLAM TUTAR</span>
+                                <span class="siparis-fiyat-deger">{{ order.get_total_cost }} TL</span>
+                            </div>
+                            <div class="siparis-durum-rozet durum-{{ order.status }}">
+                                <span class="durum-nokta"></span>
+                                <span>{{ order.get_status_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ORTA BÖLÜM: ÜRÜN ÖNİZLEMELERİ VE BUTON -->
+                    <div class="siparis-karti-orta">
+                        <div class="siparis-urunler-onizleme">
+                            {% for item in order.items.all %}
+                                <div class="siparis-onizleme-urun">
+                                    <div class="siparis-urun-resim-kutu">
+                                        {% if item.product.image %}
+                                            <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" loading="lazy">
+                                        {% else %}
+                                            <div class="siparis-resim-yok">FAV</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="siparis-urun-ozet-bilgi">
+                                        <a href="{% url 'product_detail' item.product.slug %}" class="siparis-urun-baslik">
+                                            {{ item.product.title }}
+                                        </a>
+                                        <span class="siparis-urun-meta">{{ item.quantity }} Adet • {{ item.price }} TL</span>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div style="font-size: 13px; color: #888; font-style: italic;">
+                                    Bu siparişe ait ürün kaydı bulunmamaktadır.
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="siparis-karti-aksiyon">
+                            <a href="{% url 'order_detail' order.id %}" class="siparis-detay-btn">
+                                <span>SİPARİŞ DETAYI</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     {% else %}
-        <div class="bos-favoriler">
-            <h2>Henüz siparişiniz bulunmuyor.</h2>
-            <p>Verdiğiniz siparişleri buradan takip edebilirsiniz.</p>
-            <a href="{% url 'home' %}">ALIŞVERİŞE BAŞLA</a>
+        <!-- BOŞ DURUM -->
+        <div class="siparis-bos-durum">
+            <div class="siparis-bos-ikon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </div>
+            <h2 class="siparis-bos-baslik">Henüz Siparişiniz Bulunmuyor</h2>
+            <p class="siparis-bos-aciklama">Verdiğiniz tüm siparişlerin durumunu ve teslimat detaylarını bu sayfadan takip edebilirsiniz.</p>
+            <a href="{% url 'home' %}" class="siparis-bos-btn">ALIŞVERİŞE BAŞLA</a>
         </div>
     {% endif %}
 
-    <div style="margin-top: 25px;">
-        <a href="{% url 'home' %}" class="checkout-geri">← Ana Sayfaya Dön</a>
+    <!-- ALT GEZİNME -->
+    <div class="siparis-alt-gezinme">
+        <a href="{% url 'home' %}" class="siparis-geri-link">← ALIŞVERİŞE DEVAM ET</a>
     </div>
+
 </main>
 
 {% include "footer.html" %}

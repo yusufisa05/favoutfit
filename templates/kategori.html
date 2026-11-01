@@ -25,53 +25,167 @@
 
         <div class="urunler-baslik">
             <h1>{{ secilen_kategori.name }}</h1>
-            <p>FAV OUTFIT koleksiyonunu keşfet.</p>
+            <p>FAV OUTFIT KOLEKSİYONUNU KEŞFET</p>
         </div>
 
         <div class="urunler-kontrol">
-            <div class="urun-sayisi">
-                {{ products|length }} ürün
+            <!-- Sol: Ürün Sayacı ve Aktif Filtre Etiketleri -->
+            <div class="filtre-sol-alan">
+                <span class="urun-sayisi">
+                    <strong id="urunSayac">{{ products|length }}</strong> ÜRÜN
+                </span>
+
+                <div class="aktif-filtre-etiketleri" id="aktifFiltreler" style="display: none;">
+                    <div class="filtre-chip" id="aktifFiyatChip" style="display: none;">
+                        <span class="filtre-chip-metin" id="aktifFiyatMetin"></span>
+                        <button type="button" class="filtre-chip-kaldir" onclick="temizleFiyatFiltresi(event)" title="Filtreyi kaldır" aria-label="Filtreyi kaldır">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                    <button type="button" class="tumunu-temizle-btn" onclick="tumFiltreleriTemizle()">Tümünü Temizle</button>
+                </div>
             </div>
 
+            <!-- Sağ: Özel Dropdown Menüler -->
             <div class="filtreler">
-                <select onchange="filtreleFiyat(this.value)">
-                    <option value="all">Fiyat</option>
-                    <option value="0-500">0 - 500 TL</option>
-                    <option value="500-1000">500 - 1000 TL</option>
-                    <option value="1000+">1000 TL ve üzeri</option>
-                </select>
+                <!-- FİYAT FİLTRESİ DROPDOWN -->
+                <div class="custom-dropdown" id="fiyatDropdown">
+                    <button type="button" class="custom-dropdown-btn" onclick="toggleDropdown('fiyatDropdown', event)" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="dropdown-label">FİYAT</span>
+                        <span class="dropdown-secili-deger" id="fiyatSeciliEtiket"></span>
+                        <svg class="dropdown-ok" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="custom-dropdown-menu" role="listbox">
+                        <button type="button" class="custom-dropdown-item is-selected" data-value="all" onclick="secFiyat('all', 'Tüm Fiyatlar', event)">
+                            <span class="item-text">Tüm Fiyatlar</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="0-500" onclick="secFiyat('0-500', '0 - 500 TL', event)">
+                            <span class="item-text">0 - 500 TL</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="500-1000" onclick="secFiyat('500-1000', '500 - 1.000 TL', event)">
+                            <span class="item-text">500 - 1.000 TL</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="1000-2000" onclick="secFiyat('1000-2000', '1.000 - 2.000 TL', event)">
+                            <span class="item-text">1.000 - 2.000 TL</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="2000+" onclick="secFiyat('2000+', '2.000 TL ve üzeri', event)">
+                            <span class="item-text">2.000 TL ve üzeri</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
 
-                <select id="sirala" onchange="siralaUrunler(this.value)">
-                    <option value="newest">Yeni ürünler</option>
-                    <option value="price-low">Fiyat: Düşükten yükseğe</option>
-                    <option value="price-high">Fiyat: Yüksekten düşüğe</option>
-                </select>
+                <!-- SIRALAMA DROPDOWN -->
+                <div class="custom-dropdown" id="siralaDropdown">
+                    <button type="button" class="custom-dropdown-btn" onclick="toggleDropdown('siralaDropdown', event)" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="dropdown-label">SIRALA:</span>
+                        <span class="dropdown-secili-deger" id="siralaSeciliEtiket">Yeni Ürünler</span>
+                        <svg class="dropdown-ok" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="custom-dropdown-menu" role="listbox">
+                        <button type="button" class="custom-dropdown-item is-selected" data-value="newest" onclick="secSirala('newest', 'Yeni Ürünler', event)">
+                            <span class="item-text">Yeni Ürünler</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="price-low" onclick="secSirala('price-low', 'Fiyat: Düşükten Yükseğe', event)">
+                            <span class="item-text">Fiyat: Düşükten Yükseğe</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="price-high" onclick="secSirala('price-high', 'Fiyat: Yüksekten Düşüğe', event)">
+                            <span class="item-text">Fiyat: Yüksekten Düşüğe</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="custom-dropdown-item" data-value="name-az" onclick="secSirala('name-az', 'İsim: A - Z', event)">
+                            <span class="item-text">İsim: A - Z</span>
+                            <svg class="item-check" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="urun-grid">
 
+            <!-- FİLTRE SONUCU BOŞ DURUMU -->
+            <div class="filtre-bos-durum" id="filtreBosDurum" style="display: none;">
+                <div class="filtre-bos-icon">
+                    <svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </div>
+                <h3>Filtreye uygun ürün bulunamadı</h3>
+                <p>Seçtiğiniz fiyat aralığında bu kategoride ürün yer almıyor.</p>
+                <button type="button" class="filtre-sifirla-btn" onclick="tumFiltreleriTemizle()">FİLTRELERİ TEMİZLE</button>
+            </div>
+
             {% for product in products %}
 
-                <div class="urun-karti">
+                <div class="urun-karti" data-price="{{ product.price }}" data-title="{{ product.title|escape }}" data-index="{{ forloop.counter0 }}">
 
                     <div class="urun-gorsel">
                         <a href="{% url 'product_detail' product.id %}">
+                            <!-- 1. Ana Görsel -->
                             {% if product.image %}
-                                <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="urun-ana-gorsel">
                             {% endif %}
+
+                            <!-- 2. İkinci Görsel (Hover Efekti) -->
+                            {% with ikinci_gorsel=product.gallery_images.first %}
+                                {% if ikinci_gorsel %}
+                                    <img src="{{ ikinci_gorsel.image.url }}" alt="{{ product.title }}" class="urun-hover-gorsel">
+                                {% endif %}
+                            {% endwith %}
                         </a>
 
-                        <button
-                            class="favori-btn {% if product.id in favori_urunler %}active{% endif %}"
-                            type="button"
-                            onclick="favoriEkle(event, {{ product.id }})"
-                            aria-label="Favorilere ekle"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                            </svg>
-                        </button>
+                        {% if request.user.is_authenticated %}
+                            <button
+                                class="favori-btn {% if product.id in favori_urunler %}active{% endif %}"
+                                type="button"
+                                onclick="favoriEkle(event, {{ product.id }})"
+                                aria-label="Favorilere ekle"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </button>
+                        {% else %}
+                            <button
+                                class="favori-btn"
+                                type="button"
+                                onclick="hesapPanelAc()"
+                                aria-label="Favorilere eklemek için giriş yap"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                </svg>
+                            </button>
+                        {% endif %}
+
+                        <!-- Hızlı Beden Seçimi & Sepete Ekleme Çekmecesi (Zara / Minimalist Style) -->
+                        <div class="hizli-ekle-paneli">
+                            <span class="hizli-ekle-etiket">HIZLI EKLE</span>
+                            <div class="hizli-beden-liste">
+                                {% if secilen_kategori.slug == 'accessories' %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'STANDART', '{{ product.title|escapejs }}')">STD</button>
+                                {% else %}
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'XS', '{{ product.title|escapejs }}')">XS</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'S', '{{ product.title|escapejs }}')">S</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'M', '{{ product.title|escapejs }}')">M</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'L', '{{ product.title|escapejs }}')">L</button>
+                                    <button type="button" class="hizli-beden-btn" onclick="hizliSepeteEkle(event, {{ product.id }}, 'XL', '{{ product.title|escapejs }}')">XL</button>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="urun-bilgi">
@@ -83,7 +197,18 @@
 
             {% empty %}
 
-                <p>Bu kategoride henüz ürün bulunmuyor.</p>
+                <div class="kategori-bos-durum">
+                    <div class="kategori-bos-icon">
+                        <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                            <path d="M3 6h18"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                    </div>
+                    <h3>Bu kategoride henüz ürün bulunmuyor</h3>
+                    <p>Çok yakında yeni parçalar koleksiyonumuza eklenecektir.</p>
+                    <a href="{% url 'home' %}" class="kategori-bos-btn">ALIŞVERİŞE BAŞLA</a>
+                </div>
 
             {% endfor %}
 
@@ -94,65 +219,177 @@
     {% include "footer.html" %}
 
 <script>
-function siralaUrunler(secim) {
+let aktifFiyatSecimi = 'all';
+let aktifSiralaSecimi = 'newest';
+
+function toggleDropdown(id, event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById(id);
+    if (!dropdown) return;
+    const isOpen = dropdown.classList.contains('is-open');
+
+    // Diğer tüm dropdownları kapat
+    closeAllDropdowns();
+
+    if (!isOpen) {
+        dropdown.classList.add('is-open');
+        const btn = dropdown.querySelector('.custom-dropdown-btn');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+    }
+}
+
+function closeAllDropdowns() {
+    document.querySelectorAll('.custom-dropdown').forEach(el => {
+        el.classList.remove('is-open');
+        const btn = el.querySelector('.custom-dropdown-btn');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+}
+
+// Dışarı tıklandığında veya ESC basıldığında dropdownları kapat
+document.addEventListener('click', closeAllDropdowns);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAllDropdowns();
+});
+
+function secFiyat(deger, etiket, event) {
+    if (event) event.stopPropagation();
+    aktifFiyatSecimi = deger;
+
+    const dropdown = document.getElementById('fiyatDropdown');
+    if (dropdown) {
+        dropdown.querySelectorAll('.custom-dropdown-item').forEach(item => {
+            if (item.dataset.value === deger) {
+                item.classList.add('is-selected');
+            } else {
+                item.classList.remove('is-selected');
+            }
+        });
+    }
+
+    const seciliEtiketEl = document.getElementById('fiyatSeciliEtiket');
+    const chipContainer = document.getElementById('aktifFiltreler');
+    const chip = document.getElementById('aktifFiyatChip');
+    const chipMetin = document.getElementById('aktifFiyatMetin');
+
+    if (deger === 'all') {
+        if (dropdown) dropdown.classList.remove('has-filter');
+        if (seciliEtiketEl) seciliEtiketEl.textContent = '';
+        if (chip) chip.style.display = 'none';
+        if (chipContainer) chipContainer.style.display = 'none';
+    } else {
+        if (dropdown) dropdown.classList.add('has-filter');
+        if (seciliEtiketEl) seciliEtiketEl.textContent = ': ' + etiket;
+        if (chipMetin) chipMetin.textContent = etiket;
+        if (chip) chip.style.display = 'inline-flex';
+        if (chipContainer) chipContainer.style.display = 'flex';
+    }
+
+    closeAllDropdowns();
+    uygulaFiltreVeSiralama();
+}
+
+function temizleFiyatFiltresi(event) {
+    if (event) event.stopPropagation();
+    secFiyat('all', 'Tüm Fiyatlar');
+}
+
+function tumFiltreleriTemizle() {
+    secFiyat('all', 'Tüm Fiyatlar');
+    secSirala('newest', 'Yeni Ürünler');
+}
+
+function secSirala(deger, etiket, event) {
+    if (event) event.stopPropagation();
+    aktifSiralaSecimi = deger;
+
+    const dropdown = document.getElementById('siralaDropdown');
+    if (dropdown) {
+        dropdown.querySelectorAll('.custom-dropdown-item').forEach(item => {
+            if (item.dataset.value === deger) {
+                item.classList.add('is-selected');
+            } else {
+                item.classList.remove('is-selected');
+            }
+        });
+    }
+
+    const etiketEl = document.getElementById('siralaSeciliEtiket');
+    if (etiketEl) etiketEl.textContent = etiket;
+
+    closeAllDropdowns();
+    uygulaFiltreVeSiralama();
+}
+
+function uygulaFiltreVeSiralama() {
     const grid = document.querySelector(".urun-grid");
+    if (!grid) return;
     const kartlar = Array.from(grid.querySelectorAll(".urun-karti"));
+    const bosDurumEl = document.getElementById("filtreBosDurum");
 
+    let gorunenSayisi = 0;
+
+    // 1. Fiyat Filtresi
+    kartlar.forEach(function(kart) {
+        const fiyatStr = (kart.dataset.price || '0').replace(',', '.');
+        const fiyat = parseFloat(fiyatStr);
+
+        let goster = true;
+
+        if (aktifFiyatSecimi === "0-500") {
+            goster = fiyat <= 500;
+        } else if (aktifFiyatSecimi === "500-1000") {
+            goster = fiyat >= 500 && fiyat <= 1000;
+        } else if (aktifFiyatSecimi === "1000-2000") {
+            goster = fiyat >= 1000 && fiyat <= 2000;
+        } else if (aktifFiyatSecimi === "2000+") {
+            goster = fiyat >= 2000;
+        }
+
+        if (goster) {
+            kart.style.display = "";
+            gorunenSayisi++;
+        } else {
+            kart.style.display = "none";
+        }
+    });
+
+    // 2. Sıralama
     kartlar.sort(function(a, b) {
-        const fiyatA = parseFloat(
-            a.querySelector(".urun-bilgi p").textContent
-                .replace("TL", "")
-                .replace(",", ".")
-        );
+        const fiyatA = parseFloat((a.dataset.price || '0').replace(',', '.'));
+        const fiyatB = parseFloat((b.dataset.price || '0').replace(',', '.'));
+        const baslikA = (a.dataset.title || '').trim().toLowerCase();
+        const baslikB = (b.dataset.title || '').trim().toLowerCase();
+        const indexA = parseInt(a.dataset.index || '0');
+        const indexB = parseInt(b.dataset.index || '0');
 
-        const fiyatB = parseFloat(
-            b.querySelector(".urun-bilgi p").textContent
-                .replace("TL", "")
-                .replace(",", ".")
-        );
-
-        if (secim === "price-low") {
+        if (aktifSiralaSecimi === "price-low") {
             return fiyatA - fiyatB;
-        }
-
-        if (secim === "price-high") {
+        } else if (aktifSiralaSecimi === "price-high") {
             return fiyatB - fiyatA;
+        } else if (aktifSiralaSecimi === "name-az") {
+            return baslikA.localeCompare(baslikB, 'tr');
+        } else {
+            return indexA - indexB;
         }
-
-        return 0;
     });
 
     kartlar.forEach(function(kart) {
         grid.appendChild(kart);
     });
-}
 
-function filtreleFiyat(secim) {
-    const kartlar = document.querySelectorAll(".urun-karti");
+    // 3. Ürün Sayacı Güncelleme
+    const sayacEl = document.getElementById("urunSayac");
+    if (sayacEl) sayacEl.textContent = gorunenSayisi;
 
-    kartlar.forEach(function(kart) {
-        const fiyat = parseFloat(
-            kart.querySelector(".urun-bilgi p").textContent
-                .replace("TL", "")
-                .replace(",", ".")
-        );
-
-        let göster = true;
-
-        if (secim === "0-500") {
-            göster = fiyat <= 500;
+    // 4. Filtre Boş Durumu Kontrolü
+    if (bosDurumEl) {
+        if (kartlar.length > 0 && gorunenSayisi === 0) {
+            bosDurumEl.style.display = "block";
+        } else {
+            bosDurumEl.style.display = "none";
         }
-
-        if (secim === "500-1000") {
-            göster = fiyat >= 500 && fiyat <= 1000;
-        }
-
-        if (secim === "1000+") {
-            göster = fiyat >= 1000;
-        }
-
-        kart.style.display = göster ? "" : "none";
-    });
+    }
 }
 
 function favoriEkle(event, productId) {
@@ -162,7 +399,6 @@ function favoriEkle(event, productId) {
     }
     const buton = event ? event.currentTarget : null;
 
-    // Tıklandığı an görseli hemen değiştir (akıcılık için)
     if (buton) {
         buton.classList.toggle("active");
     }
@@ -183,7 +419,6 @@ function favoriEkle(event, productId) {
     .then(data => {
         if (!data) return;
         if (buton) {
-            // Sunucudan gelen sonuca göre garantile
             if (data.is_favorited) {
                 buton.classList.add("active");
             } else {
@@ -193,7 +428,6 @@ function favoriEkle(event, productId) {
     })
     .catch(error => {
         console.error("Favori işlemi hatası:", error);
-        // Hata olursa durumu geri al
         if (buton) {
             buton.classList.toggle("active");
         }
@@ -213,6 +447,124 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+const isUserLoggedIn = {% if request.user.is_authenticated %}true{% else %}false{% endif %};
+
+// Hızlı Beden Seçimi & Sepete Ekleme Fonksiyonu
+function hizliSepeteEkle(event, productId, size, productTitle) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    if (!isUserLoggedIn) {
+        if (typeof hesapPanelAc === "function") {
+            hesapPanelAc();
+        }
+        gosterFavToast("Giriş Yapmalısınız", "Sepete eklemek için lütfen üye olun veya giriş yapın.", true);
+        return;
+    }
+
+    const buton = event ? event.currentTarget : null;
+    const orijinalMetin = buton ? buton.textContent : size;
+
+    if (buton) {
+        buton.classList.add("yukleniyor");
+        buton.textContent = "...";
+    }
+
+    const formData = new FormData();
+    formData.append("size", size);
+    formData.append("ajax", "1");
+
+    fetch(`/sepet/ekle/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data) return;
+
+        if (data.status === "success") {
+            if (buton) {
+                buton.classList.remove("yukleniyor");
+                buton.classList.add("eklendi");
+                buton.textContent = "✓";
+
+                setTimeout(() => {
+                    buton.classList.remove("eklendi");
+                    buton.textContent = orijinalMetin;
+                }, 1400);
+            }
+
+            // Kibar Lüks Bildirim (Toast)
+            gosterFavToast(productTitle || "Ürün", size, false);
+        } else {
+            if (buton) {
+                buton.classList.remove("yukleniyor");
+                buton.textContent = orijinalMetin;
+            }
+            gosterFavToast("Hata", data.message || "Sepete eklenemedi.", true);
+        }
+    })
+    .catch(error => {
+        console.error("Sepete ekleme hatası:", error);
+        if (buton) {
+            buton.classList.remove("yukleniyor");
+            buton.textContent = orijinalMetin;
+        }
+    });
+}
+
+// Şık & Minimalist Toast Bildirim Sistemi
+function gosterFavToast(baslik, bedenVeyaMesaj, isUyari) {
+    let container = document.getElementById("favToastContainer");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "favToastContainer";
+        container.className = "fav-toast-container";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = "fav-toast";
+
+    const ikonHtml = isUyari
+        ? `<svg class="fav-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+        : `<svg class="fav-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+    const icerikHtml = isUyari
+        ? `<div><span class="fav-toast-title">${baslik}</span><div style="font-size: 12px; color: #555; margin-top: 2px;">${bedenVeyaMesaj}</div></div>`
+        : `<div>
+             <div><span class="fav-toast-title">${baslik}</span> <span class="fav-toast-size">${bedenVeyaMesaj}</span> sepete eklendi.</div>
+             <a href="/sepet/" class="fav-toast-link">SEPETİ GÖRÜNTÜLE →</a>
+           </div>`;
+
+    toast.innerHTML = `
+        ${ikonHtml}
+        <div class="fav-toast-content">
+            ${icerikHtml}
+        </div>
+        <button type="button" class="fav-toast-kapat" onclick="this.parentElement.remove()" aria-label="Kapat">×</button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("toast-gizle");
+        setTimeout(() => toast.remove(), 250);
+    }, 3500);
 }
 </script>
 </body>
