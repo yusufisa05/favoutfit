@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -14,7 +14,7 @@
 
     <title>{{ secilen_kategori.name }} | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=25">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=26">
 </head>
 
 <body>
@@ -199,15 +199,21 @@
 
                 <div class="kategori-bos-durum">
                     <div class="kategori-bos-icon">
-                        <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-                            <path d="M3 6h18"/>
-                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        <!-- Elbise askısı ikonu — aksesuar/alışveriş çantasından farklı -->
+                        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M32 8 C32 8 32 4 28 4 C24 4 22 8 26 10 L32 14 L38 10 C42 8 40 4 36 4 C32 4 32 8 32 8Z"/>
+                            <path d="M26 10 L8 22 C6 23 8 26 10 25 L22 18"/>
+                            <path d="M38 10 L56 22 C58 23 56 26 54 25 L42 18"/>
+                            <path d="M22 18 L22 52 C22 54 24 56 26 56 L38 56 C40 56 42 54 42 52 L42 18"/>
                         </svg>
                     </div>
-                    <h3>Bu kategoride henüz ürün bulunmuyor</h3>
-                    <p>Çok yakında yeni parçalar koleksiyonumuza eklenecektir.</p>
-                    <a href="{% url 'home' %}" class="kategori-bos-btn">ALIŞVERİŞE BAŞLA</a>
+                    <div class="kategori-bos-etiket">KOLEKSIYON</div>
+                    <h3>Bu koleksiyonu yakında sizinle buluşturuyoruz</h3>
+                    <p>En yeni parçaları keşfetmek için Yeni Gelenler bölümüne göz atabilirsiniz.</p>
+                    <div class="kategori-bos-aksiyonlar">
+                        <a href="{% url 'category_filter' category_slug='new' %}" class="kategori-bos-btn-ana">YENİ GELENLERİ KEŞFET</a>
+                        <a href="{% url 'home' %}" class="kategori-bos-btn-ikincil">TÜM KOLEKSİYONA DÖN</a>
+                    </div>
                 </div>
 
             {% endfor %}

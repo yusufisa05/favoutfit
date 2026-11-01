@@ -58,7 +58,7 @@ def cart_detail(request):
         'cart': cart,
         'cart_items': cart_items,
         'total_price': total_price,
-        'categories': Category.objects.all(),
+        'categories': Category.objects.filter(parent__isnull=True).prefetch_related('subcategories'),
     }
     return render(request, 'cart/cart_detail.html', context)
 

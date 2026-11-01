@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 
 <header class="ust-bar">
 
@@ -46,25 +46,32 @@
                     </button>
                 {% endif %}
 
-                <!-- Sepet (Çanta) -->
                 <!-- Sepet -->
-<a href="{% url 'cart_detail' %}" aria-label="Sepet">
-    <svg xmlns="http://www.w3.org/2000/svg"
-         viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         class="lucide lucide-shopping-basket">
-        <path d="m15 11-1 9"/>
-        <path d="m19 11-4-7"/>
-        <path d="M2 11h20"/>
-        <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
-        <path d="M4.5 15.5h15"/>
-        <path d="m5 11 4-7"/>
-        <path d="m9 11 1 9"/>
-    </svg>
-</a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'cart_detail' %}" aria-label="Sepet">
+                {% else %}
+                <button type="button" onclick="sepetGirisAc()" aria-label="Sepet" style="background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;color:inherit;">
+                {% endif %}
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         class="lucide lucide-shopping-basket">
+                        <path d="m15 11-1 9"/>
+                        <path d="m19 11-4-7"/>
+                        <path d="M2 11h20"/>
+                        <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+                        <path d="M4.5 15.5h15"/>
+                        <path d="m5 11 4-7"/>
+                        <path d="m9 11 1 9"/>
+                    </svg>
+                {% if request.user.is_authenticated %}
+                </a>
+                {% else %}
+                </button>
+                {% endif %}
 
             </div>
 
@@ -75,10 +82,28 @@
     <!-- NAVİGASYON -->
     <nav class="ana-menu">
         <div class="nav-links">
-    {% for category in categories %}
-        <a href="{% url 'category_filter' category_slug=category.slug %}">{{ category.name }}</a>
-    {% endfor %}
-</div>
+        {% for category in categories %}
+            {% if category.subcategories.all %}
+            <div class="nav-item has-dropdown">
+                <a href="{% url 'category_filter' category_slug=category.slug %}" class="nav-link">
+                    {{ category.name }}
+                    <svg class="nav-dropdown-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><polyline points="6 9 12 15 18 9"/></svg>
+                </a>
+                <div class="nav-dropdown">
+                    <div class="nav-dropdown-inner">
+                        {% for sub in category.subcategories.all %}
+                        <a href="{% url 'category_filter' category_slug=sub.slug %}" class="nav-dropdown-item">{{ sub.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="nav-item">
+                <a href="{% url 'category_filter' category_slug=category.slug %}" class="nav-link">{{ category.name }}</a>
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
     </nav>
 
 </header>
@@ -267,6 +292,9 @@
     </div>
 
 </div>
+<!-- Global Toast Container (header dahil tüm sayfalarda erişilebilir) -->
+<div id="headerToastContainer" style="position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;"></div>
+
 <!-- Favori giriş uyarısı -->
 <div class="favori-uyari-overlay" id="favoriUyariOverlay">
     <div class="favori-uyari">
@@ -296,6 +324,22 @@
 </div>
 
 <script>
+
+    function sepetGirisAc() {
+        // Mevcut toast yapısıyla uyumlu bildirim göster
+        var toastKapsayici = document.querySelector(".fav-toast-container") || document.getElementById("headerToastContainer");
+        if (toastKapsayici) {
+            var toast = document.createElement("div");
+            toast.className = "fav-toast";
+            toast.innerHTML = '<div class="fav-toast-content"><div class="fav-toast-title">Giriş Gerekli</div><div>Sepetinizi görüntülemek için lütfen giriş yapın.</div></div>';
+            toastKapsayici.appendChild(toast);
+            setTimeout(function() {
+                toast.classList.add("toast-gizle");
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
+        }
+        setTimeout(function() { hesapPanelAc(); }, 350);
+    }
 
     function hesapPanelAc() {
         var overlay = document.getElementById("hesapOverlay");

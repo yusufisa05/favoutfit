@@ -18,7 +18,8 @@ def search_products(request):
             Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
         )
 
-    menu_kategorileri = Category.objects.all()
+    # Sadece ana (üst) kategoriler, alt kategorileriyle birlikte
+    menu_kategorileri = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
 
     return render(
         request,
@@ -33,9 +34,9 @@ def search_products(request):
     )
 
 def home(request, category_slug=None):
-    # 1. Üst menü için TÜM kategoriler
-    menu_kategorileri = Category.objects.all()
-    
+    # 1. Üst menü için sadece ana (parent) kategoriler, alt kategorileriyle
+    menu_kategorileri = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
+
     # 2. Anasayfa kartları için sadece admin panelinden işaretlenenler
     homepage_kategorileri = Category.objects.filter(show_on_homepage=True)
 
@@ -84,7 +85,8 @@ def home(request, category_slug=None):
 
 def product_detail(request, id):
     urun = get_object_or_404(Product, id=id)
-    menu_kategorileri = Category.objects.all()
+    # Sadece ana (parent) kategoriler, alt kategorileriyle
+    menu_kategorileri = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
 
     favori_urunler = set()
     is_favorited = False
@@ -133,7 +135,7 @@ def toggle_favourite(request, product_id):
     })
 
 def favorite_list(request):
-    menu_kategorileri = Category.objects.all()
+    menu_kategorileri = Category.objects.filter(parent__isnull=True).prefetch_related('subcategories')
 
     favori_urunler = set()
     # Giriş yapmış kullanıcı
