@@ -15,7 +15,7 @@
 
     <title>{{ product.title }} | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=26">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=27">
 </head>
 
 <body class="urun-detay-sayfasi-body">
@@ -554,20 +554,24 @@
         .catch(err => console.error("Favori işlemi hatası:", err));
     }
 
-    // Dinamik Floating Toast Bildirimi
-    function detayToastGoster(mesaj) {
-        const container = document.getElementById("detayToastContainer");
+    // Dinamik Floating Toast Bildirimi (Global lüks sistemle senkronize)
+    function detayToastGoster(mesaj, tur) {
+        if (typeof gosterFavBildirim === "function") {
+            var tip = tur || (mesaj.indexOf("çıkarıldı") !== -1 ? "info" : "success");
+            gosterFavBildirim(tip, tip === "success" ? "SEPET" : "BİLGİ", mesaj, 3200);
+            return;
+        }
+        const container = document.getElementById("detayToastContainer") || document.getElementById("favGlobalToastContainer");
         if (!container) return;
 
         const toast = document.createElement("div");
         toast.className = "fav-toast";
-        toast.textContent = mesaj;
-
+        toast.innerHTML = '<div class="fav-toast-metin">' + mesaj + '</div>';
         container.appendChild(toast);
 
         setTimeout(() => {
-            toast.classList.add("cikis");
-            setTimeout(() => toast.remove(), 400);
+            toast.classList.add("toast-gizle");
+            setTimeout(() => toast.remove(), 350);
         }, 2600);
     }
 

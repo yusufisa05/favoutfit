@@ -14,7 +14,7 @@
 
     <title>Sipariş ve Teslimat Bilgileri | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=26">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=27">
 </head>
 
 <body class="checkout-body">
@@ -45,8 +45,8 @@
         {% if messages %}
             <div class="checkout-messages">
                 {% for message in messages %}
-                    <div class="checkout-message-item">
-                        {{ message }}
+                    <div class="checkout-message-item" role="alert">
+                        <strong>BİLGİ:</strong> {{ message }}
                     </div>
                 {% endfor %}
             </div>

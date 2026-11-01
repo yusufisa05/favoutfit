@@ -14,7 +14,7 @@
 
     <title>{{ secilen_kategori.name }} | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=26">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=27">
 </head>
 
 <body>
@@ -544,25 +544,38 @@ function gosterFavToast(baslik, bedenVeyaMesaj, isUyari) {
     }
 
     const toast = document.createElement("div");
-    toast.className = "fav-toast";
+    toast.className = "fav-toast " + (isUyari ? "fav-toast-warning" : "fav-toast-success");
 
     const ikonHtml = isUyari
-        ? `<svg class="fav-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
-        : `<svg class="fav-toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        ? `<div class="fav-toast-icon-kutusu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>`
+        : `<div class="fav-toast-icon-kutusu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg></div>`;
 
     const icerikHtml = isUyari
-        ? `<div><span class="fav-toast-title">${baslik}</span><div style="font-size: 12px; color: #555; margin-top: 2px;">${bedenVeyaMesaj}</div></div>`
-        : `<div>
-             <div><span class="fav-toast-title">${baslik}</span> <span class="fav-toast-size">${bedenVeyaMesaj}</span> sepete eklendi.</div>
-             <a href="/sepet/" class="fav-toast-link">SEPETİ GÖRÜNTÜLE →</a>
+        ? `<div class="fav-toast-govde">
+             <div class="fav-toast-ust">
+               <span class="fav-toast-marka">FAV OUTFIT</span>
+               <span class="fav-toast-nokta">•</span>
+               <span class="fav-toast-tur">${baslik}</span>
+             </div>
+             <div class="fav-toast-metin">${bedenVeyaMesaj}</div>
+           </div>`
+        : `<div class="fav-toast-govde">
+             <div class="fav-toast-ust">
+               <span class="fav-toast-marka">FAV OUTFIT</span>
+               <span class="fav-toast-nokta">•</span>
+               <span class="fav-toast-tur">SEPET</span>
+             </div>
+             <div class="fav-toast-metin"><strong>${baslik}</strong> <span class="fav-toast-size">${bedenVeyaMesaj}</span> sepete eklendi.</div>
+             <a href="/sepet/" class="fav-toast-link" style="margin-top:6px;display:inline-block;">SEPETİ GÖRÜNTÜLE →</a>
            </div>`;
 
     toast.innerHTML = `
+        <div class="fav-toast-sol-aksani"></div>
         ${ikonHtml}
-        <div class="fav-toast-content">
-            ${icerikHtml}
-        </div>
-        <button type="button" class="fav-toast-kapat" onclick="this.parentElement.remove()" aria-label="Kapat">×</button>
+        ${icerikHtml}
+        <button type="button" class="fav-toast-kapat-btn" onclick="this.closest('.fav-toast').remove()" aria-label="Kapat">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
     `;
 
     container.appendChild(toast);

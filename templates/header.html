@@ -108,15 +108,40 @@
 
 </header>
 
-{% if messages %}
-<div class="site-mesajlar-kapsayici">
-    {% for message in messages %}
-        <div class="site-mesaj site-mesaj-{{ message.tags }}">
-            {{ message }}
+<!-- Global Lüks Bildirim Konteynırı (FAV OUTFIT Tasarım Dili) -->
+<div id="favGlobalToastContainer" class="fav-toast-container" aria-live="polite" aria-atomic="true">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="fav-toast fav-toast-{{ message.tags|default:'info' }}" role="alert">
+            <div class="fav-toast-sol-aksani"></div>
+            <div class="fav-toast-icon-kutusu">
+                {% if message.tags == 'success' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>
+                {% elif message.tags == 'error' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {% elif message.tags == 'warning' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                {% endif %}
+            </div>
+            <div class="fav-toast-govde">
+                <div class="fav-toast-ust">
+                    <span class="fav-toast-marka">FAV OUTFIT</span>
+                    <span class="fav-toast-nokta">•</span>
+                    <span class="fav-toast-tur">
+                        {% if message.tags == 'success' %}BAŞARILI{% elif message.tags == 'error' %}HATA{% elif message.tags == 'warning' %}UYARI{% else %}BİLGİ{% endif %}
+                    </span>
+                </div>
+                <div class="fav-toast-metin">{{ message }}</div>
+            </div>
+            <button type="button" class="fav-toast-kapat-btn" onclick="favToastKapat(this.closest('.fav-toast'))" aria-label="Kapat">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 </div>
-{% endif %}
 
 <!-- HESAP PANELİ -->
 <div class="hesap-overlay" id="hesapOverlay">
@@ -293,7 +318,7 @@
 
 </div>
 <!-- Global Toast Container (header dahil tüm sayfalarda erişilebilir) -->
-<div id="headerToastContainer" style="position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;"></div>
+
 
 <!-- Favori giriş uyarısı -->
 <div class="favori-uyari-overlay" id="favoriUyariOverlay">
@@ -324,22 +349,80 @@
 </div>
 
 <script>
-
-    function sepetGirisAc() {
-        // Mevcut toast yapısıyla uyumlu bildirim göster
-        var toastKapsayici = document.querySelector(".fav-toast-container") || document.getElementById("headerToastContainer");
-        if (toastKapsayici) {
-            var toast = document.createElement("div");
-            toast.className = "fav-toast";
-            toast.innerHTML = '<div class="fav-toast-content"><div class="fav-toast-title">Giriş Gerekli</div><div>Sepetinizi görüntülemek için lütfen giriş yapın.</div></div>';
-            toastKapsayici.appendChild(toast);
-            setTimeout(function() {
-                toast.classList.add("toast-gizle");
-                setTimeout(function() { toast.remove(); }, 300);
-            }, 3000);
-        }
-        setTimeout(function() { hesapPanelAc(); }, 350);
+    // Toast kapatma fonksiyonu
+    function favToastKapat(toastEl) {
+        if (!toastEl) return;
+        toastEl.classList.add("toast-gizle");
+        setTimeout(function() {
+            if (toastEl.parentNode) toastEl.remove();
+        }, 320);
     }
+
+    // Dinamik Lüks Bildirim Gösterme Fonksiyonu (Tüm sitede kullanılabilir)
+    function gosterFavBildirim(tur, baslik, mesaj, sureMs) {
+        var container = document.getElementById("favGlobalToastContainer");
+        if (!container) {
+            container = document.createElement("div");
+            container.id = "favGlobalToastContainer";
+            container.className = "fav-toast-container";
+            document.body.appendChild(container);
+        }
+
+        var ikonSvg = "";
+        var turKodu = tur || "info";
+        if (turKodu === "success") {
+            ikonSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>';
+        } else if (turKodu === "error") {
+            ikonSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+        } else if (turKodu === "warning") {
+            ikonSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+        } else {
+            ikonSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+        }
+
+        var toast = document.createElement("div");
+        toast.className = "fav-toast fav-toast-" + turKodu;
+        toast.setAttribute("role", "alert");
+        toast.innerHTML = 
+            '<div class="fav-toast-sol-aksani"></div>' +
+            '<div class="fav-toast-icon-kutusu">' + ikonSvg + '</div>' +
+            '<div class="fav-toast-govde">' +
+                '<div class="fav-toast-ust">' +
+                    '<span class="fav-toast-marka">FAV OUTFIT</span>' +
+                    '<span class="fav-toast-nokta">•</span>' +
+                    '<span class="fav-toast-tur">' + (baslik || "BİLGİ") + '</span>' +
+                '</div>' +
+                '<div class="fav-toast-metin">' + mesaj + '</div>' +
+            '</div>' +
+            '<button type="button" class="fav-toast-kapat-btn" onclick="favToastKapat(this.closest(\'.fav-toast\'))" aria-label="Kapat">' +
+                '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+            '</button>';
+
+        container.appendChild(toast);
+
+        var kalmaSuresi = sureMs || 4200;
+        setTimeout(function() {
+            favToastKapat(toast);
+        }, kalmaSuresi);
+    }
+
+    // Sepet İkonuna Tıklandığında Misafire Gösterilen Şık Uyarı
+    function sepetGirisAc() {
+        gosterFavBildirim("warning", "GİRİŞ GEREKLİ", "Sepetinizi görüntülemek için lütfen giriş yapın.", 3800);
+        setTimeout(function() {
+            hesapPanelAc();
+        }, 320);
+    }
+
+    // Sayfa Yüklendiğinde Var Olan Toast'ları Otomatik Kapat
+    document.addEventListener("DOMContentLoaded", function() {
+        var mevcutlar = document.querySelectorAll("#favGlobalToastContainer .fav-toast");
+        mevcutlar.forEach(function(el, i) {
+            setTimeout(function() {
+                favToastKapat(el);
+            }, 4500 + (i * 300));
+        });
+    });
 
     function hesapPanelAc() {
         var overlay = document.getElementById("hesapOverlay");
