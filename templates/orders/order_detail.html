@@ -9,52 +9,182 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap" rel="stylesheet">
     <title>Sipariş Detayı (#{{ order.id }}) | FAV OUTFIT</title>
-    <link rel="stylesheet" href="{% static 'fav.css' %}">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=16">
 </head>
-<body>
+<body class="checkout-body">
 
 {% include "header.html" %}
 
-<main class="checkout-sayfasi">
-    <h2>Sipariş Detayı (#{{ order.id }})</h2>
+<main class="siparis-sayfa-kapsayici">
 
-    <div class="checkout-ozet" style="margin-bottom: 25px;">
-        <p style="margin-bottom: 8px;"><strong>Sipariş Tarihi:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
-        <p style="margin-bottom: 8px;"><strong>Durum:</strong> {{ order.get_status_display }}</p>
-        <p style="margin-bottom: 0;"><strong>Teslimat Adresi:</strong> {{ order.address }} - {{ order.city }} ({{ order.postal_code }})</p>
-    </div>
-
-    <div class="checkout-ozet" style="overflow-x: auto;">
-        <h3 style="margin-bottom: 15px;">Satın Alınan Ürünler</h3>
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-            <thead>
-                <tr style="border-bottom: 2px solid #111;">
-                    <th style="padding: 12px 8px;">Ürün Adı</th>
-                    <th style="padding: 12px 8px;">Birim Fiyat</th>
-                    <th style="padding: 12px 8px;">Adet</th>
-                    <th style="padding: 12px 8px; text-align: right;">Tutar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in order.items.all %}
-                    <tr style="border-bottom: 1px solid #e5e5e5;">
-                        <td style="padding: 14px 8px; font-weight: 500;">{{ item.product.title }}</td>
-                        <td style="padding: 14px 8px;">{{ item.price }} TL</td>
-                        <td style="padding: 14px 8px;">{{ item.quantity }}</td>
-                        <td style="padding: 14px 8px; text-align: right; font-weight: 600;">{{ item.get_cost }} TL</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div style="margin-top: 25px; text-align: right; font-size: 18px; font-weight: 600;">
-            Genel Toplam: {{ order.get_total_cost }} TL
+    <!-- BAŞLIK & BREADCRUMB ALANI -->
+    <div class="siparis-baslik-blogu">
+        <div class="siparis-breadcrumb">
+            <a href="{% url 'home' %}">ANA SAYFA</a>
+            <span class="ayrac">/</span>
+            <a href="{% url 'order_history' %}">SİPARİŞ GEÇMİŞİ</a>
+            <span class="ayrac">/</span>
+            <span class="aktif">SİPARİŞ #{{ order.id }}</span>
+        </div>
+        <h1 class="siparis-ana-baslik">SİPARİŞ DETAYI #{{ order.id }}</h1>
+        <div class="siparis-alt-aciklama">
+            <span>Sipariş Tarihi: {{ order.created_at|date:"d F Y, H:i" }}</span>
         </div>
     </div>
 
-    <div style="margin-top: 25px;">
-        <a href="{% url 'order_history' %}" class="checkout-geri">← Tüm Siparişlerime Dön</a>
+    <!-- SİPARİŞ DURUM BANNERI -->
+    <div class="siparis-detay-durum-banner">
+        <div class="siparis-durum-banner-sol">
+            <div class="siparis-durum-banner-ikon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+            </div>
+            <div>
+                <div class="siparis-durum-banner-baslik">Sipariş Durumu: {{ order.get_status_display }}</div>
+                <div class="siparis-durum-banner-metin">
+                    {% if order.status == 'pending' %}
+                        Siparişiniz başarıyla alındı ve hazırlanma sırasına dahil edildi.
+                    {% elif order.status == 'proccessing' %}
+                        Siparişiniz depomuzda özenle paketleniyor ve kalite kontrolü yapılıyor.
+                    {% elif order.status == 'shipped' %}
+                        Siparişiniz anlaşmalı kargo firmasına teslim edilmiştir.
+                    {% elif order.status == 'completed' %}
+                        Siparişiniz teslim edilerek işlem tamamlanmıştır.
+                    {% elif order.status == 'canceled' %}
+                        Bu sipariş iptal edilmiştir.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="siparis-durum-rozet durum-{{ order.status }}">
+            <span class="durum-nokta"></span>
+            <span>{{ order.get_status_display }}</span>
+        </div>
     </div>
+
+    <!-- DETAY GRİDİ -->
+    <div class="siparis-detay-grid">
+
+        <!-- SOL KOLON: ÜRÜN LİSTESİ -->
+        <div class="siparis-detay-sol">
+            <div class="siparis-detay-kart">
+                <div class="siparis-detay-kart-baslik">
+                    <h2>SATIN ALINAN ÜRÜNLER</h2>
+                    <span class="siparis-sayac-rozet">{{ order.items.count }} ÜRÜN</span>
+                </div>
+                <div class="siparis-detay-kart-govde">
+                    {% for item in order.items.all %}
+                        <div class="siparis-urun-detay-satir">
+                            <div class="siparis-detay-urun-bilgi-grup">
+                                <div class="siparis-detay-resim">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" loading="lazy">
+                                    {% else %}
+                                        <div class="siparis-resim-yok">FAV</div>
+                                    {% endif %}
+                                </div>
+                                <div class="siparis-detay-urun-metinler">
+                                    <a href="{% url 'product_detail' item.product.slug %}" class="siparis-detay-urun-link">
+                                        {{ item.product.title }}
+                                    </a>
+                                    <span class="siparis-urun-meta">Adet: {{ item.quantity }}</span>
+                                    <span class="siparis-urun-meta">Birim Fiyat: {{ item.price }} TL</span>
+                                </div>
+                            </div>
+                            <div class="siparis-detay-fiyat-grup">
+                                <div class="siparis-detay-birim">{{ item.quantity }} x {{ item.price }} TL</div>
+                                <div class="siparis-detay-tutar">{{ item.get_cost }} TL</div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div style="padding: 24px 0; font-size: 13px; color: #888; font-style: italic; text-align: center;">
+                            Bu siparişe ait kayıtlı ürün kalemi bulunmamaktadır.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- SAĞ KOLON: BİLGİ KARTLARI -->
+        <div class="siparis-detay-sag">
+            <!-- TESLİMAT BİLGİLERİ -->
+            <div class="siparis-detay-kart">
+                <div class="siparis-detay-kart-baslik">
+                    <h2>TESLİMAT BİLGİLERİ</h2>
+                </div>
+                <div class="siparis-detay-kart-govde">
+                    <div class="siparis-bilgi-satir-listesi">
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Teslim Alacak:</span>
+                            <span class="deger">{{ order.first_name }} {{ order.last_name }}</span>
+                        </div>
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">E-posta:</span>
+                            <span class="deger">{{ order.email }}</span>
+                        </div>
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Adres:</span>
+                            <span class="deger">{{ order.address }}</span>
+                        </div>
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Şehir / Posta:</span>
+                            <span class="deger">{{ order.city }}{% if order.postal_code %} ({{ order.postal_code }}){% endif %}</span>
+                        </div>
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Kargo Tipi:</span>
+                            <span class="deger">Standart Kargo (Ücretsiz)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TUTAR & ÖDEME ÖZETİ -->
+            <div class="siparis-detay-kart">
+                <div class="siparis-detay-kart-baslik">
+                    <h2>SİPARİŞ ÖZETİ</h2>
+                </div>
+                <div class="siparis-detay-kart-govde">
+                    <div class="siparis-bilgi-satir-listesi">
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Ara Toplam:</span>
+                            <span class="deger">{{ order.get_total_cost }} TL</span>
+                        </div>
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Kargo:</span>
+                            <span class="deger" style="color: #166534; font-weight: 600;">ÜCRETSİZ</span>
+                        </div>
+                        <div class="siparis-bilgi-satiri">
+                            <span class="etiket">Ödeme Durumu:</span>
+                            <span class="deger">
+                                {% if order.paid %}
+                                    <span style="color: #166534; font-weight: 600;">Ödendi</span>
+                                {% else %}
+                                    <span>Onaylandı</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="siparis-bilgi-satiri siparis-toplam-satiri">
+                            <span class="etiket">GENEL TOPLAM:</span>
+                            <span class="deger">{{ order.get_total_cost }} TL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ALT GEZİNME -->
+    <div class="siparis-alt-gezinme" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+        <a href="{% url 'order_history' %}" class="siparis-geri-link">← TÜM SİPARİŞLERİME DÖN</a>
+        <a href="{% url 'home' %}" class="siparis-geri-link" style="color: #888; border-bottom-color: #888;">ALIŞVERİŞE DEVAM ET</a>
+    </div>
+
 </main>
 
 {% include "footer.html" %}

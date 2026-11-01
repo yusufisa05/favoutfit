@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -15,54 +14,216 @@
 
     <title>Sipariş ve Teslimat Bilgileri | FAV OUTFIT</title>
 
-    <link rel="stylesheet" href="{% static 'fav.css' %}?v=5">
+    <link rel="stylesheet" href="{% static 'fav.css' %}?v=11">
 </head>
 
-<body>
+<body class="checkout-body">
 
     {% include "header.html" %}
 
     <main class="checkout-sayfasi">
 
-        <h2>Sipariş ve Teslimat Bilgileri</h2>
+        <!-- ADIM VE BAŞLIK BÖLÜMÜ -->
+        <div class="checkout-baslik-alani">
+            <div class="checkout-adimlar">
+                <a href="{% url 'cart_detail' %}" class="checkout-adim-link tamamlandi">
+                    <span class="adim-no">✓</span> SEPET
+                </a>
+                <span class="adim-ayrac">/</span>
+                <span class="checkout-adim aktif">
+                    <span class="adim-no">2</span> TESLİMAT &amp; SİPARİŞ
+                </span>
+                <span class="adim-ayrac">/</span>
+                <span class="checkout-adim pasif">
+                    <span class="adim-no">3</span> ONAY
+                </span>
+            </div>
+            <h1 class="checkout-ana-baslik">SİPARİŞ VE TESLİMAT BİLGİLERİ</h1>
+            <p class="checkout-alt-bilgi">Lütfen siparişinizin eksiksiz ve hızlı teslim edilmesi için bilgilerinizi kontrol ediniz.</p>
+        </div>
 
-        <div class="checkout-ozet">
-
-            <h3>Sipariş Özeti</h3>
-
-            <ul>
-                {% for item in cart_items %}
-                    <li>
-                        {{ item.product.title }}
-                        x {{ item.quantity }}
-                        = {{ item.get_total_price }} TL
-                    </li>
+        {% if messages %}
+            <div class="checkout-messages">
+                {% for message in messages %}
+                    <div class="checkout-message-item">
+                        {{ message }}
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
+        {% endif %}
 
-            <p class="checkout-toplam">
-                <strong>Genel Toplam: {{ total_price }} TL</strong>
-            </p>
+        <form method="POST" id="checkoutForm" class="checkout-grid">
+            {% csrf_token %}
 
-        </div>
+            <!-- SOL KOLON: TESLİMAT VE İLETİŞİM FORMU -->
+            <div class="checkout-sol-kolon">
 
-        <div class="checkout-form">
+                <div class="checkout-kart">
+                    <div class="checkout-kart-baslik">
+                        <span class="kart-adim-rozet">01</span>
+                        <h2>İLETİŞİM VE TESLİMAT BİLGİLERİ</h2>
+                    </div>
 
-            <form method="POST">
-                {% csrf_token %}
+                    <div class="checkout-form-grid">
+                        <div class="checkout-form-row">
+                            <div class="checkout-form-group">
+                                <label for="{{ form.first_name.id_for_label }}">Ad <span class="zorunlu">*</span></label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="checkout-hata">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="checkout-form-group">
+                                <label for="{{ form.last_name.id_for_label }}">Soyad <span class="zorunlu">*</span></label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="checkout-hata">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
 
-                {{ form.as_p }}
+                        <div class="checkout-form-group">
+                            <label for="{{ form.email.id_for_label }}">E-posta Adresi <span class="zorunlu">*</span></label>
+                            {{ form.email }}
+                            <small class="checkout-ipucu">Sipariş takibi ve bilgilendirmeler bu e-posta adresine iletilecektir.</small>
+                            {% if form.email.errors %}
+                                <div class="checkout-hata">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
 
-                <button type="submit" class="checkout-onayla">
-                    SİPARİŞİ ONAYLA VE TAMAMLA
-                </button>
-            </form>
+                        <div class="checkout-form-group">
+                            <label for="{{ form.address.id_for_label }}">Teslimat Adresi <span class="zorunlu">*</span></label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="checkout-hata">{{ form.address.errors.0 }}</div>
+                            {% endif %}
+                        </div>
 
-        </div>
+                        <div class="checkout-form-row">
+                            <div class="checkout-form-group">
+                                <label for="{{ form.city.id_for_label }}">Şehir <span class="zorunlu">*</span></label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="checkout-hata">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="checkout-form-group">
+                                <label for="{{ form.postal_code.id_for_label }}">Posta Kodu <span class="zorunlu">*</span></label>
+                                {{ form.postal_code }}
+                                {% if form.postal_code.errors %}
+                                    <div class="checkout-hata">{{ form.postal_code.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
 
-        <a href="{% url 'cart_detail' %}" class="checkout-geri">
-            ← Sepete Geri Dön
-        </a>
+                    <!-- KARGO TESLİMAT BİLGİSİ -->
+                    <div class="checkout-kargo-bilgi">
+                        <div class="kargo-ikon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                        </div>
+                        <div class="kargo-metin">
+                            <strong>Standart Sigortalı Kargo</strong>
+                            <p>Siparişiniz özenle paketlenir ve en geç 24-48 saat içinde kargoya verilir.</p>
+                        </div>
+                        <div class="kargo-fiyat-rozet">ÜCRETSİZ</div>
+                    </div>
+                </div>
+
+                <!-- GÜVENLİK ROZETLERİ -->
+                <div class="checkout-guven-seridi">
+                    <div class="guven-oge">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>256-Bit SSL Güvenli Alışveriş</span>
+                    </div>
+                    <div class="guven-oge">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>%100 Orijinal Ürün &amp; Kolay İade</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SAĞ KOLON: SİPARİŞ ÖZETİ (STICKY KART) -->
+            <div class="checkout-sag-kolon">
+                <div class="checkout-ozet-kart">
+                    <div class="checkout-ozet-baslik">
+                        <h2>SİPARİŞ ÖZETİ</h2>
+                        <span class="ozet-adet-etiket">{{ cart_items|length }} ÜRÜN</span>
+                    </div>
+
+                    <!-- ÜRÜN LİSTESİ -->
+                    <div class="checkout-urun-listesi">
+                        {% for item in cart_items %}
+                            <div class="checkout-urun-satir">
+                                <div class="checkout-urun-resim">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}">
+                                    {% else %}
+                                        <div class="checkout-resim-yok"></div>
+                                    {% endif %}
+                                </div>
+                                <div class="checkout-urun-bilgi">
+                                    <h3 class="checkout-urun-adi">{{ item.product.title }}</h3>
+                                    <div class="checkout-urun-meta">
+                                        {% if item.size %}
+                                            <span class="meta-beden">Beden: {{ item.size }}</span>
+                                            <span class="meta-nokta">•</span>
+                                        {% endif %}
+                                        <span class="meta-adet">Adet: {{ item.quantity }}</span>
+                                    </div>
+                                    <span class="checkout-urun-fiyat">{{ item.get_total_price }} TL</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- FİYAT DETAYI -->
+                    <div class="checkout-fiyat-detayi">
+                        <div class="fiyat-satiri">
+                            <span>Ara Toplam</span>
+                            <span>{{ total_price }} TL</span>
+                        </div>
+                        <div class="fiyat-satiri">
+                            <span>Kargo</span>
+                            <span class="kargo-ucretsiz-yazi">ÜCRETSİZ</span>
+                        </div>
+                        <div class="fiyat-satiri toplam-satiri">
+                            <span>ÖDENECEK TOPLAM</span>
+                            <span class="toplam-rakam">{{ total_price }} TL</span>
+                        </div>
+                    </div>
+
+                    <!-- ONAY BUTONU -->
+                    <button type="submit" class="checkout-tamamla-btn">
+                        SİPARİŞİ ONAYLA VE TAMAMLA
+                    </button>
+
+                    <a href="{% url 'cart_detail' %}" class="checkout-sepete-don">
+                        ← SEPETİME GERİ DÖN
+                    </a>
+
+                    <!-- ÖDEME KART ROZETLERİ -->
+                    <div class="checkout-kart-ikonlari">
+                        <span class="odeme-yontemi">VISA</span>
+                        <span class="odeme-yontemi">MASTERCARD</span>
+                        <span class="odeme-yontemi">TROY</span>
+                        <span class="odeme-yontemi">3D SECURE</span>
+                    </div>
+                </div>
+            </div>
+
+        </form>
 
     </main>
 

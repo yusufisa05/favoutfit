@@ -1,6 +1,7 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from products.models import Product
+from django.http import JsonResponse
+from products.models import Product, Category
 from .models import Cart, CartItem
 
 # Create your views here
@@ -8,12 +9,14 @@ from .models import Cart, CartItem
 # Sepete ürün ekleme
 @login_required(login_url='login')
 def add_to_cart(request, product_id):
-
     product = get_object_or_404(Product, id=product_id)
 
     size = request.POST.get('size')
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.POST.get('ajax') == '1'
 
     if not size:
+        if is_ajax:
+            return JsonResponse({'status': 'error', 'message': 'Lütfen beden seçiniz.'}, status=400)
         return redirect('product_detail', id=product_id)
 
     cart, created = Cart.objects.get_or_create(user=request.user)
@@ -27,6 +30,16 @@ def add_to_cart(request, product_id):
     if not item_created:
         cart_item.quantity += 1
         cart_item.save()
+
+    if is_ajax:
+        total_items = sum(item.quantity for item in cart.items.all())
+        return JsonResponse({
+            'status': 'success',
+            'message': f"{product.title} ({size}) sepete eklendi.",
+            'total_items': total_items,
+            'product_title': product.title,
+            'size': size
+        })
 
     return redirect('cart_detail')
 
@@ -44,7 +57,8 @@ def cart_detail(request):
     context = {
         'cart': cart,
         'cart_items': cart_items,
-        'total_price': total_price
+        'total_price': total_price,
+        'categories': Category.objects.all(),
     }
     return render(request, 'cart/cart_detail.html', context)
 

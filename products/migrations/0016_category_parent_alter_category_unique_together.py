@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("products", "0010_category_image_category_show_on_homepage"),
+        ("products", "0015_category_size_guide_product_size_guide"),
     ]
 
     operations = [
